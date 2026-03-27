@@ -12,10 +12,10 @@
   
   <style>
     :root { --mauChinh: #0d6efd; --nenDau: #f8f9fa; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; font-size: 0.9rem; }
+    body { font-family: 'Times New Roman', Times, serif !important; background-color: #f4f6f9; font-size: 0.9rem; }
     
     .thongTinDau { background-color: white; border-bottom: 2px solid var(--mauChinh); padding: 0 15px; height: 40px; }
-    .tenTruong { font-weight: bold; color: #d63384; font-size: 0.95rem; text-transform: uppercase; }
+    .tenTruong { font-weight: bold; color: #1e3a8a; font-size: 0.95rem; text-transform: uppercase; }
     
     .khuGdev { display: flex; align-items: center; background: linear-gradient(135deg, #0d6efd, #0dcaf0); border-radius: 12px; padding: 2px 8px 2px 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: default; height: 24px; }
     .khuGdev:hover { transform: translateY(-1px); box-shadow: 0 3px 6px rgba(13, 202, 240, 0.3); }
@@ -40,8 +40,7 @@
     .cotDlTke { min-width: 55px; width: 55px; max-width: 55px; text-align: center; }
 
     #manhDn { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f4f6f9; z-index: 2000; display: flex; justify-content: center; align-items: center; }
-    .hopDn { width: 100%; max-width: 460px; padding: 40px; background: white; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); }
-    .hopDn h4 { font-size: 1.5rem; font-weight: 700; letter-spacing: 1px; margin-bottom: 15px !important; }
+    .hopDn { width: 100%; max-width: 480px; padding: 40px; background: white; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); }
 
     .toast-container { z-index: 10000; }
     .toast-body { font-size: 0.9rem; padding: 8px 12px; }
@@ -65,20 +64,31 @@
 
   <div id="manhDn" style="display:none;">
     <div class="hopDn text-center">
-      <h4 class="text-primary text-uppercase">ĐĂ&#8203;NG NHẬ&#8203;P HỆ THỐNG</h4>
-      <p class="text-muted mb-4 small">Trường TH&THCS Hợp Thành</p>
+      <img src="https://i.ibb.co/SXSKh9xM/Logo-m-i-c-a-tr-ng-H-p-Th-Nh.png" style="width: 85px; height: 85px; margin-bottom: 15px;">
+      <h3 class="fw-bold text-uppercase mb-2" style="color: #b91c1c;">QUẢN LÝ CHẤT LƯỢNG ĐỘI NGŨ</h3>
+      <h4 class="fw-bold mb-4" style="color: #1e3a8a;">Trường TH&THCS Hợp Thành</h4>
       
+      <div class="mt-3 px-1 mb-4">
+         <p class="fw-bold mb-0" style="font-size: 14px; line-height: 1.5; padding: 15px; background: #e8f5e9; border-radius: 8px; border: 1px solid #c8e6c9; color: #0f5132; text-align: left;">
+           <i class="fas fa-shield-alt"></i> <b>Cam kết bảo mật:</b> Hệ thống sử dụng token an toàn của Google.<br>Tuyệt đối không thu thập hay lưu trữ mật khẩu người dùng.
+         </p>
+      </div>
+
+      <h5 class="fw-bold mb-3" style="color: #b91c1c; font-size: 16px;">Phiên bản: V2.4.2026</h5>
+
       <div id="g_id_onload"
            data-client_id="407480994586-m6fpq6sfcc90qqj9k08rsmi1lge6br94.apps.googleusercontent.com"
            data-callback="xulyPhienDn"
            data-auto_prompt="false">
       </div>
-      <div class="d-flex justify-content-center w-100 mt-3 mb-3">
+      <div class="d-flex justify-content-center w-100 mb-4 mt-2">
          <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="continue_with" data-shape="rectangular" data-logo_alignment="center"></div>
       </div>
       
-      <p class="text-success fw-bold small mt-4 p-2 bg-light border rounded"><i class="fas fa-shield-alt"></i> Hệ thống sử dụng xác thực bảo mật của Google Workspace.</p>
-      <p id="loiDn" class="text-danger mt-3 text-center fw-bold small"></p>
+      <div class="w-100 text-center" style="margin-top: 25px; font-size: 13px; font-weight: bold; color: #6c757d;">
+         Phát triển bởi: HOÀNG NGỌC LÂM
+      </div>
+      <p id="loiDn" class="text-danger mt-2 text-center fw-bold small"></p>
     </div>
   </div>
 
