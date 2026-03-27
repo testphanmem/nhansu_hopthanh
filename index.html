@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <script src="ketnoi.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  
+  <style>
+    :root { --mauChinh: #0d6efd; --nenDau: #f8f9fa; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; font-size: 0.9rem; }
+    
+    .thongTinDau { background-color: white; border-bottom: 2px solid var(--mauChinh); padding: 0 15px; height: 40px; }
+    .tenTruong { font-weight: bold; color: #d63384; font-size: 0.95rem; text-transform: uppercase; }
+    
+    .khuGdev { display: flex; align-items: center; background: linear-gradient(135deg, #0d6efd, #0dcaf0); border-radius: 12px; padding: 2px 8px 2px 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: default; height: 24px; }
+    .khuGdev:hover { transform: translateY(-1px); box-shadow: 0 3px 6px rgba(13, 202, 240, 0.3); }
+    .vongTlua { background-color: rgba(255, 255, 255, 0.2); width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 5px; }
+    .vongTlua i { color: #FFD700; font-size: 0.65rem; text-shadow: 0 1px 2px rgba(0,0,0,0.2); transition: transform 0.5s ease; }
+    .khuGdev:hover .vongTlua i { transform: translate(1px, -1px) scale(1.1); }
+    .chuDev { display: flex; flex-direction: column; justify-content: center; line-height: 0.85; }
+    .tenDev { color: white; font-weight: 700; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.3px; }
+    .vtDev { color: rgba(255,255,255,0.9); font-size: 0.4rem; font-weight: 400; }
+    
+    #vungTai { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 9999; display: flex; justify-content: center; align-items: center; }
+    
+    .table-responsive { overflow-x: auto; } 
+    .bangTchinh { min-width: 100%; }
+    .bangTchinh th, .bangTchinh td { white-space: nowrap; vertical-align: middle; font-size: 0.85rem; padding: 4px 6px; } 
+    .bangTchinh th { background-color: var(--mauChinh); color: white; text-align: center; }
+    .dongCkt { background-color: #fff3cd !important; color: #856404; }
+    
+    .theTke { background: white; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); padding: 10px; margin-bottom: 15px; }
+    .tdeTke { color: var(--mauChinh); font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 10px; text-transform: uppercase; font-size: 0.85rem; }
+    .tdePhu { font-size: 0.75rem; background-color: #e9ecef; color: #333; }
+    .cotDlTke { min-width: 55px; width: 55px; max-width: 55px; text-align: center; }
+
+    #manhDn { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f4f6f9; z-index: 2000; display: flex; justify-content: center; align-items: center; }
+    .hopDn { width: 100%; max-width: 460px; padding: 40px; background: white; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); }
+    .hopDn h4 { font-size: 1.5rem; font-weight: 700; letter-spacing: 1px; margin-bottom: 15px !important; }
+
+    .toast-container { z-index: 10000; }
+    .toast-body { font-size: 0.9rem; padding: 8px 12px; }
+    .nav-link { padding: 0.3rem 0.8rem; font-size: 0.9rem; }
+    .form-control, .form-select, .btn { padding: 0.25rem 0.5rem; font-size: 0.85rem; }
+    .input-group-text { padding: 0.25rem 0.5rem; }
+  </style>
+</head>
+<body>
+
+  <div id="vungTai"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>
+
+  <div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="tbNhanh" class="toast align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body"></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="manhDn" style="display:none;">
+    <div class="hopDn text-center">
+      <h4 class="text-primary text-uppercase">ĐĂ&#8203;NG NHẬ&#8203;P HỆ THỐNG</h4>
+      <p class="text-muted mb-4 small">Trường TH&THCS Hợp Thành</p>
+      
+      <div id="g_id_onload"
+           data-client_id="407480994586-m6fpq6sfcc90qqj9k08rsmi1lge6br94.apps.googleusercontent.com"
+           data-callback="xulyPhienDn"
+           data-auto_prompt="false">
+      </div>
+      <div class="d-flex justify-content-center w-100 mt-3 mb-3">
+         <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="continue_with" data-shape="rectangular" data-logo_alignment="center"></div>
+      </div>
+      
+      <p class="text-success fw-bold small mt-4 p-2 bg-light border rounded"><i class="fas fa-shield-alt"></i> Hệ thống sử dụng xác thực bảo mật của Google Workspace.</p>
+      <p id="loiDn" class="text-danger mt-3 text-center fw-bold small"></p>
+    </div>
+  </div>
+
+  <div id="udChinh" style="display:none;">
+    <div class="thongTinDau d-flex justify-content-between align-items-center">
+      <div class="tenTruong">Trường TH&THCS Hợp Thành</div>
+      <div class="khuGdev">
+         <div class="vongTlua"><i class="fas fa-rocket"></i></div>
+         <div class="chuDev">
+            <div class="tenDev">HOÀNG NGỌC LÂM</div>
+            <div class="vtDev">System Developer</div>
+         </div>
+      </div>
+    </div>
+
+    <div class="bg-light px-3 py-1 d-flex justify-content-between border-bottom align-items-center">
+      <div class="d-flex align-items-center">
+         <span class="me-1 small">Xin chào:</span> 
+         <span id="hthiNd" class="fw-bold text-success me-2 small"></span> 
+         <span id="nhanVt" class="badge bg-secondary" style="font-size: 0.7rem;"></span>
+      </div>
+      <div class="fw-bold text-uppercase text-primary flex-grow-1 text-center" id="tdeTrang" style="font-size: 0.95rem;">THÔNG TIN NHÂN SỰ</div>
+      <div>
+        <button onclick="dxuat()" class="btn btn-sm btn-outline-danger" style="font-size: 0.75rem; padding: 2px 8px;">Đăng xuất</button>
+      </div>
+    </div>
+
+    <ul class="nav nav-tabs px-3 mt-1" id="bangChonGoc" role="tablist">
+      <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#muc1" onclick="datTde('THÔNG TIN NHÂN SỰ')">Thông tin nhân sự</button></li>
+      <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#muc2" onclick="datTde('KẾT QUẢ ĐÁNH GIÁ')">Kết quả đánh giá</button></li>
+      <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#muc3" onclick="datTde('THỐNG KÊ - TỔNG HỢP')">Tổng hợp</button></li>
+    </ul>
+
+    <div class="tab-content p-2" id="vungChuaNoiDung">
+      <div class="tab-pane fade show active" id="muc1">
+        <div class="row mb-2 g-1 align-items-center">
+          <div class="col-md-2"><select id="nhapLocN1" class="form-select" onchange="veBangNs()"><option value="">Tất cả năm học</option></select></div>
+          <div class="col-md-4">
+            <div class="input-group">
+              <input type="text" id="nhapTimKiemNs" class="form-control" placeholder="Tìm kiếm..." autocomplete="off" onkeydown="if(event.key === 'Enter') veBangNs()">
+              <button class="btn btn-outline-secondary" onclick="veBangNs()"><i class="fas fa-search"></i></button>
+            </div>
+          </div>
+          <div class="col-md-6 text-end">
+              <button id="nutMoThemNs" class="btn btn-success me-1" onclick="moThem()"><i class="fas fa-plus"></i> Thêm mới</button>
+              <button id="nutCnNhieuNs" class="btn btn-primary" onclick="cnNhieuNs()"><i class="fas fa-save"></i> Cập nhật</button>
+          </div>
+        </div>
+        <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+          <table class="table table-bordered table-hover bangTchinh table-sm" id="khuBangNs">
+            <thead class="sticky-top">
+              <tr>
+                <th style="width: 40px; text-align: center;">Sửa</th><th style="min-width: 80px; text-align: center;">Năm học</th><th style="min-width: 140px; text-align: center;">Đị&#8203;nh da&#8203;nh</th>
+                <th style="min-width: 150px; text-align: center;">Họ&#8203; và tê&#8203;n</th><th style="width: 60px; text-align: center;">Giớ&#8203;i tí&#8203;nh</th><th style="min-width: 80px; text-align: center;">Ngà&#8203;y si&#8203;nh</th>
+                <th style="min-width: 100px; text-align: center;">Trạng thái</th><th style="min-width: 90px; text-align: center;">S&#8203;Đ&#8203;T</th><th style="min-width: 80px; text-align: center;">Dâ&#8203;n tộ&#8203;c</th>
+                <th style="min-width: 80px; text-align: center;">Tô&#8203;n giá&#8203;o</th><th style="min-width: 180px; text-align: center;">Đị&#8203;a chỉ (TT)</th><th style="min-width: 180px; text-align: center;">Đị&#8203;a chỉ (QQ)</th>
+                <th style="width: 70px; text-align: center;">Đả&#8203;ng viê&#8203;n</th><th style="min-width: 110px; text-align: center;">Vị trí VL</th><th style="min-width: 90px; text-align: center;">Ngày tuyển</th>
+                <th style="min-width: 90px; text-align: center;">Hạng/Ngạch</th><th style="min-width: 110px; text-align: center;">Trình độ CM</th><th style="min-width: 110px; text-align: center;">LL Chính trị</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-pane fade" id="muc2">
+         <div class="row mb-2 g-1 align-items-center">
+             <div class="col-md-3">
+                 <div class="input-group">
+                     <select id="nhapLocN2" class="form-select" onchange="veBangDg()"><option value="">Tất cả năm học</option></select>
+                     <button class="btn btn-primary" onclick="veBangDg()"><i class="fas fa-search"></i> Tìm</button>
+                 </div>
+             </div>
+             <div class="col-md-4">
+                 <div class="input-group">
+                    <input type="text" id="nhapTimKiemDg" class="form-control" placeholder="Tìm tên/mã..." autocomplete="off" onkeydown="if(event.key === 'Enter') veBangDg()">
+                    <button class="btn btn-outline-secondary" onclick="veBangDg()"><i class="fas fa-search"></i></button>
+                 </div>
+             </div>
+             <div class="col-md-5 text-end">
+                <button id="nutCnNhieuDg" class="btn btn-primary" onclick="cnNhieuDg()"><i class="fas fa-save"></i> Cập nhật</button>
+             </div>
+         </div>
+         <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+            <table class="table table-bordered table-striped bangTchinh table-sm" id="khuBangDg">
+              <thead class="sticky-top">
+                <tr>
+                  <th style="width: 40px; text-align: center;">Sửa</th>
+                  <th style="min-width: 80px; text-align: center;">Năm học</th>
+                  <th style="min-width: 100px; text-align: center;">Đị&#8203;nh da&#8203;nh</th>
+                  <th style="min-width: 180px; text-align: center;">Họ&#8203; và tê&#8203;n</th>
+                  <th style="min-width: 80px; text-align: center;">XL CM (K1)</th>
+                  <th style="min-width: 80px; text-align: center;">XL CM (K2)</th>
+                  <th style="min-width: 80px; text-align: center;">XL CNN</th>
+                  <th style="min-width: 100px; text-align: center;">XL Viên chức</th>
+                  <th style="min-width: 100px; text-align: center;">XL Đả&#8203;ng viê&#8203;n</th> <th style="min-width: 100px; text-align: center;">DH Chuyên môn</th>
+                  <th style="min-width: 100px; text-align: center;">DH Thi đua</th>
+                  <th style="min-width: 100px; text-align: center;">Hình thức khen</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+         </div>
+      </div>
+
+      <div class="tab-pane fade" id="muc3">
+         <div class="d-flex flex-wrap align-items-center justify-content-between mb-2 gap-2">
+             <div class="input-group" style="width: auto; min-width: 250px;">
+                <span class="input-group-text bg-white"><i class="fas fa-filter text-primary"></i></span>
+                <select id="nhapLocN3" class="form-select" onchange="veTke()">
+                    <option value="">Tất cả năm học</option>
+                </select>
+                <button class="btn btn-primary" onclick="veTke()"><i class="fas fa-search"></i></button>
+             </div>
+             <ul class="nav nav-pills" id="mangChonTke" role="tablist">
+                <li class="nav-item me-1"><button class="nav-link active py-1" data-bs-toggle="pill" data-bs-target="#m3Phan1" type="button">3.1. Tổng hợp nhân sự</button></li>
+                <li class="nav-item"><button class="nav-link py-1" data-bs-toggle="pill" data-bs-target="#m3Phan2" type="button">3.2. Kết quả đánh giá</button></li>
+             </ul>
+         </div>
+
+         <div class="tab-content" id="vungChuaTke">
+            <div class="tab-pane fade show active" id="m3Phan1">
+               <div class="theTke">
+                  <h6 class="tdeTke"><i class="fas fa-users"></i> 3.1. TỔNG HỢP NHÂN SỰ</h6>
+                  <div class="table-responsive">
+                    <table class="table table-bordered table-sm text-center table-hover bangTchinh" id="bangTkeNs">
+                      <thead>
+                        <tr>
+                          <th rowspan="2" style="vertical-align: middle;">Năm học</th><th rowspan="2" style="vertical-align: middle;">Tổng số</th><th rowspan="2" style="vertical-align: middle;">Nữ</th><th rowspan="2" style="vertical-align: middle;">Dâ&#8203;n tộ&#8203;c</th><th rowspan="2" style="vertical-align: middle;">Nữ DT</th><th rowspan="2" style="vertical-align: middle;">Đả&#8203;ng viê&#8203;n</th><th rowspan="2" style="vertical-align: middle;">Nữ ĐV</th><th rowspan="2" style="vertical-align: middle;">ĐV DT</th>
+                          <th colspan="3">Vị trí việc làm</th><th colspan="5">Trình độ chuyên môn</th><th colspan="5">Hạng chức danh nghề nghiệp</th><th colspan="3">Lý luận chính trị</th>
+                        </tr>
+                        <tr class="tdePhu">
+                          <th>QL</th><th>GV</th><th>NV</th><th>Trên ĐH</th><th>Đại học</th><th>Cao đẳng</th><th>Trung cấp</th><th>Khác</th><th>Hạng 1</th><th>Hạng 2</th><th>Hạng 3</th><th>Hạng 4</th><th>Khác</th><th>Cao cấp</th><th>Trung cấp</th><th>Sơ cấp</th>
+                        </tr>
+                      </thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+               </div>
+            </div>
+            <div class="tab-pane fade" id="m3Phan2">
+               <div class="theTke">
+                  <h6 class="tdeTke"><i class="fas fa-star"></i> 3.2. KẾT QUẢ THỰC HIỆN NHIỆM VỤ</h6>
+                  <div class="table-responsive">
+                    <table class="table table-bordered table-sm text-center table-hover bangTchinh" id="bangTkeDg">
+                      <thead>
+                        <tr>
+                          <th rowspan="2" style="vertical-align: middle;">Năm học</th>
+                          <th colspan="4">Xếp loại CM (Kỳ 1)</th>
+                          <th colspan="4">Xếp loại CM (Kỳ 2)</th>
+                          <th colspan="3">Xếp loại CNN</th>
+                          <th colspan="4">Xếp loại Viên chức</th>
+                          <th colspan="4">Xếp loại Đả&#8203;ng viê&#8203;n</th> <th colspan="4">Danh hiệu Chuyên môn</th>
+                          <th colspan="5">Danh hiệu Thi đua</th>
+                          <th colspan="5">Hình thức khen</th>
+                        </tr>
+                        <tr class="tdePhu">
+                          <th class="cotDlTke">Giỏi</th><th class="cotDlTke">Khá</th><th class="cotDlTke">TB</th><th class="cotDlTke">Yếu</th>
+                          <th class="cotDlTke">Giỏi</th><th class="cotDlTke">Khá</th><th class="cotDlTke">TB</th><th class="cotDlTke">Yếu</th>
+                          <th class="cotDlTke">Tốt</th><th class="cotDlTke">Khá</th><th class="cotDlTke">TB</th>
+                          <th class="cotDlTke">HTXS</th><th class="cotDlTke">HTT</th><th class="cotDlTke">HT</th><th class="cotDlTke">CHT</th>
+                          <th class="cotDlTke">HTXS</th><th class="cotDlTke">HTT</th><th class="cotDlTke">HT</th><th class="cotDlTke">CHT</th>
+                          <th class="cotDlTke">Trường</th><th class="cotDlTke">Huyện</th><th class="cotDlTke">Tỉnh</th><th class="cotDlTke">QG</th>
+                          <th class="cotDlTke">LĐTT</th><th class="cotDlTke">CSTĐ</th><th class="cotDlTke">BK</th><th class="cotDlTke">Huân C</th><th class="cotDlTke">Huy C</th>
+                          <th class="cotDlTke">Xã</th><th class="cotDlTke">Huyện</th><th class="cotDlTke">Tỉnh</th><th class="cotDlTke">Bộ</th><th class="cotDlTke">CP</th>
+                        </tr>
+                      </thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="modal fade" id="hopThoaiHs" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header py-2"><h5 class="modal-title">Thông tin nhân sự</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+          <form id="bmNsu" autocomplete="off" novalidate>
+              <div class="row mb-2">
+                <div class="col-md-2"><label>Năm học</label><select name="c0" class="form-select g-namhoc"></select></div>
+                <div class="col-md-3"><label>Đị&#8203;nh da&#8203;nh</label><input type="text" name="c1" class="form-control" required></div>
+                <div class="col-md-4"><label>Họ&#8203; và tê&#8203;n</label><input type="text" name="c2" class="form-control"></div>
+                <div class="col-md-3"><label>Giớ&#8203;i tí&#8203;nh</label><select name="c3" class="form-select g-gioitinh"></select></div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-md-3"><label>Ngà&#8203;y si&#8203;nh</label><input type="text" name="c4" class="form-control" oninput="ddNgay(this)" maxlength="10" placeholder="dd/mm/yyyy"></div>
+                <div class="col-md-3"><label>Trạng thái</label><select name="c5" class="form-select g-trangthai"></select></div>
+                <div class="col-md-3"><label>S&#8203;Đ&#8203;T</label><input type="text" name="c6" class="form-control"></div>
+                <div class="col-md-3"><label>Dâ&#8203;n tộ&#8203;c</label><input type="text" name="c7" class="form-control"></div>
+              </div>
+              <div class="row mb-2">
+                 <div class="col-md-3"><label>Tô&#8203;n giá&#8203;o</label><input type="text" name="c8" class="form-control"></div>
+                 <div class="col-md-3"><label>Tỉnh/TP (TT)</label><input type="text" name="c9" class="form-control" placeholder="Tỉnh/TP..."></div>
+                 <div class="col-md-3"><label>Huyện/Quận (TT)</label><input type="text" name="c10" class="form-control" placeholder="Huyện/Quận..."></div>
+                 <div class="col-md-3"><label>Xã/Phường (TT)</label><input type="text" name="c11" class="form-control" placeholder="Xã/Phường..."></div>
+              </div>
+              <div class="row mb-2">
+                 <div class="col-md-4"><label>Tỉnh/TP (QQ)</label><input type="text" name="c12" class="form-control" placeholder="Tỉnh/TP..."></div>
+                 <div class="col-md-4"><label>Huyện/Quận (QQ)</label><input type="text" name="c13" class="form-control" placeholder="Huyện/Quận..."></div>
+                 <div class="col-md-4"><label>Xã/Phường (QQ)</label><input type="text" name="c14" class="form-control" placeholder="Xã/Phường..."></div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-md-2"><input type="checkbox" name="c15" id="onhapDv"><label>Đả&#8203;ng viê&#8203;n</label></div>
+                <div class="col-md-3"><label>Vị trí</label><select name="c16" class="form-select g-vitri"></select></div>
+                <div class="col-md-3"><label>Ngày tuyển</label><input type="text" name="c17" class="form-control" oninput="ddNgay(this)" maxlength="10" placeholder="dd/mm/yyyy"></div>
+                <div class="col-md-4"><label>Cơ quan tuyển</label><input type="text" name="c18" class="form-control"></div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-md-4"><label>Hạng/Ngạch</label><select name="c19" class="form-select g-hang"></select></div>
+                <div class="col-md-4"><label>Trình độ CM</label><select name="c20" class="form-select g-trdo"></select></div>
+                <div class="col-md-4"><label>LL Chính trị</label><select name="c21" class="form-select g-llct"></select></div>
+              </div>
+          </form>
+        </div>
+        <div class="modal-footer py-1 d-flex justify-content-between">
+           <button type="button" class="btn btn-danger" id="nutXoaNs" onclick="xoaNs()"><i class="fas fa-trash"></i> Xóa hồ sơ</button>
+           <button type="button" class="btn btn-primary" onclick="guiBmNs()"><i class="fas fa-save"></i> Lưu Cập Nhật</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="hopThoaiDg" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white py-2"><h5 class="modal-title">Cập nhật đánh giá</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+          <form id="bmDgia" autocomplete="off" novalidate>
+              <div class="alert alert-info py-1 mb-2">
+                 <strong>Năm:</strong> <span id="vungNamDg"></span> | <strong>Họ tên:</strong> <span id="vungTenDg"></span>
+                 <input type="hidden" id="vungMsoDg">
+              </div>
+              <div class="row mb-2">
+                 <div class="col-md-6"><label>Xếp loại CM (Kỳ 1)</label><select name="w" class="form-select g-xlcm"></select></div>
+                 <div class="col-md-6"><label>Xếp loại CM (Kỳ 2)</label><select name="x" class="form-select g-xlcm"></select></div>
+              </div>
+              <div class="row mb-2">
+                 <div class="col-md-4"><label>Xếp loại CNN</label><select name="y" class="form-select g-xlcnn"></select></div>
+                 <div class="col-md-4"><label>Xếp loại Viên chức</label><select name="z" class="form-select g-xlvc"></select></div>
+                 <div class="col-md-4"><label>XL Đả&#8203;ng viê&#8203;n</label>
+                    <select name="ad" class="form-select">
+                        <option value="">--Chọn--</option>
+                        <option value="HTXS">HTXS</option>
+                        <option value="HTT">HTT</option>
+                        <option value="HT">HT</option>
+                        <option value="CHT">CHT</option>
+                    </select>
+                 </div>
+              </div>
+              <div class="row mb-2">
+                 <div class="col-md-4"><label>Danh hiệu CM</label><select name="aa" class="form-select g-dhcm"></select></div>
+                 <div class="col-md-4"><label>Danh hiệu Thi đua</label><select name="ab" class="form-select g-dhtd"></select></div>
+                 <div class="col-md-4"><label>Hình thức khen</label><select name="ac" class="form-select g-ckhen"></select></div>
+              </div>
+          </form>
+        </div>
+        <div class="modal-footer py-1"><button type="button" class="btn btn-success" onclick="guiBmDg()">Lưu Đánh Giá</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="htKhoa" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header py-2 text-white bg-danger border-0">
+          <h5 class="modal-title fw-bold" id="tdKhoa"><i class="fas fa-lock"></i> Hệ thống đã khóa</h5>
+        </div>
+        <div class="modal-body text-center py-4">
+          <p id="ndKhoa" style="font-size: 16px; color: #495057;">Thời gian sử dụng của bạn đã kết thúc.<br>Vui lòng liên hệ Quản trị viên để gia hạn.</p>
+        </div>
+        <div class="modal-footer py-2 justify-content-center border-0">
+          <button type="button" class="btn btn-danger" id="nutThoat">Thoát hệ thống</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="ketnoi.js"></script>
+
+  <script>
+    let ndHtai = null, dlToanc = [], chinhToanc = [], csSua = -1;
+    
+    function kiemtKhoa() {
+        if (typeof hanDung === 'undefined' || !hanDung || hanDung.trim() === "") return true; 
+
+        let pt = hanDung.split('/');
+        let nHet = new Date(pt[2], pt[1] - 1, pt[0]);
+        let htai = new Date(); htai.setHours(0, 0, 0, 0);
+
+        const modKhoa = document.getElementById('htKhoa'), nutR = document.getElementById('nutThoat'), cTbao = document.getElementById('ndKhoa'), cTde = document.getElementById('tdKhoa');
+        if (!modKhoa || !nutR) return true;
+
+        if (htai > nHet) {
+            cTde.innerText = "Hết hạn sử dụng";
+            cTbao.innerHTML = `Thời gian sử dụng phần mềm của bạn đã kết thúc vào ngày <strong class="text-danger">${hanDung}</strong>.<br>Vui lòng liên hệ Admin để gia hạn.`;
+            nutR.innerText = 'Thoát hệ thống'; nutR.classList.remove('btn-primary'); nutR.classList.add('btn-danger'); nutR.removeAttribute('data-bs-dismiss'); 
+            nutR.onclick = function() { window.location.href = "https://www.google.com"; };
+            const md = new bootstrap.Modal(modKhoa, { backdrop: 'static', keyboard: false }); md.show();
+            let g1 = document.getElementById('manhDn'); if (g1) g1.style.display = 'none';
+            let g2 = document.getElementById('udChinh'); if (g2) g2.style.display = 'none';
+            let g3 = document.querySelector('.khuGdev'); if (g3) g3.style.display = 'none';
+            return false;
+        }
+        return true;
+    }
+
+    $(document).ready(() => { 
+        if (!kiemtKhoa()) return; 
+        $("#vungTai").hide(); 
+        
+        let luuPt = sessionStorage.getItem("ngdungNs");
+        if(luuPt) {
+            ndHtai = JSON.parse(luuPt);
+            $("#manhDn").hide(); $("#udChinh").show();
+            $("#hthiNd").text(ndHtai.tenn); 
+            $("#nhanVt").text(ndHtai.vTro === 'qtriv' ? 'Quản trị viên' : 'Giáo viên');
+            ndHtai.vTro === 'qtriv' ? $("#nutMoThemNs").show() : $("#nutMoThemNs").hide();
+            taiDlBdau();
+        } else {
+            $("#manhDn").css("display", "flex"); 
+        }
+    });
+
+    function hienTbao(chu, kieu = 'tc') {
+       const ht = document.getElementById('tbNhanh');
+       const nDung = ht.querySelector('.toast-body');
+       ht.classList.remove('bg-primary', 'bg-danger', 'bg-success');
+       if(kieu === 'loi') ht.classList.add('bg-danger'); else ht.classList.add('bg-success');
+       nDung.textContent = chu;
+       const bn = new bootstrap.Toast(ht); bn.show();
+    }
+
+    function ddNgay(pt) {
+       let m = pt.value.replace(/\D/g, '');
+       if (m.length >= 2) m = m.substring(0,2) + '/' + m.substring(2);
+       if (m.length >= 5) m = m.substring(0,5) + '/' + m.substring(5, 9);
+       pt.value = m;
+    }
+
+    function giaimaJwt(chuoit) {
+      let ddb64 = chuoit.split('.')[1];
+      let b64 = ddb64.replace(/-/g, '+').replace(/_/g, '/');
+      let noidunjson = decodeURIComponent(atob(b64).split('').map(function(kt) {
+          return '%' + ('00' + kt.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(noidunjson);
+    }
+
+    function xulyPhienDn(phanho) {
+      const tdtai = giaimaJwt(phanho.credential);
+      const emTruyCap = tdtai['em' + 'ail']; 
+      
+      $("#vungTai").show();
+      goiMyChuHien('dangNhapHt', { gMai: emTruyCap })
+        .then(khiDnTc)
+        .catch(khiDnLoi);
+    }
+    
+    function khiDnTc(pq) {
+      if(!pq.tCong) { $("#vungTai").hide(); $("#loiDn").text(pq.tBao); return; }
+      
+      ndHtai = pq.dLieu;
+      sessionStorage.setItem("ngdungNs", JSON.stringify(ndHtai));
+      $("#hthiNd").text(ndHtai.tenn); $("#nhanVt").text(ndHtai.vTro === 'qtriv' ? 'Quản trị viên' : 'Giáo viên');
+      ndHtai.vTro === 'qtriv' ? $("#nutMoThemNs").show() : $("#nutMoThemNs").hide();
+      $("#manhDn").hide(); $("#udChinh").show(); taiDlBdau();
+    }
+    
+    function khiDnLoi(loi) { hienTbao("Lỗi: " + loi, 'loi'); $("#vungTai").hide(); }
+    
+    function dxuat() { 
+       ndHtai = null; dlToanc = []; csSua = -1; sessionStorage.removeItem("ngdungNs"); 
+       $("#khuBangNs tbody").empty(); $("#khuBangDg tbody").empty();
+       $("#udChinh").hide(); $("#manhDn").css("display", "flex").fadeIn();
+    }
+    
+    function datTde(t) { $("#tdeTrang").text(t); }
+
+    function taiDlBdau() {
+      goiMyChuHien('layTatCaDl')
+        .then(q => {
+            if(q.tCong) veUd(q.dLieu); else { hienTbao(q.tBao, 'loi'); $("#vungTai").hide(); }
+        }).catch(lc => { hienTbao(lc, 'loi'); $("#vungTai").hide(); });
+    }
+    
+    function veUd(tdl) {
+      if (!tdl) { hienTbao("Không có dữ liệu!", 'loi'); $("#vungTai").hide(); return; }
+      chinhToanc = tdl.chinh || []; dlToanc = tdl.nsu || [];
+      cldChon(); veBangNs(); veBangDg(); veTke(); $("#vungTai").hide();
+    }
+
+    function cldChon() {
+       const m1 = {'.g-namhoc':0, '.g-gioitinh':1, '.g-trangthai':2, '.g-vitri':3, '.g-hang':4, '.g-trdo':5, '.g-llct':6};
+       for(let cl1 in m1) doDlChon(cl1, m1[cl1]);
+       const m2 = {'.g-xlcm':7, '.g-xlcnn':8, '.g-xlvc':9, '.g-dhcm':10, '.g-dhtd':11, '.g-ckhen':12};
+       for(let cl2 in m2) doDlChon(cl2, m2[cl2]);
+       let cn = layTuyc(0); let cg = '<option value="">Tất cả năm học</option>' + cn.map(o => `<option value="${o}">${o}</option>`).join('');
+       $("#nhapLocN1, #nhapLocN2, #nhapLocN3").html(cg);
+    }
+
+    function layTuyc(chS) { return chinhToanc.map(r => String(r[chS]).trim()).filter(x => x && x!=="" && x!=="undefined").filter((v,i,a) => a.indexOf(v)===i); }
+    function doDlChon(clL, chS) { let co = layTuyc(chS); $(clL).html('<option value="">--Chọn--</option>' + co.map(o => `<option value="${o}">${o}</option>`).join('')); }
+
+    function veBangNs() {
+       const ln = $("#nhapLocN1").val(); const chT = $("#nhapTimKiemNs").val().toLowerCase(); const tv = $("#khuBangNs tbody"); tv.empty();
+       dlToanc.forEach((dg, v) => {
+          let nc = String(dg[0]).trim();
+          if(ln && nc !== String(ln).trim()) return;
+          if(chT && !dg.join(" ").toLowerCase().includes(chT)) return;
+          
+          let cqS = (ndHtai.vTro === 'qtriv') || (ndHtai.vTro === 'ngdung' && dg[1] == ndHtai.tKhoan);
+          let ntS = cqS ? `<button class="btn btn-sm btn-warning py-0" onclick="suaDong(${v})"><i class="fas fa-edit"></i></button>` : '';
+          let cdG = dg.ckt ? "dongCkt" : ""; let cpT = dg.ckt ? " <i class='fas fa-pen text-danger' title='Chưa lưu'></i>" : "";
+          tv.append(`<tr class="${cdG}"><td class="text-center">${ntS}</td><td class="fw-bold text-primary">${dg[0]}</td><td>${dg[1]} ${cpT}</td><td class="fw-bold">${dg[2]}</td><td>${dg[3]}</td><td>${dg[4]}</td><td><span class="badge ${dg[5]==='Đã chuyển'?'bg-danger':'bg-success'}">${dg[5]}</span></td><td>${dg[6]}</td><td>${dg[7]}</td><td>${dg[8]}</td><td>${dg[9]}, ${dg[10]}, ${dg[11]}</td><td>${dg[12]}, ${dg[13]}, ${dg[14]}</td><td>${dg[15]}</td><td>${dg[16]}</td><td>${dg[17]}</td><td>${dg[19]}</td><td>${dg[20]}</td><td>${dg[21]}</td></tr>`);
+       });
+    }
+
+    function suaDong(chS) {
+       csSua = chS; const dr = dlToanc[chS]; const fm = document.getElementById("bmNsu"); fm.reset(); $("#nutXoaNs").show();
+       for(let i=0; i<=21; i++) {
+          let v = dr[i]; if (v === null || v === undefined) v = ""; v = String(v).trim();
+          if(i===15) fm.elements['c15'].checked = (v.toLowerCase()==="x" || v==="true");
+          else { let ev = $(fm).find(`[name="c${i}"]`); if(ev.length) { ev.val(v).change(); } }
+       }
+       $("#hopThoaiHs").modal('show');
+    }
+    
+    function moThem() { csSua=-1; document.getElementById("bmNsu").reset(); $("#nutXoaNs").hide(); $("#hopThoaiHs").modal('show'); }
+    
+    function xoaNs() {
+       if (csSua === -1) return;
+       const dn = dlToanc[csSua]; const n1 = String(dn[0]).trim(); const n2 = String(dn[1]).trim();
+       if (!confirm("CẢNH BÁO: Xóa dữ liệu năm " + n1 + "?\nDữ liệu sẽ bị xóa VĨNH VIỄN khỏi hệ thống!")) return;
+       
+       $("#vungTai").show();
+       goiMyChuHien('xoaNsu', {nam: n1, mso: n2, tKhoan: ndHtai.tKhoan, vTro: ndHtai.vTro})
+        .then(kq => {
+           if (kq.tCong) { hienTbao(kq.tBao, 'tc'); $("#hopThoaiHs").modal('hide'); taiDlBdau(); } 
+           else {
+               if (kq.tBao.includes("Không tìm thấy")) { dlToanc.splice(csSua, 1); $("#hopThoaiHs").modal('hide'); veBangNs(); $("#vungTai").hide(); hienTbao("Đã xóa hồ sơ tạm thời!", 'tc'); } 
+               else { $("#vungTai").hide(); hienTbao(kq.tBao, 'loi'); }
+           }
+        }).catch(lx => { $("#vungTai").hide(); hienTbao("Lỗi: " + lx, 'loi'); });
+    }
+
+    function guiBmNs() {
+       const bd = document.getElementById("bmNsu"); let nB = [];
+       for(let i=0; i<=21; i++) { let vc = ""; if(i===15) vc = bd.elements['c15'].checked ? "x" : ""; else vc = bd.elements['c'+i].value; nB.push(vc); }
+       if(!nB[1]) return hienTbao("Vui lòng nhập định danh!", 'loi');
+       nB.ckt = true;
+       if(csSua !== -1) { let dgCu = dlToanc[csSua].slice(22); dlToanc[csSua] = nB.concat(dgCu); dlToanc[csSua].ckt=true; }
+       else dlToanc.push(nB);
+       $("#hopThoaiHs").modal('hide'); veBangNs();
+    }
+    
+    function cnNhieuNs() {
+       const dtN = dlToanc.filter(r => r.ckt);
+       if(dtN.length===0) return hienTbao("Không có dữ liệu mới!", 'loi');
+       $("#vungTai").show();
+       goiMyChuHien('luuNhieuNsu', {mangDl: dtN, tKhoan: ndHtai.tKhoan, vTro: ndHtai.vTro})
+         .then(h => { hienTbao(h.tBao, h.tCong ? 'tc' : 'loi'); if(h.tCong) taiDlBdau(); else $("#vungTai").hide(); })
+         .catch(lo => { hienTbao("Lỗi: " + lo, 'loi'); $("#vungTai").hide(); });
+    }
+
+    function veBangDg() {
+       const nl = $("#nhapLocN2").val(); const tk = $("#nhapTimKiemDg").val().toLowerCase(); const vb = $("#khuBangDg tbody"); vb.empty();
+       dlToanc.forEach((dg, idx) => {
+          let nc = String(dg[0]).trim();
+          if(nl && nc !== String(nl).trim()) return;
+          if(tk && !dg.join(" ").toLowerCase().includes(tk)) return;
+          if(dg[5] === "Đã chuyển") return; 
+          let ns = (ndHtai.vTro === 'qtriv') ? `<button class="btn btn-sm btn-success py-0" onclick="moSuaDg(${idx})"><i class="fas fa-edit"></i></button>` : '';
+          let dlC = dg.cktdg ? "dongCkt" : ""; let tcP = dg.cktdg ? " <i class='fas fa-pen text-danger' title='Chưa lưu'></i>" : "";
+          vb.append(`<tr class="${dlC}"><td class="text-center">${ns}</td><td class="fw-bold">${dg[0]}</td><td>${dg[1]} ${tcP}</td><td class="fw-bold text-primary">${dg[2]}</td><td>${dg[22]||''}</td> <td>${dg[23]||''}</td> <td>${dg[24]||''}</td> <td>${dg[25]||''}</td><td>${dg[29]||''}</td><td>${dg[26]||''}</td> <td>${dg[27]||''}</td> <td>${dg[28]||''}</td></tr>`);
+       });
+    }
+
+    function moSuaDg(idx) {
+       csSua = idx; const dr = dlToanc[idx]; $("#vungNamDg").text(dr[0]); $("#vungTenDg").text(dr[2]); $("#vungMsoDg").val(dr[1]);
+       const fr = document.getElementById("bmDgia"); fr.reset();
+       fr.elements['w'].value = dr[22]||""; fr.elements['x'].value = dr[23]||""; fr.elements['y'].value = dr[24]||""; fr.elements['z'].value = dr[25]||"";
+       fr.elements['ad'].value = dr[29]||""; fr.elements['aa'].value = dr[26]||""; fr.elements['ab'].value = dr[27]||""; fr.elements['ac'].value = dr[28]||"";
+       $("#hopThoaiDg").modal('show');
+    }
+
+    function guiBmDg() {
+       const fd = document.getElementById("bmDgia");
+       if (csSua !== -1) {
+           dlToanc[csSua][22] = fd.elements['w'].value; dlToanc[csSua][23] = fd.elements['x'].value; dlToanc[csSua][24] = fd.elements['y'].value; dlToanc[csSua][25] = fd.elements['z'].value; dlToanc[csSua][26] = fd.elements['aa'].value; dlToanc[csSua][27] = fd.elements['ab'].value; dlToanc[csSua][28] = fd.elements['ac'].value; dlToanc[csSua][29] = fd.elements['ad'].value; 
+           dlToanc[csSua].cktdg = true; veBangDg(); $("#hopThoaiDg").modal('hide'); hienTbao("Đã lưu tạm thời. Nhấn Cập Nhật để ghi dữ liệu.", 'tc');
+       }
+    }
+    
+    function cnNhieuDg() {
+       const dc = dlToanc.filter(r => r.cktdg);
+       if(dc.length===0) return hienTbao("Không có dữ liệu đánh giá mới!", 'loi');
+       $("#vungTai").show();
+       goiMyChuHien('luuNhieuDgia', {mangDl: dc, vTro: ndHtai.vTro})
+         .then(g => { hienTbao(g.tBao, g.tCong ? 'tc' : 'loi'); if(g.tCong) taiDlBdau(); else $("#vungTai").hide(); })
+         .catch(le => { hienTbao(le, 'loi'); $("#vungTai").hide(); });
+    }
+
+    function veTke() {
+        const nf = $("#nhapLocN3").val(); const bd1 = $("#bangTkeNs tbody"); bd1.empty(); const bd2 = $("#bangTkeDg tbody"); bd2.empty();
+        let ns = layTuyc(0); if (nf) ns = [String(nf).trim()];
+        ns.forEach(y => {
+            let dy = dlToanc.filter(r => String(r[0]).trim() === y && r[5] !== "Đã chuyển");
+            if (dy.length === 0) return;
+            let ts = dy.length; let ng1 = dy.filter(r => r[3] === "Nữ").length; let dnc = dy.filter(r => r[7] && r[7] !== "Kinh").length; let ndt = dy.filter(r => r[3] === "Nữ" && r[7] && r[7] !== "Kinh").length; let dvi = dy.filter(r => r[15] && (String(r[15]).toLowerCase() === "x")).length; let ndv = dy.filter(r => r[3] === "Nữ" && r[15] && (String(r[15]).toLowerCase() === "x")).length; let ddt = dy.filter(r => r[7] && r[7] !== "Kinh" && r[15] && (String(r[15]).toLowerCase() === "x")).length;
+            let cql = dy.filter(r => r[16] && r[16].includes("Quản lý")).length; let cgv = dy.filter(r => r[16] && r[16].includes("Giáo viên")).length; let cnv = dy.filter(r => r[16] && r[16].includes("Nhân viên")).length;
+            let ctd1 = dy.filter(r => { let v = (r[20]||"").toLowerCase(); return v.includes("trên") || v.includes("thạc sĩ") || v.includes("tiến sĩ"); }).length; let ctd2 = dy.filter(r => { let v = (r[20]||"").toLowerCase(); return v.includes("đại học") && !v.includes("trên"); }).length; let ctd3 = dy.filter(r => (r[20]||"").toLowerCase().includes("cao đẳng")).length; let ctd4 = dy.filter(r => (r[20]||"").toLowerCase().includes("trung cấp")).length; let ctd5 = dy.filter(r => { let v = (r[20]||"").toLowerCase(); return !v.includes("trên") && !v.includes("thạc sĩ") && !v.includes("tiến sĩ") && !v.includes("đại học") && !v.includes("cao đẳng") && !v.includes("trung cấp"); }).length;
+            let h1 = dy.filter(r => r[19] === "TH-H1").length; let h2 = dy.filter(r => r[19] === "TH-H2").length; let h3 = dy.filter(r => r[19] === "TH-H3").length; let h4 = dy.filter(r => r[19] === "TH-H4").length; let hk = dy.filter(r => r[19] === "TH_Khác").length;
+            let ll1 = dy.filter(r => r[21] === "Cao cấp").length; let ll2 = dy.filter(r => r[21] === "Trung cấp").length; let ll3 = dy.filter(r => r[21] === "Sơ cấp").length;
+            bd1.append(`<tr><td class="fw-bold text-primary">${y}</td><td>${ts}</td><td>${ng1}</td><td>${dnc}</td><td>${ndt}</td><td>${dvi}</td><td>${ndv}</td><td>${ddt}</td><td>${cql}</td><td>${cgv}</td><td>${cnv}</td><td>${ctd1}</td><td>${ctd2}</td><td>${ctd3}</td><td>${ctd4}</td><td>${ctd5}</td><td>${h1}</td><td>${h2}</td><td>${h3}</td><td>${h4}</td><td>${hk}</td><td>${ll1}</td><td>${ll2}</td><td>${ll3}</td></tr>`);
+            
+            let g1 = dy.filter(r => r[22] === "Giỏi").length; let k1 = dy.filter(r => r[22] === "Khá").length; let tb1 = dy.filter(r => r[22] === "TB").length; let y1 = dy.filter(r => r[22] === "Yếu").length;
+            let g2 = dy.filter(r => r[23] === "Giỏi").length; let k2 = dy.filter(r => r[23] === "Khá").length; let tb2 = dy.filter(r => r[23] === "TB").length; let y2 = dy.filter(r => r[23] === "Yếu").length;
+            let cn1 = dy.filter(r => r[24] === "Tốt").length; let cn2 = dy.filter(r => r[24] === "Khá").length; let cn3 = dy.filter(r => r[24] === "TB").length;
+            let xs1 = dy.filter(r => { let v = (r[25]||"").toLowerCase(); return v.includes("htxs") || v.includes("xs") || v.includes("xuất sắc"); }).length; let xs2 = dy.filter(r => { let v = (r[25]||"").toLowerCase(); return v.includes("htt") || v.includes("tốt"); }).length; let xs3 = dy.filter(r => { let v = (r[25]||"").toLowerCase(); return v.includes("cht") || v.includes("chưa") || v.includes("không") || v.includes("kht"); }).length; let xs4 = dy.filter(r => { let v = (r[25]||"").toLowerCase(); return (v.includes("ht") || v.includes("hoàn thành")) && !(v.includes("htxs") || v.includes("xs") || v.includes("xuất sắc") || v.includes("htt") || v.includes("tốt") || v.includes("cht") || v.includes("chưa") || v.includes("không") || v.includes("kht")); }).length;
+            let dv1 = dy.filter(r => { let v = (r[29]||"").toLowerCase(); return v.includes("htxs") || v.includes("xs") || v.includes("xuất sắc"); }).length; let dv2 = dy.filter(r => { let v = (r[29]||"").toLowerCase(); return v.includes("htt") || (v.includes("tốt") && !v.includes("không")); }).length; let dv3 = dy.filter(r => { let v = (r[29]||"").toLowerCase(); return v.includes("cht") || v.includes("chưa") || v.includes("không") || v.includes("kht"); }).length; let dv4 = dy.filter(r => { let v = (r[29]||"").toLowerCase(); return (v.includes("ht") || v.includes("hoàn thành")) && !(v.includes("htxs") || v.includes("xs") || v.includes("xuất sắc") || v.includes("htt") || v.includes("tốt") || v.includes("cht") || v.includes("chưa") || v.includes("không") || v.includes("kht")); }).length;
+            let dh1 = dy.filter(r => (r[26]||"").toLowerCase().includes("trường")).length; let dh2 = dy.filter(r => { let v = (r[26]||"").toLowerCase(); return v.includes("huyện") || v.includes("tp") || v.includes("thành phố"); }).length; let dh3 = dy.filter(r => (r[26]||"").toLowerCase().includes("tỉnh")).length; let dh4 = dy.filter(r => (r[26]||"").toLowerCase().includes("quốc gia") || (r[26]||"").toLowerCase().includes("qg")).length;
+            let td1 = dy.filter(r => r[27] === "LĐTT").length; let td2 = dy.filter(r => r[27] === "CSTĐ").length; let td3 = dy.filter(r => r[27] === "Bằng khen").length; let td4 = dy.filter(r => (r[27]||"").toLowerCase().includes("huân chương")).length; let td5 = dy.filter(r => (r[27]||"").toLowerCase().includes("huy chương")).length;
+            let kh1 = dy.filter(r => (r[28]||"").toLowerCase().includes("xã")).length; let kh2 = dy.filter(r => (r[28]||"").toLowerCase().includes("huyện")).length; let kh3 = dy.filter(r => (r[28]||"").toLowerCase().includes("tỉnh")).length; let kh4 = dy.filter(r => (r[28]||"").toLowerCase().includes("bộ")).length; let kh5 = dy.filter(r => (r[28]||"").toLowerCase().includes("chính phủ") || (r[28]||"").toLowerCase().includes("cp")).length;
+
+            bd2.append(`<tr><td class="fw-bold text-primary">${y}</td><td>${g1}</td><td>${k1}</td><td>${tb1}</td><td>${y1}</td><td>${g2}</td><td>${k2}</td><td>${tb2}</td><td>${y2}</td><td>${cn1}</td><td>${cn2}</td><td>${cn3}</td><td>${xs1}</td><td>${xs2}</td><td>${xs4}</td><td>${xs3}</td><td>${dv1}</td><td>${dv2}</td><td>${dv4}</td><td>${dv3}</td><td>${dh1}</td><td>${dh2}</td><td>${dh3}</td><td>${dh4}</td><td>${td1}</td><td>${td2}</td><td>${td3}</td><td>${td4}</td><td>${td5}</td><td>${kh1}</td><td>${kh2}</td><td>${kh3}</td><td>${kh4}</td><td>${kh5}</td></tr>`);
+        });
+    }
+  </script>
+</body>
+</html>
