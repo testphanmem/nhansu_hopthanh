@@ -33,10 +33,8 @@
     
     .table-responsive { overflow-x: auto; } 
     
-    /* Cấu hình để khung co giãn bám sát tổng độ rộng các cột */
     .bangTchinh { width: max-content; min-width: 100%; }
     
-    /* BẮT ĐẦU KHỐI SỬA: Căn giữa toàn bộ bảng và loại trừ cột Họ tên */
     .bangTchinh th { white-space: nowrap; vertical-align: middle; font-size: 0.85rem; padding: 4px 6px; background-color: var(--mauChinh); color: white; text-align: center; }
     
     .bangTchinh td { 
@@ -46,15 +44,13 @@
        vertical-align: middle; 
        font-size: 0.85rem; 
        padding: 4px 6px; 
-       text-align: center; /* Mặc định căn giữa cho TẤT CẢ các cột ở mọi bảng */
+       text-align: center; 
     } 
     
-    /* Ngoại trừ: Ép cột số 3 (Họ và tên) của 2 bảng chính căn trái */
     #khuBangNs td:nth-child(3), 
     #khuBangDg td:nth-child(3) { 
        text-align: left; 
     }
-    /* KẾT THÚC KHỐI SỬA */
 
     .dongCkt { background-color: #fff3cd !important; color: #856404; }
     
@@ -66,7 +62,6 @@
     #manhDn { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f4f6f9; z-index: 2000; display: flex; justify-content: center; align-items: center; }
     .hopDn { width: 100%; max-width: 580px; padding: 40px; background: white; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); }
 
-    /* CSS cho vùng minh chứng trong bảng */
     .tenNhanSu { cursor: pointer; color: #0d6efd; font-weight: bold; position: relative; }
     .tenNhanSu:hover { text-decoration: underline; }
     .vungGhimLink { display: none; margin-top: 3px; background: #eef2ff; padding: 2px 5px; border-radius: 4px; border: 1px dashed #cbd5e1; }
@@ -566,13 +561,18 @@
     
     function moThem() { csSua=-1; document.getElementById("bmNsu").reset(); $("#nutXoaNs").hide(); $("#hopThoaiHs").modal('show'); }
     
+    /* BẮT ĐẦU SỬA: Hàm xoaNs sẽ gửi thêm biến n3 (ngày sinh) xuống hàm xoaNsu của Google Apps Script */
     function xoaNs() {
        if (csSua === -1) return;
-       const dn = dlToanc[csSua]; const n1 = String(dn[0]).trim(); const n2 = String(dn[1]).trim();
+       const dn = dlToanc[csSua]; 
+       const n1 = String(dn[0]).trim(); 
+       const n2 = String(dn[1]).trim(); 
+       const n3 = String(dn[3]).trim(); /* Lấy ngày sinh (index 3) */
+       
        if (!confirm("CẢNH BÁO: Xóa dữ liệu năm " + n1 + "?\nDữ liệu sẽ bị xóa VĨNH VIỄN khỏi hệ thống!")) return;
        
        $("#vungTai").show();
-       goiMyChuHien('xoaNsu', {nam: n1, mso: n2, tKhoan: ndHtai.tKhoan, vTro: ndHtai.vTro})
+       goiMyChuHien('xoaNsu', {nam: n1, mso: n2, ngaysinh: n3, tKhoan: ndHtai.tKhoan, vTro: ndHtai.vTro})
         .then(kq => {
            if (kq.tCong) { hienTbao(kq.tBao, 'tc'); $("#hopThoaiHs").modal('hide'); taiDlBdau(); } 
            else {
@@ -581,6 +581,7 @@
            }
         }).catch(lx => { $("#vungTai").hide(); hienTbao("Lỗi: " + lx, 'loi'); });
     }
+    /* KẾT THÚC SỬA */
 
     function guiBmNs() {
        const bd = document.getElementById("bmNsu"); let nB = [];
@@ -617,7 +618,6 @@
           let dsL = lk.split(',').map(l => l.trim()).filter(l => l !== "");
           let htiGhim = dsL.length > 0 ? `<div class="vungGhimLink mt-1" id="vungGhim_${idx}">${dsL.map((u, i) => `<a href="${u}" target="_blank" style="margin-right: 12px; display: inline-block; text-decoration: none; font-weight: bold; border-bottom: 1px solid #0d6efd; padding-bottom: 1px;">📎${i+1}</a>`).join('')}</div>` : "";
           
-          /* BẮT ĐẦU KHỐI SỬA: Giữ nguyên định dạng dd/MM/yyyy cho cột Năm sinh theo yêu cầu */
           vb.append(`<tr class="${dlC}">
               <td class="text-center">${ns}</td>
               <td class="fw-bold">${dg[0]}</td>
@@ -628,7 +628,6 @@
               <td>${dg[3]||''}</td>
               <td>${dg[17]||''}</td> <td>${dg[18]||''}</td> <td>${dg[19]||''}</td> <td>${dg[20]||''}</td><td>${dg[24]||''}</td><td>${dg[21]||''}</td> <td>${dg[22]||''}</td> <td>${dg[23]||''}</td>
           </tr>`);
-          /* KẾT THÚC KHỐI SỬA */
        });
     }
 
