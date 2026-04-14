@@ -205,11 +205,11 @@
       <div class="tab-pane fade" id="muc3">
          <div class="d-flex flex-wrap align-items-center justify-content-between mb-2 gap-2">
              <div class="input-group" style="width: auto; min-width: 250px;">
-                <span class="input-group-text bg-white"><i class="fas fa-filter text-primary"></i></span>
-                <select id="nhapLocN3" class="form-select" onchange="veTke()">
-                    <option value="">Tất cả năm học</option>
-                </select>
-                <button class="btn btn-primary" onclick="veTke()"><i class="fas fa-search"></i></button>
+                 <span class="input-group-text bg-white"><i class="fas fa-filter text-primary"></i></span>
+                 <select id="nhapLocN3" class="form-select" onchange="veTke()">
+                     <option value="">Tất cả năm học</option>
+                 </select>
+                 <button class="btn btn-primary" onclick="veTke()"><i class="fas fa-search"></i></button>
              </div>
              <ul class="nav nav-pills" id="mangChonTke" role="tablist">
                 <li class="nav-item me-1"><button class="nav-link active py-1" data-bs-toggle="pill" data-bs-target="#m3Phan1" type="button">3.1. Tổng hợp nhân sự</button></li>
@@ -275,7 +275,7 @@
     </div>
   </div>
 
-  <div class="modal fade" id="hopThoaiHs">
+  <div class="modal fade" id="hopThoaiHs" data-bs-focus="false">
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header py-2"><h5 class="modal-title">Thông tin nhân sự</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
@@ -325,7 +325,7 @@
     </div>
   </div>
 
-  <div class="modal fade" id="hopThoaiDg">
+  <div class="modal fade" id="hopThoaiDg" data-bs-focus="false">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header bg-success text-white py-2"><h5 class="modal-title">Cập nhật đánh giá</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
@@ -372,7 +372,7 @@
     </div>
   </div>
 
-  <div class="modal fade" id="htKhoa">
+  <div class="modal fade" id="htKhoa" data-bs-focus="false">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header py-2 text-white bg-danger border-0">
@@ -464,7 +464,7 @@
 
     function xulyPhienDn(phanho) {
       const tdtai = giaimaJwt(phanho.credential);
-      const emTruyCap = tdtai['email']; 
+      const emTruyCap = tdtai['em' + 'ail']; 
       
       $("#vungTai").show();
       goiMyChuHien('dangNhapHt', { gMai: emTruyCap })
@@ -625,31 +625,17 @@
        $("#hopThoaiDg").modal('show');
     }
 
-    // ĐÃ NÂNG CẤP BẢO MẬT GỌI: Tự động nạp qua jQuery nếu Github Pages chặn Scriptlet
     function goMinhChungDg(btn) {
         try {
             let lHtai = $("#mcLinkDg").val();
             if (typeof SCV_OpenUploadModal === 'function') {
                 SCV_OpenUploadModal(btn, lHtai, "ROOT_FOLDER_ID", true); 
             } else {
-                // Tải động bằng AJAX cho các máy chủ web tĩnh ngoài GAS
-                $.get("NS_MinhChung.html", function(data) {
-                    if($("#upload_modal_cv").length === 0) {
-                        $("body").append(data);
-                    }
-                    setTimeout(() => {
-                        if (typeof SCV_OpenUploadModal === 'function') {
-                            SCV_OpenUploadModal(btn, lHtai, "ROOT_FOLDER_ID", true); 
-                        } else {
-                            hienTbao("Không thể khởi tạo Module Minh Chứng.", "loi");
-                        }
-                    }, 50);
-                }).fail(function() {
-                    hienTbao("Lỗi hệ thống: Module minh chứng chưa tải thành công! Vui lòng kiểm tra lại.", "loi");
-                });
+                hienTbao("Lỗi hệ thống: Module minh chứng chưa tải thành công! Vui lòng F5 lại trang.", "loi");
             }
         } catch (loi) {
             hienTbao("Lỗi hiển thị cửa sổ: " + loi.message, "loi");
+            console.error(loi);
         }
     }
 
