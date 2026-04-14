@@ -275,7 +275,7 @@
     </div>
   </div>
 
-  <div class="modal fade" id="hopThoaiHs">
+  <div class="modal fade" id="hopThoaiHs" data-bs-focus="false">
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header py-2"><h5 class="modal-title">Thông tin nhân sự</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
@@ -325,7 +325,7 @@
     </div>
   </div>
 
-  <div class="modal fade" id="hopThoaiDg">
+  <div class="modal fade" id="hopThoaiDg" data-bs-focus="false">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header bg-success text-white py-2"><h5 class="modal-title">Cập nhật đánh giá</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
@@ -372,7 +372,7 @@
     </div>
   </div>
 
-  <div class="modal fade" id="htKhoa">
+  <div class="modal fade" id="htKhoa" data-bs-focus="false">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header py-2 text-white bg-danger border-0">
@@ -464,7 +464,7 @@
 
     function xulyPhienDn(phanho) {
       const tdtai = giaimaJwt(phanho.credential);
-      const emTruyCap = tdtai['em' + 'ail']; 
+      const emTruyCap = tdtai['email']; 
       
       $("#vungTai").show();
       goiMyChuHien('dangNhapHt', { gMai: emTruyCap })
@@ -628,14 +628,15 @@
     function goMinhChungDg(btn) {
         try {
             let lHtai = $("#mcLinkDg").val();
-            // Hàm đã được kéo vào thông qua thẻ nhúng <?!=...?>
-            if (typeof SCV_OpenUploadModal === 'function') {
-                SCV_OpenUploadModal(btn, lHtai, "ROOT_FOLDER_ID", true); 
+            // Gọi hàm an toàn qua đối tượng window để tránh lỗi scope
+            if (typeof window.SCV_OpenUploadModal === 'function') {
+                window.SCV_OpenUploadModal(btn, lHtai, "ROOT_FOLDER_ID", true); 
             } else {
                 hienTbao("Lỗi hệ thống: Module minh chứng chưa tải thành công! Vui lòng F5 lại trang.", "loi");
             }
         } catch (loi) {
             hienTbao("Lỗi hiển thị cửa sổ: " + loi.message, "loi");
+            console.error(loi);
         }
     }
 
