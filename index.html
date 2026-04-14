@@ -266,7 +266,7 @@
             </div>
             <div class="tab-pane fade" id="m3Phan2">
                <div class="theTke">
-                  <h6 class="tdeTke"><i class="fas fa-star"></i> 3.2. KẾT QUẢ THỰC thực HIỆN NHIỆM VỤ</h6>
+                  <h6 class="tdeTke"><i class="fas fa-star"></i> 3.2. KẾT QUẢ THỰC HIỆN NHIỆM VỤ</h6>
                   <div class="table-responsive">
                     <table class="table table-bordered table-sm text-center table-hover bangTchinh" id="bangTkeDg">
                       <thead>
@@ -545,7 +545,7 @@
           let cqS = (ndHtai.vTro === 'qtriv') || (ndHtai.vTro === 'ngdung' && dg[1] == ndHtai.tKhoan);
           let ntS = cqS ? `<button class="btn btn-sm btn-warning py-0" onclick="suaDong(${v})"><i class="fas fa-edit"></i></button>` : '';
           let cdG = dg.ckt ? "dongCkt" : ""; let cpT = dg.ckt ? " <i class='fas fa-pen text-danger' title='Chưa lưu'></i>" : "";
-          /* Ngày sinh (dg[2]) xuất hiện trước Giới tính (dg[3]) */
+          
           tv.append(`<tr class="${cdG}"><td class="text-center">${ntS}</td><td class="fw-bold text-primary">${dg[0]}</td><td class="fw-bold">${dg[1]} ${cpT}</td><td>${dg[2]}</td><td>${dg[3]}</td><td><span class="badge ${dg[4]==='Đã chuyển'?'bg-danger':'bg-success'}">${dg[4]}</span></td><td>${dg[5]}</td><td>${dg[6]}</td><td>${dg[7]}, ${dg[8]}, ${dg[9]}</td><td>${dg[10]}</td><td>${dg[11]}</td><td>${dg[12]}</td><td>${dg[14]}</td><td>${dg[15]}</td><td>${dg[16]}</td></tr>`);
        });
     }
@@ -567,7 +567,7 @@
        const dn = dlToanc[csSua]; 
        const n1 = String(dn[0]).trim(); 
        const n2 = String(dn[1]).trim(); 
-       const n3 = String(dn[2]).trim(); /* BẮT ĐẦU SỬA: Lấy Ngày sinh ở index 2 */
+       const n3 = String(dn[2]).trim(); 
        
        if (!confirm("CẢNH BÁO: Xóa dữ liệu năm " + n1 + "?\nDữ liệu sẽ bị xóa VĨNH VIỄN khỏi hệ thống!")) return;
        
@@ -612,7 +612,6 @@
           let ns = (ndHtai.vTro === 'qtriv') ? `<button class="btn btn-sm btn-success py-0" onclick="moSuaDg(${idx})"><i class="fas fa-edit"></i></button>` : '';
           let dlC = dg.cktdg ? "dongCkt" : ""; let tcP = dg.cktdg ? " <i class='fas fa-pen text-danger' title='Chưa lưu'></i>" : "";
 
-          // Xử lý link minh chứng ở cột 29 (AC)
           let lk = dg[28] || "";
           let dsL = lk.split(',').map(l => l.trim()).filter(l => l !== "");
           let htiGhim = dsL.length > 0 ? `<div class="vungGhimLink mt-1" id="vungGhim_${idx}">${dsL.map((u, i) => `<a href="${u}" target="_blank" style="margin-right: 12px; display: inline-block; text-decoration: none; font-weight: bold; border-bottom: 1px solid #0d6efd; padding-bottom: 1px;">📎${i+1}</a>`).join('')}</div>` : "";
@@ -624,7 +623,8 @@
                 <div class="tenNhanSu" onclick="latGhim(${idx})">${dg[1]} ${tcP}</div>
                 ${htiGhim}
               </td>
-              <td>${dg[2]||''}</td> <td>${dg[17]||''}</td> <td>${dg[18]||''}</td> <td>${dg[19]||''}</td> <td>${dg[20]||''}</td><td>${dg[24]||''}</td><td>${dg[21]||''}</td> <td>${dg[22]||''}</td> <td>${dg[23]||''}</td>
+              <td>${dg[2]||''}</td>
+              <td>${dg[17]||''}</td> <td>${dg[18]||''}</td> <td>${dg[19]||''}</td> <td>${dg[20]||''}</td><td>${dg[24]||''}</td><td>${dg[21]||''}</td> <td>${dg[22]||''}</td> <td>${dg[23]||''}</td>
           </tr>`);
        });
     }
@@ -639,7 +639,6 @@
        fr.elements['w'].value = dr[17]||""; fr.elements['x'].value = dr[18]||""; fr.elements['y'].value = dr[19]||""; fr.elements['z'].value = dr[20]||"";
        fr.elements['aa'].value = dr[21]||""; fr.elements['ab'].value = dr[22]||""; fr.elements['ac'].value = dr[23]||""; fr.elements['ad'].value = dr[24]||"";
        
-       // Load link minh chứng (Cột AC - index 28)
        let lk = dr[28] || "";
        $("#mcLinkDg").val(lk);
        veGhimModal(lk);
@@ -671,7 +670,7 @@
        const fd = document.getElementById("bmDgia");
        if (csSua !== -1) {
            dlToanc[csSua][17] = fd.elements['w'].value; dlToanc[csSua][18] = fd.elements['x'].value; dlToanc[csSua][19] = fd.elements['y'].value; dlToanc[csSua][20] = fd.elements['z'].value; dlToanc[csSua][21] = fd.elements['aa'].value; dlToanc[csSua][22] = fd.elements['ab'].value; dlToanc[csSua][23] = fd.elements['ac'].value; dlToanc[csSua][24] = fd.elements['ad'].value; 
-           // Lưu link minh chứng (AC)
+           
            dlToanc[csSua][28] = $("#mcLinkDg").val();
 
            dlToanc[csSua].cktdg = true; veBangDg(); $("#hopThoaiDg").modal('hide'); hienTbao("Đã lưu tạm thời. Nhấn Cập Nhật để ghi dữ liệu.", 'tc');
@@ -694,7 +693,6 @@
             let dy = dlToanc.filter(r => String(r[0]).trim() === y && r[4] !== "Đã chuyển");
             if (dy.length === 0) return;
             
-            /* BẮT ĐẦU SỬA QUAN TRỌNG: Cột Giới tính chuyển sang index 3 */
             let ts = dy.length; 
             let ng1 = dy.filter(r => r[3] === "Nữ").length; 
             let dnc = dy.filter(r => r[5] && r[5] !== "Kinh").length; 
@@ -702,8 +700,7 @@
             let dvi = dy.filter(r => r[10] && (String(r[10]).toLowerCase() === "x")).length; 
             let ndv = dy.filter(r => r[3] === "Nữ" && r[10] && (String(r[10]).toLowerCase() === "x")).length; 
             let ddt = dy.filter(r => r[5] && r[5] !== "Kinh" && r[10] && (String(r[10]).toLowerCase() === "x")).length;
-            /* KẾT THÚC SỬA */
-
+            
             let cql = dy.filter(r => r[11] && r[11].includes("Quản lý")).length; let cgv = dy.filter(r => r[11] && r[11].includes("Giáo viên")).length; let cnv = dy.filter(r => r[11] && r[11].includes("Nhân viên")).length;
             let ctd1 = dy.filter(r => { let v = (r[15]||"").toLowerCase(); return v.includes("trên") || v.includes("thạc sĩ") || v.includes("tiến sĩ"); }).length; let ctd2 = dy.filter(r => { let v = (r[15]||"").toLowerCase(); return v.includes("đại học") && !v.includes("trên"); }).length; let ctd3 = dy.filter(r => (r[15]||"").toLowerCase().includes("cao đẳng")).length; let ctd4 = dy.filter(r => (r[15]||"").toLowerCase().includes("trung cấp")).length; let ctd5 = dy.filter(r => { let v = (r[15]||"").toLowerCase(); return !v.includes("trên") && !v.includes("thạc sĩ") && !v.includes("tiến sĩ") && !v.includes("đại học") && !v.includes("cao đẳng") && !v.includes("trung cấp"); }).length;
             let h1 = dy.filter(r => r[14] === "TH-H1").length; let h2 = dy.filter(r => r[14] === "TH-H2").length; let h3 = dy.filter(r => r[14] === "TH-H3").length; let h4 = dy.filter(r => r[14] === "TH-H4").length; let hk = dy.filter(r => r[14] === "TH_Khác").length;
