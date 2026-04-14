@@ -32,11 +32,28 @@
     #vungTai { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 9999; display: flex; justify-content: center; align-items: center; }
     
     .table-responsive { overflow-x: auto; } 
-    .bangTchinh { min-width: 100%; }
     
-    /* BẮT ĐẦU KHỐI SỬA: Tách riêng CSS cho tiêu đề (th) và ô dữ liệu (td) để chữ có thể xuống dòng */
+    /* Cấu hình để khung co giãn bám sát tổng độ rộng các cột */
+    .bangTchinh { width: max-content; min-width: 100%; }
+    
+    /* BẮT ĐẦU KHỐI SỬA: Căn giữa toàn bộ bảng và loại trừ cột Họ tên */
     .bangTchinh th { white-space: nowrap; vertical-align: middle; font-size: 0.85rem; padding: 4px 6px; background-color: var(--mauChinh); color: white; text-align: center; }
-    .bangTchinh td { white-space: normal; word-wrap: break-word; overflow-wrap: break-word; vertical-align: middle; font-size: 0.85rem; padding: 4px 6px; } 
+    
+    .bangTchinh td { 
+       white-space: normal; 
+       word-wrap: break-word; 
+       overflow-wrap: break-word; 
+       vertical-align: middle; 
+       font-size: 0.85rem; 
+       padding: 4px 6px; 
+       text-align: center; /* Mặc định căn giữa cho TẤT CẢ các cột ở mọi bảng */
+    } 
+    
+    /* Ngoại trừ: Ép cột số 3 (Họ và tên) của 2 bảng chính căn trái */
+    #khuBangNs td:nth-child(3), 
+    #khuBangDg td:nth-child(3) { 
+       text-align: left; 
+    }
     /* KẾT THÚC KHỐI SỬA */
 
     .dongCkt { background-color: #fff3cd !important; color: #856404; }
@@ -151,30 +168,30 @@
           </div>
         </div>
         <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-         <table id="khuBangNs" class="table table-bordered table-striped bangTchinh table-sm" style="width: 100%; min-width: 1350px; table-layout: fixed; border-collapse: collapse;">
+         <table id="khuBangNs" class="table table-bordered table-striped bangTchinh table-sm" style="table-layout: fixed; border-collapse: collapse;">
   <thead class="sticky-top">
     <tr>
       <th style="width: 40px; text-align: center;">Sửa</th>
-      <th style="min-width: 80px; text-align: center;">Năm học</th>
-      <th style="min-width: 150px; text-align: center;">Họ&#8203; và tê&#8203;n</th>
-      <th style="width: 60px; text-align: center;">Giớ&#8203;i tí&#8203;nh</th>
-      <th style="min-width: 80px; text-align: center;">Ngà&#8203;y si&#8203;nh</th>
-      <th style="min-width: 100px; text-align: center;">Trạng thái</th>
-      <th style="min-width: 80px; text-align: center;">Dâ&#8203;n tộ&#8203;c</th>
-      <th style="min-width: 80px; text-align: center;">Tô&#8203;n giá&#8203;o</th>
-      <th style="min-width: 150px; text-align: center;">Đị&#8203;a chỉ (TT)</th>
+      <th style="width: 90px; text-align: center;">Năm học</th>
+      <th style="width: 180px; text-align: center;">Họ&#8203; và tê&#8203;n</th>
+      <th style="width: 70px; text-align: center;">Giớ&#8203;i tí&#8203;nh</th>
+      <th style="width: 100px; text-align: center;">Ngà&#8203;y si&#8203;nh</th>
+      <th style="width: 100px; text-align: center;">Trạng thái</th>
+      <th style="width: 80px; text-align: center;">Dâ&#8203;n tộ&#8203;c</th>
+      <th style="width: 80px; text-align: center;">Tô&#8203;n giá&#8203;o</th>
+      <th style="width: 280px; text-align: center;">Đị&#8203;a chỉ (TT)</th>
       <th style="width: 70px; text-align: center;">Đả&#8203;ng viê&#8203;n</th>
-      <th style="min-width: 100px; text-align: center;">Vị trí VL</th>
-      <th style="min-width: 90px; text-align: center;">Ngày tuyển</th>
-      <th style="min-width: 90px; text-align: center;">Hạng/Ngạch</th>
-      <th style="min-width: 60px; text-align: center;">Trình độ CM</th>
-      <th style="min-width: 110px; text-align: center;">LL Chính trị</th>
+      <th style="width: 120px; text-align: center;">Vị trí VL</th>
+      <th style="width: 100px; text-align: center;">Ngày tuyển</th>
+      <th style="width: 100px; text-align: center;">Hạng/Ngạch</th>
+      <th style="width: 130px; text-align: center;">Trình độ CM</th>
+      <th style="width: 110px; text-align: center;">LL Chính trị</th>
     </tr>
     </thead>
   <tbody>
     </tbody>
 </table>
-</div>
+        </div>
       </div>
 
       <div class="tab-pane fade" id="muc2">
@@ -196,24 +213,24 @@
              </div>
          </div>
          <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-            <table class="table table-bordered table-striped bangTchinh table-sm" id="khuBangDg" style="width: 100%; min-width: 1100px; table-layout: fixed; border-collapse: collapse;">
+            <table class="table table-bordered table-striped bangTchinh table-sm" id="khuBangDg" style="table-layout: fixed; border-collapse: collapse;">
               <thead class="sticky-top">
                 <tr>
                   <th style="width: 40px; text-align: center;">Sửa</th>
-                  <th style="min-width: 80px; text-align: center;">Năm học</th>
-                  <th style="min-width: 180px; text-align: center;">Họ&#8203; và tê&#8203;n</th>
-                  <th style="min-width: 80px; text-align: center;">XL CM (K1)</th>
-                  <th style="min-width: 80px; text-align: center;">XL CM (K2)</th>
-                  <th style="min-width: 80px; text-align: center;">XL CNN</th>
-                  <th style="min-width: 100px; text-align: center;">XL Viên chức</th>
-                  <th style="min-width: 100px; text-align: center;">XL Đả&#8203;ng viê&#8203;n</th> <th style="min-width: 100px; text-align: center;">DH Chuyên môn</th>
-                  <th style="min-width: 100px; text-align: center;">DH Thi đua</th>
-                  <th style="min-width: 100px; text-align: center;">Hình thức khen</th>
+                  <th style="width: 90px; text-align: center;">Năm học</th>
+                  <th style="width: 180px; text-align: center;">Họ&#8203; và tê&#8203;n</th>
+                  <th style="width: 80px; text-align: center;">XL CM (K1)</th>
+                  <th style="width: 80px; text-align: center;">XL CM (K2)</th>
+                  <th style="width: 80px; text-align: center;">XL CNN</th>
+                  <th style="width: 100px; text-align: center;">XL Viên chức</th>
+                  <th style="width: 100px; text-align: center;">XL Đả&#8203;ng viê&#8203;n</th> <th style="width: 120px; text-align: center;">DH Chuyên môn</th>
+                  <th style="width: 120px; text-align: center;">DH Thi đua</th>
+                  <th style="width: 120px; text-align: center;">Hình thức khen</th>
                 </tr>
               </thead>
               <tbody></tbody>
             </table>
-            </div>
+         </div>
       </div>
 
       <div class="tab-pane fade" id="muc3">
