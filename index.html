@@ -388,7 +388,7 @@
     </div>
   </div>
 
-  <?!= HtmlService.createHtmlOutputFromFile('NS_MinhChung').getContent(); ?>
+  <div id="vungChuaModuleMinhChung"></div>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -423,6 +423,14 @@
     $(document).ready(() => { 
         if (!kiemtKhoa()) return; 
         $("#vungTai").hide(); 
+
+        // TẢI ĐỘNG FILE MINH CHỨNG VÀO GIAO DIỆN KHI CHẠY TRÊN GITHUB/LOCAL
+        // Lưu ý: Nếu thầy lưu file trên host với tên SCV_MinhChung_CongVan.html thì hãy sửa lại tên ở dòng dưới.
+        $("#vungChuaModuleMinhChung").load("NS_MinhChung.html", function(response, status, xhr) {
+            if (status === "error") {
+                console.error("Lỗi nạp UI Minh chứng: " + xhr.statusText);
+            }
+        });
         
         let luuPt = sessionStorage.getItem("ngdungNs");
         if(luuPt) {
@@ -628,11 +636,12 @@
     function goMinhChungDg(btn) {
         try {
             let lHtai = $("#mcLinkDg").val();
-            // Đã fix lỗi check module
+            // Hàm đã được kéo từ file tĩnh qua .load()
             if (typeof SCV_OpenUploadModal === 'function') {
                 SCV_OpenUploadModal(btn, lHtai, "ROOT_FOLDER_ID", true); 
             } else {
-                hienTbao("Lỗi hệ thống: Module minh chứng chưa tải thành công! Vui lòng F5 lại trang.", "loi");
+                hienTbao("Hệ thống đang nạp dữ liệu từ máy chủ. Đang thử lại...", "loi");
+                $("#vungChuaModuleMinhChung").load("NS_MinhChung.html");
             }
         } catch (loi) {
             hienTbao("Lỗi hiển thị cửa sổ: " + loi.message, "loi");
@@ -685,8 +694,8 @@
             let xs1 = dy.filter(r => { let v = (r[25]||"").toLowerCase(); return v.includes("htxs") || v.includes("xs") || v.includes("xuất sắc"); }).length; let xs2 = dy.filter(r => { let v = (r[25]||"").toLowerCase(); return v.includes("htt") || v.includes("tốt"); }).length; let xs3 = dy.filter(r => { let v = (r[25]||"").toLowerCase(); return v.includes("cht") || v.includes("chưa") || v.includes("không") || v.includes("kht"); }).length; let xs4 = dy.filter(r => { let v = (r[25]||"").toLowerCase(); return (v.includes("ht") || v.includes("hoàn thành")) && !(v.includes("htxs") || v.includes("xs") || v.includes("xuất sắc") || v.includes("htt") || v.includes("tốt") || v.includes("cht") || v.includes("chưa") || v.includes("không") || v.includes("kht")); }).length;
             let dv1 = dy.filter(r => { let v = (r[29]||"").toLowerCase(); return v.includes("htxs") || v.includes("xs") || v.includes("xuất sắc"); }).length; let dv2 = dy.filter(r => { let v = (r[29]||"").toLowerCase(); return v.includes("htt") || (v.includes("tốt") && !v.includes("không")); }).length; let dv3 = dy.filter(r => { let v = (r[29]||"").toLowerCase(); return v.includes("cht") || v.includes("chưa") || v.includes("không") || v.includes("kht"); }).length; let dv4 = dy.filter(r => { let v = (r[29]||"").toLowerCase(); return (v.includes("ht") || v.includes("hoàn thành")) && !(v.includes("htxs") || v.includes("xs") || v.includes("xuất sắc") || v.includes("htt") || v.includes("tốt") || v.includes("cht") || v.includes("chưa") || v.includes("không") || v.includes("kht")); }).length;
             let dh1 = dy.filter(r => (r[26]||"").toLowerCase().includes("trường")).length; let dh2 = dy.filter(r => { let v = (r[26]||"").toLowerCase(); return v.includes("huyện") || v.includes("tp") || v.includes("thành phố"); }).length; let dh3 = dy.filter(r => (r[26]||"").toLowerCase().includes("tỉnh")).length; let dh4 = dy.filter(r => (r[26]||"").toLowerCase().includes("quốc gia") || (r[26]||"").toLowerCase().includes("qg")).length;
-            let td1 = dy.filter(r => r[27] === "LĐTT").length; let td2 = dy.filter(r => r[27] === "CSTĐ").length; let td3 = dy.filter(r => r[27] === "Bằng khen").length; let td4 = dy.filter(r => (r[27]||"").toLowerCase().includes("huân chương")).length; let td5 = dy.filter(r => (r[27]||"").toLowerCase().includes("huy chương")).length;
-            let kh1 = dy.filter(r => (r[28]||"").toLowerCase().includes("xã")).length; let kh2 = dy.filter(r => (r[28]||"").toLowerCase().includes("huyện")).length; let kh3 = dy.filter(r => (r[28]||"").toLowerCase().includes("tỉnh")).length; let kh4 = dy.filter(r => (r[28]||"").toLowerCase().includes("bộ")).length; let kh5 = dy.filter(r => (r[28]||"").toLowerCase().includes("chính phủ") || (r[28]||"").toLowerCase().includes("cp")).length;
+            let td1 = dy.filter(r => r[27] === "LĐTT").length; let td2 = dy.filter(r => r[27] === "CSTĐ").length; let td3 = dy.filter(r => r[27] === "Bằng khen").length; let td4 = dy.filter(r => (r[27]||\"\").toLowerCase().includes("huân chương")).length; let td5 = dy.filter(r => (r[27]||\"\").toLowerCase().includes("huy chương")).length;
+            let kh1 = dy.filter(r => (r[28]||\"\").toLowerCase().includes("xã")).length; let kh2 = dy.filter(r => (r[28]||\"\").toLowerCase().includes("huyện")).length; let kh3 = dy.filter(r => (r[28]||\"\").toLowerCase().includes("tỉnh")).length; let kh4 = dy.filter(r => (r[28]||\"\").toLowerCase().includes("bộ")).length; let kh5 = dy.filter(r => (r[28]||\"\").toLowerCase().includes("chính phủ") || (r[28]||\"\").toLowerCase().includes("cp")).length;
 
             bd2.append(`<tr><td class="fw-bold text-primary">${y}</td><td>${g1}</td><td>${k1}</td><td>${tb1}</td><td>${y1}</td><td>${g2}</td><td>${k2}</td><td>${tb2}</td><td>${y2}</td><td>${cn1}</td><td>${cn2}</td><td>${cn3}</td><td>${xs1}</td><td>${xs2}</td><td>${xs4}</td><td>${xs3}</td><td>${dv1}</td><td>${dv2}</td><td>${dv4}</td><td>${dv3}</td><td>${dh1}</td><td>${dh2}</td><td>${dh3}</td><td>${dh4}</td><td>${td1}</td><td>${td2}</td><td>${td3}</td><td>${td4}</td><td>${td5}</td><td>${kh1}</td><td>${kh2}</td><td>${kh3}</td><td>${kh4}</td><td>${kh5}</td></tr>`);
         });
