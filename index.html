@@ -33,8 +33,12 @@
     
     .table-responsive { overflow-x: auto; } 
     .bangTchinh { min-width: 100%; }
-    .bangTchinh th, .bangTchinh td { white-space: nowrap; vertical-align: middle; font-size: 0.85rem; padding: 4px 6px; } 
-    .bangTchinh th { background-color: var(--mauChinh); color: white; text-align: center; }
+    
+    /* BẮT ĐẦU KHỐI SỬA: Tách riêng CSS cho tiêu đề (th) và ô dữ liệu (td) để chữ có thể xuống dòng */
+    .bangTchinh th { white-space: nowrap; vertical-align: middle; font-size: 0.85rem; padding: 4px 6px; background-color: var(--mauChinh); color: white; text-align: center; }
+    .bangTchinh td { white-space: normal; word-wrap: break-word; overflow-wrap: break-word; vertical-align: middle; font-size: 0.85rem; padding: 4px 6px; } 
+    /* KẾT THÚC KHỐI SỬA */
+
     .dongCkt { background-color: #fff3cd !important; color: #856404; }
     
     .theTke { background: white; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); padding: 10px; margin-bottom: 15px; }
@@ -147,30 +151,30 @@
           </div>
         </div>
         <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-         <table id="khuBangNs" class="table table-bordered table-striped bangTchinh table-sm" style="width: 120%; table-layout: fixed; border-collapse: collapse;">
+         <table id="khuBangNs" class="table table-bordered table-striped bangTchinh table-sm" style="width: 100%; min-width: 1350px; table-layout: fixed; border-collapse: collapse;">
   <thead class="sticky-top">
     <tr>
       <th style="width: 40px; text-align: center;">Sửa</th>
-      <th style="min-width: 60px; text-align: center;">Năm học</th>
-      <th style="min-width: 180px; text-align: center;">Họ&#8203; và tê&#8203;n</th>
+      <th style="min-width: 80px; text-align: center;">Năm học</th>
+      <th style="min-width: 150px; text-align: center;">Họ&#8203; và tê&#8203;n</th>
       <th style="width: 60px; text-align: center;">Giớ&#8203;i tí&#8203;nh</th>
       <th style="min-width: 80px; text-align: center;">Ngà&#8203;y si&#8203;nh</th>
       <th style="min-width: 100px; text-align: center;">Trạng thái</th>
-      <th style="min-width: 60px; text-align: center;">Dâ&#8203;n tộ&#8203;c</th>
-      <th style="min-width: 60px; text-align: center;">Tô&#8203;n giá&#8203;o</th>
-      <th style="min-width: 250px; text-align: center;">Đị&#8203;a chỉ (TT)</th>
+      <th style="min-width: 80px; text-align: center;">Dâ&#8203;n tộ&#8203;c</th>
+      <th style="min-width: 80px; text-align: center;">Tô&#8203;n giá&#8203;o</th>
+      <th style="min-width: 150px; text-align: center;">Đị&#8203;a chỉ (TT)</th>
       <th style="width: 70px; text-align: center;">Đả&#8203;ng viê&#8203;n</th>
       <th style="min-width: 100px; text-align: center;">Vị trí VL</th>
       <th style="min-width: 90px; text-align: center;">Ngày tuyển</th>
       <th style="min-width: 90px; text-align: center;">Hạng/Ngạch</th>
       <th style="min-width: 60px; text-align: center;">Trình độ CM</th>
-      <th style="min-width: 80px; text-align: center;">LL Chính trị</th>
+      <th style="min-width: 110px; text-align: center;">LL Chính trị</th>
     </tr>
     </thead>
   <tbody>
     </tbody>
 </table>
-        </div>
+</div>
       </div>
 
       <div class="tab-pane fade" id="muc2">
@@ -192,7 +196,7 @@
              </div>
          </div>
          <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-            <table class="table table-bordered table-striped bangTchinh table-sm" id="khuBangDg">
+            <table class="table table-bordered table-striped bangTchinh table-sm" id="khuBangDg" style="width: 100%; min-width: 1100px; table-layout: fixed; border-collapse: collapse;">
               <thead class="sticky-top">
                 <tr>
                   <th style="width: 40px; text-align: center;">Sửa</th>
@@ -209,7 +213,7 @@
               </thead>
               <tbody></tbody>
             </table>
-         </div>
+            </div>
       </div>
 
       <div class="tab-pane fade" id="muc3">
