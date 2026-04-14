@@ -84,7 +84,8 @@
 
     // NÂNG CẤP: Bổ sung tham số onlyLink an toàn
     function SCV_OpenUploadModal(btnElement, currentLink, rootId, onlyLink = false) {
-        if (typeof GLOBAL_PERM !== 'undefined' && !GLOBAL_PERM) { toast("⚠️ Không có quyền thao tác!"); return; }
+        // Fix an toàn: Chuyển toast thành alert để không bị lỗi ReferenceError
+        if (typeof GLOBAL_PERM !== 'undefined' && !GLOBAL_PERM) { alert("⚠️ Không có quyền thao tác!"); return; }
         
         GLOBAL_BTN_TRIGGER = btnElement;
         LINK_CAN_XOA_CV = currentLink || "";
