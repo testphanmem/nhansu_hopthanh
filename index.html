@@ -582,35 +582,51 @@
         }).catch(lx => { $("#vungTai").hide(); hienTbao("Lỗi: " + lx, 'loi'); });
     }
 
-    /* BẮT ĐẦU SỬA MẠNH: Ứng dụng thuật toán Khóa Ngầm (Shadow Key) */
+    /* BẮT ĐẦU SỬA: Tích hợp Hộp thoại xác nhận thông minh khi đổi năm học */
     function guiBmNs() {
        const bd = document.getElementById("bmNsu"); let nB = [];
        for(let i=0; i<=16; i++) { let vc = ""; if(i===10) vc = bd.elements['c10'].checked ? "x" : ""; else vc = bd.elements['c'+i].value; nB.push(vc); }
        if(!nB[1]) return hienTbao("Vui lòng nhập họ và tên!", 'loi');
        
-       nB.ckt = true;
+       // Bước 1: Kiểm tra hành động đổi Năm học
+       if(csSua !== -1) {
+           let oldNam = dlToanc[csSua][30] !== undefined ? dlToanc[csSua][30] : dlToanc[csSua][0];
+           let newNam = nB[0];
+           
+           if (oldNam !== newNam) {
+               let xacNhan = confirm("HỆ THỐNG PHÁT HIỆN BẠN VỪA THAY ĐỔI NĂM HỌC!\nTừ [" + oldNam + "] sang [" + newNam + "]\n\n- Bấm [OK]: Nếu bạn muốn CHUYỂN nhân sự này sang năm mới (Tạo bản sao mới và làm sạch Đánh giá).\n- Bấm [Cancel/Hủy]: Nếu bạn chỉ đang SỬA LỖI nhập sai năm học của dòng cũ.");
+               if (xacNhan) {
+                   csSua = -1; // Ngắt kết nối dòng cũ, ép hệ thống tạo dòng mới
+               }
+           }
+       }
+
+       // Bước 2: Lưu dữ liệu dựa trên quyết định ở trên
        if(csSua !== -1) { 
+           // Ghi đè dòng cũ
            let dgCu = dlToanc[csSua].slice(17); 
            
-           // Lưu nháp 3 khóa cũ vào cuối mảng để Server biết đường tìm
-           let oldNam = dlToanc[csSua][0];
-           let oldTen = dlToanc[csSua][1];
-           let oldNgay = dlToanc[csSua][2];
+           let oldNam = dlToanc[csSua][30] !== undefined ? dlToanc[csSua][30] : dlToanc[csSua][0];
+           let oldTen = dlToanc[csSua][31] !== undefined ? dlToanc[csSua][31] : dlToanc[csSua][1];
+           let oldNgay = dlToanc[csSua][32] !== undefined ? dlToanc[csSua][32] : dlToanc[csSua][2];
 
            dlToanc[csSua] = nB.concat(dgCu); 
            
-           // Đẩy khóa cũ vào index dự phòng 30, 31, 32
            dlToanc[csSua][30] = oldNam;
            dlToanc[csSua][31] = oldTen;
            dlToanc[csSua][32] = oldNgay;
 
            dlToanc[csSua].ckt=true; 
        } else { 
+           // Tạo bản sao mới (Chuyển năm học) hoặc Thêm mới hoàn toàn
+           // Kỹ thuật chèn độ dài mảng để khớp tuyệt đối với Google Sheet, chống lỗi tràn dải ô
+           while(nB.length < 34) { nB.push(""); }
+           nB.ckt = true;
            dlToanc.push(nB); 
        }
        $("#hopThoaiHs").modal('hide'); veBangNs();
     }
-    /* KẾT THÚC KHỐI SỬA MẠNH */
+    /* KẾT THÚC KHỐI SỬA */
     
     function cnNhieuNs() {
        const dtN = dlToanc.filter(r => r.ckt);
