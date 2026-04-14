@@ -77,13 +77,19 @@
 </div>
 
 <script>
-    let GLOBAL_BTN_TRIGGER = null; 
-    let FILES_CV = [];
-    let LINK_CAN_XOA_CV = ""; 
-    let CURRENT_ROOT_ID = ""; 
+    // THAY THẾ "let" BẰNG "var" ĐỂ CHỐNG LỖI SẬP MÃ (SyntaxError) KHI TRÌNH DUYỆT TẢI LẠI
+    var GLOBAL_BTN_TRIGGER = null; 
+    var FILES_CV = [];
+    var LINK_CAN_XOA_CV = ""; 
+    var CURRENT_ROOT_ID = ""; 
 
-    function SCV_OpenUploadModal(btnElement, currentLink, rootId, onlyLink = false) {
-        if (typeof GLOBAL_PERM !== 'undefined' && !GLOBAL_PERM) { alert('⚠️ Không có quyền thao tác!'); return; }
+    // Gắn trực tiếp hàm vào window để gọi từ bất kỳ đâu
+    window.SCV_OpenUploadModal = function(btnElement, currentLink, rootId, onlyLink = false) {
+        if (typeof GLOBAL_PERM !== 'undefined' && !GLOBAL_PERM) { 
+            if (typeof hienTbao === 'function') hienTbao("⚠️ Không có quyền thao tác!", "loi");
+            else alert("⚠️ Không có quyền thao tác!");
+            return; 
+        }
         
         GLOBAL_BTN_TRIGGER = btnElement;
         LINK_CAN_XOA_CV = currentLink || "";
@@ -103,7 +109,7 @@
         document.getElementById('newFolderArea').style.display = 'none';
         FILES_CV = [];
 
-        // KÍCH HOẠT CHẾ ĐỘ CHỈ LINK NẾU CÓ YÊU CẦU
+        // HIỂN THỊ CHẾ ĐỘ CHỈ LINK
         if(onlyLink) {
             document.getElementById('tdeModalCV').innerText = "🔗 MINH CHỨNG LINK";
             document.getElementById('vungChonThuMucCV').style.display = 'none';
@@ -122,16 +128,16 @@
         updateWarnDisplayCV();
         document.getElementById('upload_modal_cv').style.display = 'flex';
         
-        // Đẩy chuột vào ô nhập (hỗ trợ thêm nếu trình duyệt bị đơ nhẹ)
+        // Tự động kéo con trỏ chuột vào vùng gõ, phá vỡ mọi bẫy liệt phím
         if(onlyLink) {
             setTimeout(function() {
                 const textLinkInput = document.getElementById('txtDirectLinkCV');
                 if (textLinkInput) textLinkInput.focus();
-            }, 150);
+            }, 200);
         }
 
         if(!onlyLink) loadFoldersCV();
-    }
+    };
 
     function updateWarnDisplayCV() {
         const wMode = document.querySelector('input[name="writeMode"]:checked').value;
