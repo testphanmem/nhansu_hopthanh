@@ -388,16 +388,16 @@
     </div>
   </div>
 
-  <div id="vungChuaModuleMinhChung"></div>
-
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <?!= HtmlService.createHtmlOutputFromFile('NS_MinhChung').getContent(); ?>
 
   <script>
     let ndHtai = null, dlToanc = [], chinhToanc = [], csSua = -1;
     
     function kiemtKhoa() {
-        if (typeof hanDung === 'undefined' || !hanDung || hanDung.trim() === "") return true; 
+        if (typeof hanDung === 'undefined' || !hanDung || hanDung.trim() === '') return true; 
 
         let pt = hanDung.split('/');
         let nHet = new Date(pt[2], pt[1] - 1, pt[0]);
@@ -407,10 +407,10 @@
         if (!modKhoa || !nutR) return true;
 
         if (htai > nHet) {
-            cTde.innerText = "Hết hạn sử dụng";
+            cTde.innerText = 'Hết hạn sử dụng';
             cTbao.innerHTML = `Thời gian sử dụng phần mềm của bạn đã kết thúc vào ngày <strong class="text-danger">${hanDung}</strong>.<br>Vui lòng liên hệ Admin để gia hạn.`;
             nutR.innerText = 'Thoát hệ thống'; nutR.classList.remove('btn-primary'); nutR.classList.add('btn-danger'); nutR.removeAttribute('data-bs-dismiss'); 
-            nutR.onclick = function() { window.location.href = "https://www.google.com"; };
+            nutR.onclick = function() { window.location.href = 'https://www.google.com'; };
             const md = new bootstrap.Modal(modKhoa, { backdrop: 'static', keyboard: false }); md.show();
             let g1 = document.getElementById('manhDn'); if (g1) g1.style.display = 'none';
             let g2 = document.getElementById('udChinh'); if (g2) g2.style.display = 'none';
@@ -423,16 +423,8 @@
     $(document).ready(() => { 
         if (!kiemtKhoa()) return; 
         $("#vungTai").hide(); 
-
-        // TẢI ĐỘNG FILE MINH CHỨNG VÀO GIAO DIỆN KHI CHẠY TRÊN GITHUB/LOCAL
-        // Lưu ý: Nếu thầy lưu file trên host với tên SCV_MinhChung_CongVan.html thì hãy sửa lại tên ở dòng dưới.
-        $("#vungChuaModuleMinhChung").load("NS_MinhChung.html", function(response, status, xhr) {
-            if (status === "error") {
-                console.error("Lỗi nạp UI Minh chứng: " + xhr.statusText);
-            }
-        });
         
-        let luuPt = sessionStorage.getItem("ngdungNs");
+        let luuPt = sessionStorage.getItem('ngdungNs');
         if(luuPt) {
             ndHtai = JSON.parse(luuPt);
             $("#manhDn").hide(); $("#udChinh").show();
@@ -472,7 +464,7 @@
 
     function xulyPhienDn(phanho) {
       const tdtai = giaimaJwt(phanho.credential);
-      const emTruyCap = tdtai['em' + 'ail']; 
+      const emTruyCap = tdtai['email']; 
       
       $("#vungTai").show();
       goiMyChuHien('dangNhapHt', { gMai: emTruyCap })
@@ -484,16 +476,16 @@
       if(!pq.tCong) { $("#vungTai").hide(); $("#loiDn").text(pq.tBao); return; }
       
       ndHtai = pq.dLieu;
-      sessionStorage.setItem("ngdungNs", JSON.stringify(ndHtai));
+      sessionStorage.setItem('ngdungNs', JSON.stringify(ndHtai));
       $("#hthiNd").text(ndHtai.tenn); $("#nhanVt").text(ndHtai.vTro === 'qtriv' ? 'Quản trị viên' : 'Giáo viên');
       ndHtai.vTro === 'qtriv' ? $("#nutMoThemNs").show() : $("#nutMoThemNs").hide();
       $("#manhDn").hide(); $("#udChinh").show(); taiDlBdau();
     }
     
-    function khiDnLoi(loi) { hienTbao("Lỗi: " + loi, 'loi'); $("#vungTai").hide(); }
+    function khiDnLoi(loi) { hienTbao('Lỗi: ' + loi, 'loi'); $("#vungTai").hide(); }
     
     function dxuat() { 
-       ndHtai = null; dlToanc = []; csSua = -1; sessionStorage.removeItem("ngdungNs"); 
+       ndHtai = null; dlToanc = []; csSua = -1; sessionStorage.removeItem('ngdungNs'); 
        $("#khuBangNs tbody").empty(); $("#khuBangDg tbody").empty();
        $("#udChinh").hide(); $("#manhDn").css("display", "flex").fadeIn();
     }
@@ -508,7 +500,7 @@
     }
     
     function veUd(tdl) {
-      if (!tdl) { hienTbao("Không có dữ liệu!", 'loi'); $("#vungTai").hide(); return; }
+      if (!tdl) { hienTbao('Không có dữ liệu!', 'loi'); $("#vungTai").hide(); return; }
       chinhToanc = tdl.chinh || []; dlToanc = tdl.nsu || [];
       cldChon(); veBangNs(); veBangDg(); veTke(); $("#vungTai").hide();
     }
@@ -522,7 +514,7 @@
        $("#nhapLocN1, #nhapLocN2, #nhapLocN3").html(cg);
     }
 
-    function layTuyc(chS) { return chinhToanc.map(r => String(r[chS]).trim()).filter(x => x && x!=="" && x!=="undefined").filter((v,i,a) => a.indexOf(v)===i); }
+    function layTuyc(chS) { return chinhToanc.map(r => String(r[chS]).trim()).filter(x => x && x!=='' && x!=='undefined').filter((v,i,a) => a.indexOf(v)===i); }
     function doDlChon(clL, chS) { let co = layTuyc(chS); $(clL).html('<option value="">--Chọn--</option>' + co.map(o => `<option value="${o}">${o}</option>`).join('')); }
 
     function veBangNs() {
@@ -530,47 +522,47 @@
        dlToanc.forEach((dg, v) => {
           let nc = String(dg[0]).trim();
           if(ln && nc !== String(ln).trim()) return;
-          if(chT && !dg.join(" ").toLowerCase().includes(chT)) return;
+          if(chT && !dg.join(' ').toLowerCase().includes(chT)) return;
           
           let cqS = (ndHtai.vTro === 'qtriv') || (ndHtai.vTro === 'ngdung' && dg[1] == ndHtai.tKhoan);
           let ntS = cqS ? `<button class="btn btn-sm btn-warning py-0" onclick="suaDong(${v})"><i class="fas fa-edit"></i></button>` : '';
-          let cdG = dg.ckt ? "dongCkt" : ""; let cpT = dg.ckt ? " <i class='fas fa-pen text-danger' title='Chưa lưu'></i>" : "";
+          let cdG = dg.ckt ? 'dongCkt' : ''; let cpT = dg.ckt ? " <i class='fas fa-pen text-danger' title='Chưa lưu'></i>" : '';
           tv.append(`<tr class="${cdG}"><td class="text-center">${ntS}</td><td class="fw-bold text-primary">${dg[0]}</td><td>${dg[1]} ${cpT}</td><td class="fw-bold">${dg[2]}</td><td>${dg[3]}</td><td>${dg[4]}</td><td><span class="badge ${dg[5]==='Đã chuyển'?'bg-danger':'bg-success'}">${dg[5]}</span></td><td>${dg[6]}</td><td>${dg[7]}</td><td>${dg[8]}</td><td>${dg[9]}, ${dg[10]}, ${dg[11]}</td><td>${dg[12]}, ${dg[13]}, ${dg[14]}</td><td>${dg[15]}</td><td>${dg[16]}</td><td>${dg[17]}</td><td>${dg[19]}</td><td>${dg[20]}</td><td>${dg[21]}</td></tr>`);
        });
     }
 
     function suaDong(chS) {
-       csSua = chS; const dr = dlToanc[chS]; const fm = document.getElementById("bmNsu"); fm.reset(); $("#nutXoaNs").show();
+       csSua = chS; const dr = dlToanc[chS]; const fm = document.getElementById('bmNsu'); fm.reset(); $("#nutXoaNs").show();
        for(let i=0; i<=21; i++) {
-          let v = dr[i]; if (v === null || v === undefined) v = ""; v = String(v).trim();
-          if(i===15) fm.elements['c15'].checked = (v.toLowerCase()==="x" || v==="true");
+          let v = dr[i]; if (v === null || v === undefined) v = ''; v = String(v).trim();
+          if(i===15) fm.elements['c15'].checked = (v.toLowerCase()==='x' || v==='true');
           else { let ev = $(fm).find(`[name="c${i}"]`); if(ev.length) { ev.val(v).change(); } }
        }
        $("#hopThoaiHs").modal('show');
     }
     
-    function moThem() { csSua=-1; document.getElementById("bmNsu").reset(); $("#nutXoaNs").hide(); $("#hopThoaiHs").modal('show'); }
+    function moThem() { csSua=-1; document.getElementById('bmNsu').reset(); $("#nutXoaNs").hide(); $("#hopThoaiHs").modal('show'); }
     
     function xoaNs() {
        if (csSua === -1) return;
        const dn = dlToanc[csSua]; const n1 = String(dn[0]).trim(); const n2 = String(dn[1]).trim();
-       if (!confirm("CẢNH BÁO: Xóa dữ liệu năm " + n1 + "?\nDữ liệu sẽ bị xóa VĨNH VIỄN khỏi hệ thống!")) return;
+       if (!confirm('CẢNH BÁO: Xóa dữ liệu năm ' + n1 + '?\nDữ liệu sẽ bị xóa VĨNH VIỄN khỏi hệ thống!')) return;
        
        $("#vungTai").show();
        goiMyChuHien('xoaNsu', {nam: n1, mso: n2, tKhoan: ndHtai.tKhoan, vTro: ndHtai.vTro})
         .then(kq => {
            if (kq.tCong) { hienTbao(kq.tBao, 'tc'); $("#hopThoaiHs").modal('hide'); taiDlBdau(); } 
            else {
-               if (kq.tBao.includes("Không tìm thấy")) { dlToanc.splice(csSua, 1); $("#hopThoaiHs").modal('hide'); veBangNs(); $("#vungTai").hide(); hienTbao("Đã xóa hồ sơ tạm thời!", 'tc'); } 
+               if (kq.tBao.includes('Không tìm thấy')) { dlToanc.splice(csSua, 1); $("#hopThoaiHs").modal('hide'); veBangNs(); $("#vungTai").hide(); hienTbao('Đã xóa hồ sơ tạm thời!', 'tc'); } 
                else { $("#vungTai").hide(); hienTbao(kq.tBao, 'loi'); }
            }
-        }).catch(lx => { $("#vungTai").hide(); hienTbao("Lỗi: " + lx, 'loi'); });
+        }).catch(lx => { $("#vungTai").hide(); hienTbao('Lỗi: ' + lx, 'loi'); });
     }
 
     function guiBmNs() {
-       const bd = document.getElementById("bmNsu"); let nB = [];
-       for(let i=0; i<=21; i++) { let vc = ""; if(i===15) vc = bd.elements['c15'].checked ? "x" : ""; else vc = bd.elements['c'+i].value; nB.push(vc); }
-       if(!nB[1]) return hienTbao("Vui lòng nhập định danh!", 'loi');
+       const bd = document.getElementById('bmNsu'); let nB = [];
+       for(let i=0; i<=21; i++) { let vc = ''; if(i===15) vc = bd.elements['c15'].checked ? 'x' : ''; else vc = bd.elements['c'+i].value; nB.push(vc); }
+       if(!nB[1]) return hienTbao('Vui lòng nhập định danh!', 'loi');
        nB.ckt = true;
        if(csSua !== -1) { let dgCu = dlToanc[csSua].slice(22); dlToanc[csSua] = nB.concat(dgCu); dlToanc[csSua].ckt=true; }
        else dlToanc.push(nB);
@@ -579,11 +571,11 @@
     
     function cnNhieuNs() {
        const dtN = dlToanc.filter(r => r.ckt);
-       if(dtN.length===0) return hienTbao("Không có dữ liệu mới!", 'loi');
+       if(dtN.length===0) return hienTbao('Không có dữ liệu mới!', 'loi');
        $("#vungTai").show();
        goiMyChuHien('luuNhieuNsu', {mangDl: dtN, tKhoan: ndHtai.tKhoan, vTro: ndHtai.vTro})
          .then(h => { hienTbao(h.tBao, h.tCong ? 'tc' : 'loi'); if(h.tCong) taiDlBdau(); else $("#vungTai").hide(); })
-         .catch(lo => { hienTbao("Lỗi: " + lo, 'loi'); $("#vungTai").hide(); });
+         .catch(lo => { hienTbao('Lỗi: ' + lo, 'loi'); $("#vungTai").hide(); });
     }
 
     function veBangDg() {
@@ -591,16 +583,16 @@
        dlToanc.forEach((dg, idx) => {
           let nc = String(dg[0]).trim();
           if(nl && nc !== String(nl).trim()) return;
-          if(tk && !dg.join(" ").toLowerCase().includes(tk)) return;
-          if(dg[5] === "Đã chuyển") return; 
+          if(tk && !dg.join(' ').toLowerCase().includes(tk)) return;
+          if(dg[5] === 'Đã chuyển') return; 
           
           let ns = (ndHtai.vTro === 'qtriv') ? `<button class="btn btn-sm btn-success py-0" onclick="moSuaDg(${idx})"><i class="fas fa-edit"></i></button>` : '';
-          let dlC = dg.cktdg ? "dongCkt" : ""; let tcP = dg.cktdg ? " <i class='fas fa-pen text-danger' title='Chưa lưu'></i>" : "";
+          let dlC = dg.cktdg ? 'dongCkt' : ''; let tcP = dg.cktdg ? " <i class='fas fa-pen text-danger' title='Chưa lưu'></i>" : '';
           
           // Xử lý link minh chứng ở cột 33 (AH)
-          let lk = dg[33] || "";
-          let dsL = lk.split(',').map(l => l.trim()).filter(l => l !== "");
-          let htiGhim = dsL.length > 0 ? `<div class="vungGhimLink mt-1" id="vungGhim_${idx}">${dsL.map((u, i) => `<a href="${u}" target="_blank">📎 ${i+1}</a>`).join('')}</div>` : "";
+          let lk = dg[33] || '';
+          let dsL = lk.split(',').map(l => l.trim()).filter(l => l !== '');
+          let htiGhim = dsL.length > 0 ? `<div class="vungGhimLink mt-1" id="vungGhim_${idx}">${dsL.map((u, i) => `<a href="${u}" target="_blank">📎 ${i+1}</a>`).join('')}</div>` : '';
 
           vb.append(`<tr class="${dlC}">
               <td class="text-center">${ns}</td>
@@ -621,12 +613,12 @@
 
     function moSuaDg(idx) {
        csSua = idx; const dr = dlToanc[idx]; $("#vungNamDg").text(dr[0]); $("#vungTenDg").text(dr[2]); $("#vungMsoDg").val(dr[1]);
-       const fr = document.getElementById("bmDgia"); fr.reset();
-       fr.elements['w'].value = dr[22]||""; fr.elements['x'].value = dr[23]||""; fr.elements['y'].value = dr[24]||""; fr.elements['z'].value = dr[25]||"";
-       fr.elements['ad'].value = dr[29]||""; fr.elements['aa'].value = dr[26]||""; fr.elements['ab'].value = dr[27]||""; fr.elements['ac'].value = dr[28]||"";
+       const fr = document.getElementById('bmDgia'); fr.reset();
+       fr.elements['w'].value = dr[22]||''; fr.elements['x'].value = dr[23]||''; fr.elements['y'].value = dr[24]||''; fr.elements['z'].value = dr[25]||'';
+       fr.elements['ad'].value = dr[29]||''; fr.elements['aa'].value = dr[26]||''; fr.elements['ab'].value = dr[27]||''; fr.elements['ac'].value = dr[28]||'';
        
        // Load link minh chứng (Cột AH - index 33)
-       let lk = dr[33] || "";
+       let lk = dr[33] || '';
        $("#mcLinkDg").val(lk);
        veGhimModal(lk);
 
@@ -636,39 +628,38 @@
     function goMinhChungDg(btn) {
         try {
             let lHtai = $("#mcLinkDg").val();
-            // Hàm đã được kéo từ file tĩnh qua .load()
+            // Đã sửa lại lỗi tàng hình UI
             if (typeof SCV_OpenUploadModal === 'function') {
-                SCV_OpenUploadModal(btn, lHtai, "ROOT_FOLDER_ID", true); 
+                SCV_OpenUploadModal(btn, lHtai, 'ROOT_FOLDER_ID', true); 
             } else {
-                hienTbao("Hệ thống đang nạp dữ liệu từ máy chủ. Đang thử lại...", "loi");
-                $("#vungChuaModuleMinhChung").load("NS_MinhChung.html");
+                hienTbao('Lỗi hệ thống: Không tìm thấy Module Minh Chứng. Vui lòng kiểm tra lại file NS_MinhChung.html', 'loi');
             }
         } catch (loi) {
-            hienTbao("Lỗi hiển thị cửa sổ: " + loi.message, "loi");
+            hienTbao('Lỗi hiển thị cửa sổ: ' + loi.message, 'loi');
             console.error(loi);
         }
     }
 
     function veGhimModal(lk) {
-        let d = lk.split(',').map(l => l.trim()).filter(l => l !== "");
+        let d = lk.split(',').map(l => l.trim()).filter(l => l !== '');
         let h = d.map((u, i) => `<a href="${u}" target="_blank" class="text-danger ms-1" title="Link ${i+1}"><i class="fas fa-paperclip"></i></a>`).join('');
         $("#hthiGhimModal").html(h);
     }
 
     function guiBmDg() {
-       const fd = document.getElementById("bmDgia");
+       const fd = document.getElementById('bmDgia');
        if (csSua !== -1) {
            dlToanc[csSua][22] = fd.elements['w'].value; dlToanc[csSua][23] = fd.elements['x'].value; dlToanc[csSua][24] = fd.elements['y'].value; dlToanc[csSua][25] = fd.elements['z'].value; dlToanc[csSua][26] = fd.elements['aa'].value; dlToanc[csSua][27] = fd.elements['ab'].value; dlToanc[csSua][28] = fd.elements['ac'].value; dlToanc[csSua][29] = fd.elements['ad'].value; 
            // Lưu link minh chứng (AH)
            dlToanc[csSua][33] = $("#mcLinkDg").val();
 
-           dlToanc[csSua].cktdg = true; veBangDg(); $("#hopThoaiDg").modal('hide'); hienTbao("Đã lưu tạm thời. Nhấn Cập Nhật để ghi dữ liệu.", 'tc');
+           dlToanc[csSua].cktdg = true; veBangDg(); $("#hopThoaiDg").modal('hide'); hienTbao('Đã lưu tạm thời. Nhấn Cập Nhật để ghi dữ liệu.', 'tc');
        }
     }
     
     function cnNhieuDg() {
        const dc = dlToanc.filter(r => r.cktdg);
-       if(dc.length===0) return hienTbao("Không có dữ liệu đánh giá mới!", 'loi');
+       if(dc.length===0) return hienTbao('Không có dữ liệu đánh giá mới!', 'loi');
        $("#vungTai").show();
        goiMyChuHien('luuNhieuDgia', {mangDl: dc, vTro: ndHtai.vTro})
          .then(g => { hienTbao(g.tBao, g.tCong ? 'tc' : 'loi'); if(g.tCong) taiDlBdau(); else $("#vungTai").hide(); })
@@ -679,23 +670,23 @@
         const nf = $("#nhapLocN3").val(); const bd1 = $("#bangTkeNs tbody"); bd1.empty(); const bd2 = $("#bangTkeDg tbody"); bd2.empty();
         let ns = layTuyc(0); if (nf) ns = [String(nf).trim()];
         ns.forEach(y => {
-            let dy = dlToanc.filter(r => String(r[0]).trim() === y && r[5] !== "Đã chuyển");
+            let dy = dlToanc.filter(r => String(r[0]).trim() === y && r[5] !== 'Đã chuyển');
             if (dy.length === 0) return;
-            let ts = dy.length; let ng1 = dy.filter(r => r[3] === "Nữ").length; let dnc = dy.filter(r => r[7] && r[7] !== "Kinh").length; let ndt = dy.filter(r => r[3] === "Nữ" && r[7] && r[7] !== "Kinh").length; let dvi = dy.filter(r => r[15] && (String(r[15]).toLowerCase() === "x")).length; let ndv = dy.filter(r => r[3] === "Nữ" && r[15] && (String(r[15]).toLowerCase() === "x")).length; let ddt = dy.filter(r => r[7] && r[7] !== "Kinh" && r[15] && (String(r[15]).toLowerCase() === "x")).length;
-            let cql = dy.filter(r => r[16] && r[16].includes("Quản lý")).length; let cgv = dy.filter(r => r[16] && r[16].includes("Giáo viên")).length; let cnv = dy.filter(r => r[16] && r[16].includes("Nhân viên")).length;
-            let ctd1 = dy.filter(r => { let v = (r[20]||"").toLowerCase(); return v.includes("trên") || v.includes("thạc sĩ") || v.includes("tiến sĩ"); }).length; let ctd2 = dy.filter(r => { let v = (r[20]||"").toLowerCase(); return v.includes("đại học") && !v.includes("trên"); }).length; let ctd3 = dy.filter(r => (r[20]||"").toLowerCase().includes("cao đẳng")).length; let ctd4 = dy.filter(r => (r[20]||"").toLowerCase().includes("trung cấp")).length; let ctd5 = dy.filter(r => { let v = (r[20]||"").toLowerCase(); return !v.includes("trên") && !v.includes("thạc sĩ") && !v.includes("tiến sĩ") && !v.includes("đại học") && !v.includes("cao đẳng") && !v.includes("trung cấp"); }).length;
-            let h1 = dy.filter(r => r[19] === "TH-H1").length; let h2 = dy.filter(r => r[19] === "TH-H2").length; let h3 = dy.filter(r => r[19] === "TH-H3").length; let h4 = dy.filter(r => r[19] === "TH-H4").length; let hk = dy.filter(r => r[19] === "TH_Khác").length;
-            let ll1 = dy.filter(r => r[21] === "Cao cấp").length; let ll2 = dy.filter(r => r[21] === "Trung cấp").length; let ll3 = dy.filter(r => r[21] === "Sơ cấp").length;
+            let ts = dy.length; let ng1 = dy.filter(r => r[3] === 'Nữ').length; let dnc = dy.filter(r => r[7] && r[7] !== 'Kinh').length; let ndt = dy.filter(r => r[3] === 'Nữ' && r[7] && r[7] !== 'Kinh').length; let dvi = dy.filter(r => r[15] && (String(r[15]).toLowerCase() === 'x')).length; let ndv = dy.filter(r => r[3] === 'Nữ' && r[15] && (String(r[15]).toLowerCase() === 'x')).length; let ddt = dy.filter(r => r[7] && r[7] !== 'Kinh' && r[15] && (String(r[15]).toLowerCase() === 'x')).length;
+            let cql = dy.filter(r => r[16] && r[16].includes('Quản lý')).length; let cgv = dy.filter(r => r[16] && r[16].includes('Giáo viên')).length; let cnv = dy.filter(r => r[16] && r[16].includes('Nhân viên')).length;
+            let ctd1 = dy.filter(r => { let v = (r[20]||'').toLowerCase(); return v.includes('trên') || v.includes('thạc sĩ') || v.includes('tiến sĩ'); }).length; let ctd2 = dy.filter(r => { let v = (r[20]||'').toLowerCase(); return v.includes('đại học') && !v.includes('trên'); }).length; let ctd3 = dy.filter(r => (r[20]||'').toLowerCase().includes('cao đẳng')).length; let ctd4 = dy.filter(r => (r[20]||'').toLowerCase().includes('trung cấp')).length; let ctd5 = dy.filter(r => { let v = (r[20]||'').toLowerCase(); return !v.includes('trên') && !v.includes('thạc sĩ') && !v.includes('tiến sĩ') && !v.includes('đại học') && !v.includes('cao đẳng') && !v.includes('trung cấp'); }).length;
+            let h1 = dy.filter(r => r[19] === 'TH-H1').length; let h2 = dy.filter(r => r[19] === 'TH-H2').length; let h3 = dy.filter(r => r[19] === 'TH-H3').length; let h4 = dy.filter(r => r[19] === 'TH-H4').length; let hk = dy.filter(r => r[19] === 'TH_Khác').length;
+            let ll1 = dy.filter(r => r[21] === 'Cao cấp').length; let ll2 = dy.filter(r => r[21] === 'Trung cấp').length; let ll3 = dy.filter(r => r[21] === 'Sơ cấp').length;
             bd1.append(`<tr><td class="fw-bold text-primary">${y}</td><td>${ts}</td><td>${ng1}</td><td>${dnc}</td><td>${ndt}</td><td>${dvi}</td><td>${ndv}</td><td>${ddt}</td><td>${cql}</td><td>${cgv}</td><td>${cnv}</td><td>${ctd1}</td><td>${ctd2}</td><td>${ctd3}</td><td>${ctd4}</td><td>${ctd5}</td><td>${h1}</td><td>${h2}</td><td>${h3}</td><td>${h4}</td><td>${hk}</td><td>${ll1}</td><td>${ll2}</td><td>${ll3}</td></tr>`);
             
-            let g1 = dy.filter(r => r[22] === "Giỏi").length; let k1 = dy.filter(r => r[22] === "Khá").length; let tb1 = dy.filter(r => r[22] === "TB").length; let y1 = dy.filter(r => r[22] === "Yếu").length;
-            let g2 = dy.filter(r => r[23] === "Giỏi").length; let k2 = dy.filter(r => r[23] === "Khá").length; let tb2 = dy.filter(r => r[23] === "TB").length; let y2 = dy.filter(r => r[23] === "Yếu").length;
-            let cn1 = dy.filter(r => r[24] === "Tốt").length; let cn2 = dy.filter(r => r[24] === "Khá").length; let cn3 = dy.filter(r => r[24] === "TB").length;
-            let xs1 = dy.filter(r => { let v = (r[25]||"").toLowerCase(); return v.includes("htxs") || v.includes("xs") || v.includes("xuất sắc"); }).length; let xs2 = dy.filter(r => { let v = (r[25]||"").toLowerCase(); return v.includes("htt") || v.includes("tốt"); }).length; let xs3 = dy.filter(r => { let v = (r[25]||"").toLowerCase(); return v.includes("cht") || v.includes("chưa") || v.includes("không") || v.includes("kht"); }).length; let xs4 = dy.filter(r => { let v = (r[25]||"").toLowerCase(); return (v.includes("ht") || v.includes("hoàn thành")) && !(v.includes("htxs") || v.includes("xs") || v.includes("xuất sắc") || v.includes("htt") || v.includes("tốt") || v.includes("cht") || v.includes("chưa") || v.includes("không") || v.includes("kht")); }).length;
-            let dv1 = dy.filter(r => { let v = (r[29]||"").toLowerCase(); return v.includes("htxs") || v.includes("xs") || v.includes("xuất sắc"); }).length; let dv2 = dy.filter(r => { let v = (r[29]||"").toLowerCase(); return v.includes("htt") || (v.includes("tốt") && !v.includes("không")); }).length; let dv3 = dy.filter(r => { let v = (r[29]||"").toLowerCase(); return v.includes("cht") || v.includes("chưa") || v.includes("không") || v.includes("kht"); }).length; let dv4 = dy.filter(r => { let v = (r[29]||"").toLowerCase(); return (v.includes("ht") || v.includes("hoàn thành")) && !(v.includes("htxs") || v.includes("xs") || v.includes("xuất sắc") || v.includes("htt") || v.includes("tốt") || v.includes("cht") || v.includes("chưa") || v.includes("không") || v.includes("kht")); }).length;
-            let dh1 = dy.filter(r => (r[26]||"").toLowerCase().includes("trường")).length; let dh2 = dy.filter(r => { let v = (r[26]||"").toLowerCase(); return v.includes("huyện") || v.includes("tp") || v.includes("thành phố"); }).length; let dh3 = dy.filter(r => (r[26]||"").toLowerCase().includes("tỉnh")).length; let dh4 = dy.filter(r => (r[26]||"").toLowerCase().includes("quốc gia") || (r[26]||"").toLowerCase().includes("qg")).length;
-            let td1 = dy.filter(r => r[27] === "LĐTT").length; let td2 = dy.filter(r => r[27] === "CSTĐ").length; let td3 = dy.filter(r => r[27] === "Bằng khen").length; let td4 = dy.filter(r => (r[27]||\"\").toLowerCase().includes("huân chương")).length; let td5 = dy.filter(r => (r[27]||\"\").toLowerCase().includes("huy chương")).length;
-            let kh1 = dy.filter(r => (r[28]||\"\").toLowerCase().includes("xã")).length; let kh2 = dy.filter(r => (r[28]||\"\").toLowerCase().includes("huyện")).length; let kh3 = dy.filter(r => (r[28]||\"\").toLowerCase().includes("tỉnh")).length; let kh4 = dy.filter(r => (r[28]||\"\").toLowerCase().includes("bộ")).length; let kh5 = dy.filter(r => (r[28]||\"\").toLowerCase().includes("chính phủ") || (r[28]||\"\").toLowerCase().includes("cp")).length;
+            let g1 = dy.filter(r => r[22] === 'Giỏi').length; let k1 = dy.filter(r => r[22] === 'Khá').length; let tb1 = dy.filter(r => r[22] === 'TB').length; let y1 = dy.filter(r => r[22] === 'Yếu').length;
+            let g2 = dy.filter(r => r[23] === 'Giỏi').length; let k2 = dy.filter(r => r[23] === 'Khá").length; let tb2 = dy.filter(r => r[23] === 'TB').length; let y2 = dy.filter(r => r[23] === 'Yếu').length;
+            let cn1 = dy.filter(r => r[24] === 'Tốt').length; let cn2 = dy.filter(r => r[24] === 'Khá').length; let cn3 = dy.filter(r => r[24] === 'TB').length;
+            let xs1 = dy.filter(r => { let v = (r[25]||'').toLowerCase(); return v.includes('htxs') || v.includes('xs') || v.includes('xuất sắc'); }).length; let xs2 = dy.filter(r => { let v = (r[25]||'').toLowerCase(); return v.includes('htt') || v.includes('tốt'); }).length; let xs3 = dy.filter(r => { let v = (r[25]||'').toLowerCase(); return v.includes('cht') || v.includes('chưa') || v.includes('không') || v.includes('kht'); }).length; let xs4 = dy.filter(r => { let v = (r[25]||'').toLowerCase(); return (v.includes('ht') || v.includes('hoàn thành')) && !(v.includes('htxs') || v.includes('xs') || v.includes('xuất sắc') || v.includes('htt') || v.includes('tốt') || v.includes('cht') || v.includes('chưa') || v.includes('không') || v.includes('kht')); }).length;
+            let dv1 = dy.filter(r => { let v = (r[29]||'').toLowerCase(); return v.includes('htxs') || v.includes('xs') || v.includes('xuất sắc'); }).length; let dv2 = dy.filter(r => { let v = (r[29]||'').toLowerCase(); return v.includes('htt') || (v.includes('tốt') && !v.includes('không')); }).length; let dv3 = dy.filter(r => { let v = (r[29]||'').toLowerCase(); return v.includes('cht') || v.includes('chưa') || v.includes('không') || v.includes('kht'); }).length; let dv4 = dy.filter(r => { let v = (r[29]||'').toLowerCase(); return (v.includes('ht') || v.includes('hoàn thành')) && !(v.includes('htxs') || v.includes('xs') || v.includes('xuất sắc') || v.includes('htt') || v.includes('tốt') || v.includes('cht') || v.includes('chưa') || v.includes('không') || v.includes('kht')); }).length;
+            let dh1 = dy.filter(r => (r[26]||'').toLowerCase().includes('trường')).length; let dh2 = dy.filter(r => { let v = (r[26]||'').toLowerCase(); return v.includes('huyện') || v.includes('tp') || v.includes('thành phố'); }).length; let dh3 = dy.filter(r => (r[26]||'').toLowerCase().includes('tỉnh')).length; let dh4 = dy.filter(r => (r[26]||'').toLowerCase().includes('quốc gia') || (r[26]||'').toLowerCase().includes('qg')).length;
+            let td1 = dy.filter(r => r[27] === 'LĐTT').length; let td2 = dy.filter(r => r[27] === 'CSTĐ').length; let td3 = dy.filter(r => r[27] === 'Bằng khen').length; let td4 = dy.filter(r => (r[27]||'').toLowerCase().includes('huân chương')).length; let td5 = dy.filter(r => (r[27]||'').toLowerCase().includes('huy chương')).length;
+            let kh1 = dy.filter(r => (r[28]||'').toLowerCase().includes('xã')).length; let kh2 = dy.filter(r => (r[28]||'').toLowerCase().includes('huyện')).length; let kh3 = dy.filter(r => (r[28]||'').toLowerCase().includes('tỉnh')).length; let kh4 = dy.filter(r => (r[28]||'').toLowerCase().includes('bộ')).length; let kh5 = dy.filter(r => (r[28]||'').toLowerCase().includes('chính phủ') || (r[28]||'').toLowerCase().includes('cp')).length;
 
             bd2.append(`<tr><td class="fw-bold text-primary">${y}</td><td>${g1}</td><td>${k1}</td><td>${tb1}</td><td>${y1}</td><td>${g2}</td><td>${k2}</td><td>${tb2}</td><td>${y2}</td><td>${cn1}</td><td>${cn2}</td><td>${cn3}</td><td>${xs1}</td><td>${xs2}</td><td>${xs4}</td><td>${xs3}</td><td>${dv1}</td><td>${dv2}</td><td>${dv4}</td><td>${dv3}</td><td>${dh1}</td><td>${dh2}</td><td>${dh3}</td><td>${dh4}</td><td>${td1}</td><td>${td2}</td><td>${td3}</td><td>${td4}</td><td>${td5}</td><td>${kh1}</td><td>${kh2}</td><td>${kh3}</td><td>${kh4}</td><td>${kh5}</td></tr>`);
         });
