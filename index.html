@@ -582,15 +582,35 @@
         }).catch(lx => { $("#vungTai").hide(); hienTbao("Lỗi: " + lx, 'loi'); });
     }
 
+    /* BẮT ĐẦU SỬA MẠNH: Ứng dụng thuật toán Khóa Ngầm (Shadow Key) */
     function guiBmNs() {
        const bd = document.getElementById("bmNsu"); let nB = [];
        for(let i=0; i<=16; i++) { let vc = ""; if(i===10) vc = bd.elements['c10'].checked ? "x" : ""; else vc = bd.elements['c'+i].value; nB.push(vc); }
        if(!nB[1]) return hienTbao("Vui lòng nhập họ và tên!", 'loi');
+       
        nB.ckt = true;
-       if(csSua !== -1) { let dgCu = dlToanc[csSua].slice(17); dlToanc[csSua] = nB.concat(dgCu); dlToanc[csSua].ckt=true; }
-       else dlToanc.push(nB);
+       if(csSua !== -1) { 
+           let dgCu = dlToanc[csSua].slice(17); 
+           
+           // Lưu nháp 3 khóa cũ vào cuối mảng để Server biết đường tìm
+           let oldNam = dlToanc[csSua][0];
+           let oldTen = dlToanc[csSua][1];
+           let oldNgay = dlToanc[csSua][2];
+
+           dlToanc[csSua] = nB.concat(dgCu); 
+           
+           // Đẩy khóa cũ vào index dự phòng 30, 31, 32
+           dlToanc[csSua][30] = oldNam;
+           dlToanc[csSua][31] = oldTen;
+           dlToanc[csSua][32] = oldNgay;
+
+           dlToanc[csSua].ckt=true; 
+       } else { 
+           dlToanc.push(nB); 
+       }
        $("#hopThoaiHs").modal('hide'); veBangNs();
     }
+    /* KẾT THÚC KHỐI SỬA MẠNH */
     
     function cnNhieuNs() {
        const dtN = dlToanc.filter(r => r.ckt);
