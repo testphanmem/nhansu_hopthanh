@@ -1,6 +1,7 @@
 <style>
   /* Cấu trúc Modal chuẩn an toàn, không chiếm quyền điều khiển trình duyệt */
-  #upload_modal_cv { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10006; justify-content: center; align-items: center; }
+  /* NÂNG CẤP BẢO MẬT HIỂN THỊ: Ép z-index lên 105055 để không bị Bootstrap Modal che */
+  #upload_modal_cv { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 105055; justify-content: center; align-items: center; }
   .up-container { background: #fff; padding: 20px; border-radius: 8px; width: 450px; max-width: 95%; box-shadow: 0 4px 6px rgba(0,0,0,0.1); font-family: 'Times New Roman', serif; }
   .up-header { border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; text-align: center; }
   .up-box { margin-bottom: 15px; }
@@ -82,35 +83,35 @@
     let CURRENT_ROOT_ID = ""; 
 
     function SCV_OpenUploadModal(btnElement, currentLink, rootId, onlyLink = false) {
-        if (typeof GLOBAL_PERM !== 'undefined' && !GLOBAL_PERM) { toast("⚠️ Không có quyền thao tác!"); return; }
+        if (typeof GLOBAL_PERM !== 'undefined' && !GLOBAL_PERM) { alert('⚠️ Không có quyền thao tác!'); return; }
         
         GLOBAL_BTN_TRIGGER = btnElement;
-        LINK_CAN_XOA_CV = currentLink || "";
-        CURRENT_ROOT_ID = rootId || ""; 
+        LINK_CAN_XOA_CV = currentLink || '';
+        CURRENT_ROOT_ID = rootId || ''; 
         
-        if(!CURRENT_ROOT_ID && !onlyLink) { alert("Lỗi hệ thống: Không xác định được thư mục gốc!"); return; }
+        if(!CURRENT_ROOT_ID && !onlyLink) { alert('Lỗi hệ thống: Không xác định được thư mục gốc!'); return; }
 
-        document.getElementById('upStatusCV').innerText = "";
-        document.getElementById('fileInCV').value = "";
-        document.getElementById('fileLabelCV').innerText = "Nhấn vào đây để chọn file minh chứng";
+        document.getElementById('upStatusCV').innerText = '';
+        document.getElementById('fileInCV').value = '';
+        document.getElementById('fileLabelCV').innerText = 'Nhấn vào đây để chọn file minh chứng';
         
         const txtLink = document.getElementById('txtDirectLinkCV');
-        txtLink.value = "";
+        txtLink.value = '';
         
         document.getElementById('uploadBtnCV').style.opacity = 0.5;
-        document.getElementById('uploadBtnCV').style.pointerEvents = "none";
+        document.getElementById('uploadBtnCV').style.pointerEvents = 'none';
         document.getElementById('newFolderArea').style.display = 'none';
         FILES_CV = [];
 
-        // NÂNG CẤP CHẾ ĐỘ CHỈ LINK
+        // NÂNG CẤP CHẾ ĐỘ CHỈ GÁN LINK
         if(onlyLink) {
-            document.getElementById('tdeModalCV').innerText = "🔗 MINH CHỨNG LINK";
+            document.getElementById('tdeModalCV').innerText = '🔗 MINH CHỨNG LINK';
             document.getElementById('vungChonThuMucCV').style.display = 'none';
             document.getElementById('lblModeFileCV').style.display = 'none';
             document.getElementById('lblModeFolderCV').style.display = 'none';
             document.querySelector('input[name="upModeCV"][value="link"]').checked = true;
         } else {
-            document.getElementById('tdeModalCV').innerText = "📁 VĂN BẢN KÈM THEO";
+            document.getElementById('tdeModalCV').innerText = '📁 VĂN BẢN KÈM THEO';
             document.getElementById('vungChonThuMucCV').style.display = 'block';
             document.getElementById('lblModeFileCV').style.display = 'inline-block';
             document.getElementById('lblModeFolderCV').style.display = 'inline-block';
@@ -121,12 +122,14 @@
         updateWarnDisplayCV();
         document.getElementById('upload_modal_cv').style.display = 'flex';
         
-        // NÂNG CẤP BẢO MẬT HIỂN THỊ: Tự động trỏ chuột vào ô nhập liệu để chống liệt nút
+        // Tự động đẩy con trỏ chuột vào ô nhập liệu để chống liệt nút do form cũ đè
         if(onlyLink) {
             setTimeout(function() {
                 const txtInput = document.getElementById('txtDirectLinkCV');
-                if (txtInput) txtInput.focus();
-            }, 100);
+                if (txtInput) {
+                    txtInput.focus();
+                }
+            }, 200);
         }
         
         if(!onlyLink) loadFoldersCV();
@@ -135,7 +138,7 @@
     function updateWarnDisplayCV() {
         const wMode = document.querySelector('input[name="writeMode"]:checked').value;
         const warnDiv = document.getElementById('warnDeleteCV');
-        if(wMode === 'replace' && LINK_CAN_XOA_CV && LINK_CAN_XOA_CV.trim() !== "") {
+        if(wMode === 'replace' && LINK_CAN_XOA_CV && LINK_CAN_XOA_CV.trim() !== '') {
             warnDiv.style.display = 'block';
         } else {
             warnDiv.style.display = 'none';
@@ -163,11 +166,11 @@
         const n = document.getElementById('txtNewFolderName').value;
         const p = document.getElementById('folderSelectCV').value; 
         if(!n) return;
-        document.getElementById('createFolderStatus').innerText = "⏳ Đang khởi tạo thư mục nội bộ...";
+        document.getElementById('createFolderStatus').innerText = '⏳ Đang khởi tạo thư mục nội bộ...';
         google.script.run.withSuccessHandler(res => {
             if(res.success){
                 const s = document.getElementById('folderSelectCV');
-                s.add(new Option("📂 " + res.name, res.id), s.selectedIndex + 1); 
+                s.add(new Option('📂 ' + res.name, res.id), s.selectedIndex + 1); 
                 s.value = res.id;
                 toggleNewFolderUI();
             }
@@ -189,23 +192,23 @@
        if (mode === 'link') {
            dropzone.style.display = 'none';
            linkArea.style.display = 'block';
-           btn.innerText = "LƯU LINK NÀY NGAY";
-           btn.style.background = "#047857"; 
+           btn.innerText = 'LƯU LINK NÀY NGAY';
+           btn.style.background = '#047857'; 
            
-           document.getElementById('txtDirectLinkCV').value = "";
+           document.getElementById('txtDirectLinkCV').value = '';
            
            updateWarnDisplayCV(); 
            checkDirectLinkCV(); 
        } else {
            dropzone.style.display = 'block';
            linkArea.style.display = 'none';
-           btn.innerText = "TẢI LÊN NGAY";
-           btn.style.background = "#0891b2";
+           btn.innerText = 'TẢI LÊN NGAY';
+           btn.style.background = '#0891b2';
            
-           inp.value = ""; 
-           document.getElementById('fileLabelCV').innerText = "Nhấn vào đây để chọn file minh chứng";
+           inp.value = ''; 
+           document.getElementById('fileLabelCV').innerText = 'Nhấn vào đây để chọn file minh chứng';
            btn.style.opacity = 0.5;
-           btn.style.pointerEvents = "none";
+           btn.style.pointerEvents = 'none';
 
            if (mode === 'folder') { 
                inp.setAttribute('webkitdirectory', ''); 
@@ -224,12 +227,12 @@
     function checkDirectLinkCV() {
         const val = document.getElementById('txtDirectLinkCV').value.trim();
         const btn = document.getElementById('uploadBtnCV');
-        if (val !== "") {
+        if (val !== '') {
             btn.style.opacity = 1;
-            btn.style.pointerEvents = "auto";
+            btn.style.pointerEvents = 'auto';
         } else {
             btn.style.opacity = 0.5;
-            btn.style.pointerEvents = "none";
+            btn.style.pointerEvents = 'none';
         }
     }
 
@@ -241,11 +244,11 @@
             const n = FILES_CV[0].webkitRelativePath.split('/')[0];
             document.getElementById('fileLabelCV').innerText = `📂 ${n} (${FILES_CV.length} files)`; 
          } else { 
-            if(FILES_CV.length === 1) { document.getElementById('fileLabelCV').innerText = "📄 " + FILES_CV[0].name; }
+            if(FILES_CV.length === 1) { document.getElementById('fileLabelCV').innerText = '📄 ' + FILES_CV[0].name; }
             else { document.getElementById('fileLabelCV').innerText = `📄 Đã chọn ${FILES_CV.length} tệp`; }
          }
          document.getElementById('uploadBtnCV').style.opacity = 1;
-         document.getElementById('uploadBtnCV').style.pointerEvents = "auto";
+         document.getElementById('uploadBtnCV').style.pointerEvents = 'auto';
        }
     }
 
@@ -259,32 +262,34 @@
            if (!linkVal) return;
            
            btn.style.opacity = 0.5;
-           btn.style.pointerEvents = "none";
-           st.style.color = "blue";
+           btn.style.pointerEvents = 'none';
+           st.style.color = 'blue';
 
            let finalLinkStr = linkVal;
 
-           if (wMode === 'append' && LINK_CAN_XOA_CV && LINK_CAN_XOA_CV.trim() !== "") {
-               st.innerText = "⏳ Đang gắn kết thêm đường dẫn...";
-               finalLinkStr = LINK_CAN_XOA_CV + "," + linkVal;
+           if (wMode === 'append' && LINK_CAN_XOA_CV && LINK_CAN_XOA_CV.trim() !== '') {
+               st.innerText = '⏳ Đang gắn kết thêm đường dẫn...';
+               finalLinkStr = LINK_CAN_XOA_CV + ',' + linkVal;
                
                setTimeout(() => {
-                   handleUpResultCV({ success: true, fileUrl: finalLinkStr, message: "Đã chèn thêm link thành công!" }, st, btn);
+                   handleUpResultCV({ success: true, fileUrl: finalLinkStr, message: 'Đã chèn thêm link thành công!' }, st, btn);
                }, 300);
            } 
-           else if (wMode === 'replace' && LINK_CAN_XOA_CV && LINK_CAN_XOA_CV.trim() !== "") {
-               st.innerText = "⏳ Đang ghi đè liên kết...";
-               if(typeof google !== 'undefined' && typeof google.script.run.SCV_deleteFileByUrl === 'function') {
+           else if (wMode === 'replace' && LINK_CAN_XOA_CV && LINK_CAN_XOA_CV.trim() !== '') {
+               st.innerText = '⏳ Đang ghi đè liên kết...';
+               
+               if(typeof google !== 'undefined' && typeof google.script !== 'undefined' && typeof google.script.run.SCV_deleteFileByUrl === 'function') {
                    google.script.run.withSuccessHandler(function() {}).withFailureHandler(function() {}).SCV_deleteFileByUrl(LINK_CAN_XOA_CV);
                }
+               
                setTimeout(() => {
-                   handleUpResultCV({ success: true, fileUrl: finalLinkStr, message: "Đã thay thế và gán link mới thành công!" }, st, btn);
+                   handleUpResultCV({ success: true, fileUrl: finalLinkStr, message: 'Đã thay thế và gán link mới thành công!' }, st, btn);
                }, 300);
            } 
            else {
-               st.innerText = "⏳ Đang cập nhật và ghi đè đường dẫn...";
+               st.innerText = '⏳ Đang cập nhật và ghi đè đường dẫn...';
                setTimeout(() => {
-                   handleUpResultCV({ success: true, fileUrl: finalLinkStr, message: "Đã gán link thành công!" }, st, btn);
+                   handleUpResultCV({ success: true, fileUrl: finalLinkStr, message: 'Đã gán link thành công!' }, st, btn);
                }, 300); 
            }
            return;
@@ -294,9 +299,9 @@
        const fId = document.getElementById('folderSelectCV').value || CURRENT_ROOT_ID;
        
        btn.style.opacity = 0.5;
-       btn.style.pointerEvents = "none"; 
-       st.style.color = "blue"; 
-       st.innerText = "⏳ Đang chuẩn bị luồng dữ liệu tải lên...";
+       btn.style.pointerEvents = 'none'; 
+       st.style.color = 'blue'; 
+       st.innerText = '⏳ Đang chuẩn bị luồng dữ liệu tải lên...';
        
        let filesData = [];
        let count = 0;
@@ -308,11 +313,11 @@
            r.onload = e => {
              filesData.push({ fileName: file.name, mimeType: file.type, data: e.target.result.split(',')[1] });
              count++;
-             if (count === FILES_CV.length) {
+             if (count === FILES_CV.length && typeof google !== 'undefined') {
                st.innerText = `⏳ Đang đồng bộ ${FILES_CV.length} tệp lên Hệ thống lưu trữ...`;
                google.script.run.withSuccessHandler(res => { handleUpResultCV(res, st, btn); })
-               .withFailureHandler(err => { st.style.color="red"; st.innerText="❌ "+err.message; btn.style.opacity=1; btn.style.pointerEvents="auto"; })
-               .SCV_uploadMultipleFilesToDrive(filesData, "", fId, LINK_CAN_XOA_CV, wMode);
+               .withFailureHandler(err => { st.style.color='red'; st.innerText='❌ '+err.message; btn.style.opacity=1; btn.style.pointerEvents='auto'; })
+               .SCV_uploadMultipleFilesToDrive(filesData, '', fId, LINK_CAN_XOA_CV, wMode);
              }
            };
            r.readAsDataURL(file);
@@ -325,10 +330,10 @@
            r.onload = e => {
              filesData.push({ fileName: file.name, mimeType: file.type, data: e.target.result.split(',')[1] });
              count++;
-             if (count === FILES_CV.length) {
-               st.innerText = "⏳ Đang đồng bộ cấu trúc thư mục lên Hệ thống...";
+             if (count === FILES_CV.length && typeof google !== 'undefined') {
+               st.innerText = '⏳ Đang đồng bộ cấu trúc thư mục lên Hệ thống...';
                google.script.run.withSuccessHandler(res => { handleUpResultCV(res, st, btn); })
-               .withFailureHandler(err => { st.style.color="red"; st.innerText="❌ "+err.message; btn.style.opacity=1; btn.style.pointerEvents="auto"; })
+               .withFailureHandler(err => { st.style.color='red'; st.innerText='❌ '+err.message; btn.style.opacity=1; btn.style.pointerEvents='auto'; })
                .SCV_uploadFolderEvidence(fId, folderName, filesData, LINK_CAN_XOA_CV, wMode); 
              }
            };
@@ -339,30 +344,29 @@
 
     function handleUpResultCV(res, st, btn) {
        if (res.success) { 
-           st.style.color = "green";
-           st.innerText = "✅ " + res.message; 
+           st.style.color = 'green';
+           st.innerText = '✅ ' + res.message; 
            if (GLOBAL_BTN_TRIGGER) {
-               // Bắt thông tin cho form Đánh Giá nếu có
+               // Cập nhật cho form Đánh giá
                const modalDg = document.getElementById('hopThoaiDg');
                if (modalDg) {
                    const inputLink = modalDg.querySelector('.val-link');
                    if (inputLink) inputLink.value = res.fileUrl;
                }
 
-               // Cập nhật giao diện nếu gọi từ form khác
+               // Cập nhật cho form chung
                const container = GLOBAL_BTN_TRIGGER.parentElement;
                if(container) {
                    let valLink = container.querySelector('.val-link');
                    if(valLink) valLink.value = res.fileUrl; 
                    
-                   const links = res.fileUrl.split(',').map(l => l.trim()).filter(l => l !== "");
+                   const links = res.fileUrl.split(',').map(l => l.trim()).filter(l => l !== '');
                    let displayArea = container.querySelector('.link-display-area');
                    if(displayArea) {
                        displayArea.innerHTML = links.map((url, idx) => `<a href="${url}" target="_blank" class="btn-icon btn-view-icon" title="Xem tài liệu minh chứng ${idx+1}">📎 ${idx+1}</a>`).join('');
                    }
                }
                
-               // Hiển thị lại Ghim trên form Đánh giá
                if (typeof veGhimModal === 'function') {
                    veGhimModal(res.fileUrl);
                }
@@ -370,11 +374,11 @@
            setTimeout(closeUploadModalCV, 1000);
        } 
        else { 
-           st.style.color = "red"; 
-           st.innerText = "❌ " + res.message;
+           st.style.color = 'red'; 
+           st.innerText = '❌ ' + res.message;
            if(btn) {
                btn.style.opacity = 1; 
-               btn.style.pointerEvents = "auto"; 
+               btn.style.pointerEvents = 'auto'; 
            }
        }
     }
