@@ -12,6 +12,9 @@
   .btn-create-folder { border: 1px solid #ccc; background: #f0fdf4; color: #16a34a; width: 40px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 18px; margin-left: 5px; }
   
   #warnDeleteCV { display:none; color:#d97706; font-size:13px; text-align:center; margin-bottom:10px; font-weight:bold; background: #fffbeb; padding: 8px; border-radius: 4px; border: 1px dashed #d97706; }
+  
+  /* NÂNG CẤP BẢO MẬT HIỂN THỊ: Ép thẻ input luôn nhận click */
+  #txtDirectLinkCV { pointer-events: auto !important; }
 </style>
 
 <div id="upload_modal_cv">
@@ -58,7 +61,7 @@
       </div>
 
       <div id="linkInputAreaCV" style="display:none; text-align: left;">
-          <input type="text" id="txtDirectLinkCV" placeholder="Dán đường link (Google Drive hoặc link web trực tiếp .pdf, .jpg...) vào đây..." style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-family: Arial, sans-serif;" oninput="checkDirectLinkCV()" autocomplete="off" spellcheck="false">
+          <input type="text" id="txtDirectLinkCV" placeholder="Dán đường link (Google Drive hoặc link web trực tiếp .pdf, .jpg...) vào đây..." style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-family: Arial, sans-serif;" oninput="checkDirectLinkCV()" autocomplete="off" spellcheck="false" onmousedown="this.focus();">
           <div style="font-size:12px; color:#666; margin-top:5px; font-style: italic;">* Lưu ý: Hỗ trợ link Google Drive đã mở quyền (Bất kỳ ai có liên kết) hoặc link file web trực tiếp. AI chỉ đọc được nếu file không bị khóa mật khẩu.</div>
       </div>
 
@@ -82,13 +85,8 @@
     let LINK_CAN_XOA_CV = ""; 
     let CURRENT_ROOT_ID = ""; 
 
-    // ĐÃ THÊM: Biến tham số onlyLink an toàn
     function SCV_OpenUploadModal(btnElement, currentLink, rootId, onlyLink = false) {
-        if (typeof GLOBAL_PERM !== 'undefined' && !GLOBAL_PERM) { 
-            if(typeof hienTbao === 'function') hienTbao("⚠️ Không có quyền thao tác!", "loi");
-            else alert("⚠️ Không có quyền thao tác!");
-            return; 
-        }
+        if (typeof GLOBAL_PERM !== 'undefined' && !GLOBAL_PERM) { toast("⚠️ Không có quyền thao tác!"); return; }
         
         GLOBAL_BTN_TRIGGER = btnElement;
         LINK_CAN_XOA_CV = currentLink || "";
@@ -108,7 +106,6 @@
         document.getElementById('newFolderArea').style.display = 'none';
         FILES_CV = [];
 
-        // ĐÃ NÂNG CẤP LÕI GIAO DIỆN CHỈ GÁN LINK THEO ĐÚNG YÊU CẦU
         if(onlyLink) {
             document.getElementById('tdeModalCV').innerText = "🔗 MINH CHỨNG LINK";
             document.getElementById('vungChonThuMucCV').style.display = 'none';
@@ -127,7 +124,7 @@
         updateWarnDisplayCV();
         document.getElementById('upload_modal_cv').style.display = 'flex';
         
-        // Tự động kéo con trỏ chuột vào vùng gõ, phá vỡ bẫy liệt phím
+        // Tự động nhảy chuột vào ô nhập
         if(onlyLink) {
             setTimeout(function() {
                 const textLinkInput = document.getElementById('txtDirectLinkCV');
@@ -150,20 +147,13 @@
 
     function loadFoldersCV() {
        const s = document.getElementById('folderSelectCV');
-       if(!s) return;
        s.innerHTML = `<option value="${CURRENT_ROOT_ID}">⏳ Đang tải cấu trúc thư mục...</option>`; 
        s.disabled = true;
-       // Bảo vệ nạp ngầm
-       if (typeof google !== 'undefined' && typeof google.script !== 'undefined') {
-           google.script.run.withSuccessHandler(fs => {
-              s.disabled = false; 
-              s.innerHTML = `<option value="${CURRENT_ROOT_ID}">📂 THƯ MỤC GỐC</option>`;
-              if(fs && fs.length > 0) { fs.forEach(f => { s.add(new Option(f.name, f.id)); }); }
-           }).SCV_getSubFolders(CURRENT_ROOT_ID);
-       } else {
-           s.innerHTML = `<option value="${CURRENT_ROOT_ID}">📂 THƯ MỤC GỐC</option>`;
-           s.disabled = false;
-       }
+       google.script.run.withSuccessHandler(fs => {
+          s.disabled = false; 
+          s.innerHTML = `<option value="${CURRENT_ROOT_ID}">📂 THƯ MỤC GỐC</option>`;
+          if(fs && fs.length > 0) { fs.forEach(f => { s.add(new Option(f.name, f.id)); }); }
+       }).SCV_getSubFolders(CURRENT_ROOT_ID);
     }
 
     function toggleNewFolderUI() { 
@@ -177,16 +167,14 @@
         const p = document.getElementById('folderSelectCV').value; 
         if(!n) return;
         document.getElementById('createFolderStatus').innerText = "⏳ Đang khởi tạo thư mục nội bộ...";
-        if (typeof google !== 'undefined') {
-            google.script.run.withSuccessHandler(res => {
-                if(res.success){
-                    const s = document.getElementById('folderSelectCV');
-                    s.add(new Option("📂 " + res.name, res.id), s.selectedIndex + 1); 
-                    s.value = res.id;
-                    toggleNewFolderUI();
-                }
-            }).SCV_createNewFolder(p, n);
-        }
+        google.script.run.withSuccessHandler(res => {
+            if(res.success){
+                const s = document.getElementById('folderSelectCV');
+                s.add(new Option("📂 " + res.name, res.id), s.selectedIndex + 1); 
+                s.value = res.id;
+                toggleNewFolderUI();
+            }
+        }).SCV_createNewFolder(p, n);
     }
 
     function closeUploadModalCV() {
@@ -323,7 +311,7 @@
            r.onload = e => {
              filesData.push({ fileName: file.name, mimeType: file.type, data: e.target.result.split(',')[1] });
              count++;
-             if (count === FILES_CV.length && typeof google !== 'undefined') {
+             if (count === FILES_CV.length) {
                st.innerText = `⏳ Đang đồng bộ ${FILES_CV.length} tệp lên Hệ thống lưu trữ...`;
                google.script.run.withSuccessHandler(res => { handleUpResultCV(res, st, btn); })
                .withFailureHandler(err => { st.style.color="red"; st.innerText="❌ "+err.message; btn.style.opacity=1; btn.style.pointerEvents="auto"; })
@@ -340,7 +328,7 @@
            r.onload = e => {
              filesData.push({ fileName: file.name, mimeType: file.type, data: e.target.result.split(',')[1] });
              count++;
-             if (count === FILES_CV.length && typeof google !== 'undefined') {
+             if (count === FILES_CV.length) {
                st.innerText = "⏳ Đang đồng bộ cấu trúc thư mục lên Hệ thống...";
                google.script.run.withSuccessHandler(res => { handleUpResultCV(res, st, btn); })
                .withFailureHandler(err => { st.style.color="red"; st.innerText="❌ "+err.message; btn.style.opacity=1; btn.style.pointerEvents="auto"; })
@@ -357,14 +345,12 @@
            st.style.color = "green";
            st.innerText = "✅ " + res.message; 
            if (GLOBAL_BTN_TRIGGER) {
-               // Phản hồi về Modal Đánh giá
                const modalDg = document.getElementById('hopThoaiDg');
                if (modalDg) {
                    const inputLink = modalDg.querySelector('.val-link');
                    if (inputLink) inputLink.value = res.fileUrl;
                }
 
-               // Phản hồi về Form nhân sự gốc
                const container = GLOBAL_BTN_TRIGGER.parentElement;
                if(container) {
                    let valLink = container.querySelector('.val-link');
@@ -377,7 +363,6 @@
                    }
                }
                
-               // Cập nhật Ghim hiển thị dưới tên
                if (typeof veGhimModal === 'function') {
                    veGhimModal(res.fileUrl);
                }
