@@ -627,6 +627,7 @@
     function goMinhChungDg(btn) {
         try {
             let lHtai = $("#mcLinkDg").val();
+            // Gọi hàm an toàn qua window object
             if (typeof window.SCV_OpenUploadModal === 'function') {
                 window.SCV_OpenUploadModal(btn, lHtai, "ROOT_FOLDER_ID", true); 
             } else {
