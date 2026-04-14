@@ -623,10 +623,22 @@
        $("#hopThoaiDg").modal('show');
     }
 
+    // ==========================================
+    // NÂNG CẤP: GỌI MINH CHỨNG CÓ BẮT LỖI
+    // ==========================================
     function goMinhChungDg(btn) {
-        let lHtai = $("#mcLinkDg").val();
-        // Gọi Modal Minh chứng ở chế độ chỉ Link (đã fix trong file minh chứng)
-        SCV_OpenUploadModal(btn, lHtai, "ROOT_FOLDER_ID", true); 
+        try {
+            let lHtai = $("#mcLinkDg").val();
+            // Kiểm tra xem module NS_MinhChung đã được inject vào DOM chưa
+            if (typeof SCV_OpenUploadModal === 'function') {
+                SCV_OpenUploadModal(btn, lHtai, "ROOT_FOLDER_ID", true); 
+            } else {
+                hienTbao("Lỗi hệ thống: Module minh chứng chưa tải thành công! Vui lòng F5 lại trang.", "loi");
+            }
+        } catch (loi) {
+            hienTbao("Lỗi hiển thị cửa sổ: " + loi.message, "loi");
+            console.error(loi);
+        }
     }
 
     function veGhimModal(lk) {
