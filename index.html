@@ -435,6 +435,29 @@
     </div>
   </div>
 
+  <div class="modal fade" id="hopThoaiXoaNs" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-danger text-white py-2">
+          <h5 class="modal-title fw-bold" style="font-size: 1rem;"><i class="fas fa-trash-alt"></i> XÁC NHẬN XÓA HỒ SƠ</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center py-4">
+          <p style="font-size: 16px; color: #495057; margin-bottom: 10px;">Bạn đang yêu cầu xóa hồ sơ của nhân sự:</p>
+          <p class="fw-bold text-primary mb-2" style="font-size: 18px;" id="tenXoaHthi"></p>
+          <p class="fw-bold text-danger mb-4" style="font-size: 16px;">Năm học: <span id="namXoaHthi"></span></p>
+          <div class="alert alert-warning" role="alert" style="font-size: 13px; text-align: left;">
+            <i class="fas fa-exclamation-triangle"></i> <b>CẢNH BÁO:</b> Dữ liệu này sẽ bị xóa VĨNH VIỄN khỏi hệ thống. Thao tác này không thể hoàn tác!
+          </div>
+        </div>
+        <div class="modal-footer py-2 justify-content-center border-0">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+          <button type="button" class="btn btn-danger fw-bold" onclick="thucThiXoaNs()"><i class="fas fa-trash"></i> Đồng ý xóa</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -591,14 +614,35 @@
     
     function moThem() { csSua=-1; document.getElementById("bmNsu").reset(); $("#nutXoaNs").hide(); $("#hopThoaiHs").modal('show'); }
     
+    // Đã thay thế hàm xoaNs bằng việc gọi giao diện UI Modal mới
     function xoaNs() {
        if (csSua === -1) return;
        const dn = dlToanc[csSua]; 
        const n1 = String(dn[0]).trim(); 
        const n2 = String(dn[1]).trim(); 
-       const n3 = String(dn[2]).trim(); 
        
-       if (!confirm("CẢNH BÁO: Xóa dữ liệu năm " + n1 + "?\nDữ liệu sẽ bị xóa VĨNH VIỄN khỏi hệ thống!")) return;
+       document.getElementById('namXoaHthi').innerText = n1;
+       document.getElementById('tenXoaHthi').innerText = n2;
+       
+       let mEl = document.getElementById('hopThoaiXoaNs');
+       let modalUI = bootstrap.Modal.getInstance(mEl);
+       if (!modalUI) {
+           modalUI = new bootstrap.Modal(mEl);
+       }
+       modalUI.show();
+    }
+
+    // Hàm mới: Thực thi lệnh xóa sau khi xác nhận trên Modal
+    function thucThiXoaNs() {
+       let mEl = document.getElementById('hopThoaiXoaNs');
+       let modalUI = bootstrap.Modal.getInstance(mEl);
+       if(modalUI) modalUI.hide();
+
+       if (csSua === -1) return;
+       const dn = dlToanc[csSua]; 
+       const n1 = String(dn[0]).trim(); 
+       const n2 = String(dn[1]).trim(); 
+       const n3 = String(dn[2]).trim(); 
        
        $("#vungTai").show();
        goiMyChuHien('xoaNsu', {nam: n1, mso: n2, ngaysinh: n3, tKhoan: ndHtai.tKhoan, vTro: ndHtai.vTro})
@@ -617,7 +661,6 @@
        if(!nB[1]) return hienTbao("Vui lòng nhập họ và tên!", 'loi');
        
        if(csSua !== -1) {
-           // Sửa thuật toán: So chiếu trực tiếp giá trị của Cột A (index 0) đang hiện trên bảng với giá trị ở Form
            let hienTaiNam = String(dlToanc[csSua][0]).trim();
            let formNam = String(nB[0]).trim();
            
@@ -626,7 +669,6 @@
                document.getElementById('namMoiHthi').innerText = formNam;
                mangDuLieuTam = nB; 
                
-               // Khắc phục lỗi kẹt Modal bằng cách dùng getInstance trước khi tạo mới
                let mEl = document.getElementById('hopThoaiChuyenNam');
                let modalUI = bootstrap.Modal.getInstance(mEl);
                if (!modalUI) {
@@ -661,7 +703,6 @@
        if(csSua !== -1) { 
            let dgCu = dlToanc[csSua].slice(17, 34); 
            
-           // Các khóa lưu vết an toàn (34, 35, 36) âm thầm phục vụ máy chủ tìm kiếm dòng gốc
            let backupNam = (dlToanc[csSua][34] !== undefined && dlToanc[csSua][34] !== "") ? dlToanc[csSua][34] : dlToanc[csSua][0];
            let backupMso = (dlToanc[csSua][35] !== undefined && dlToanc[csSua][35] !== "") ? dlToanc[csSua][35] : dlToanc[csSua][1];
            let backupNgay = (dlToanc[csSua][36] !== undefined && dlToanc[csSua][36] !== "") ? dlToanc[csSua][36] : dlToanc[csSua][2];
