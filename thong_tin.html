@@ -135,6 +135,21 @@
 <script>
     function veBangNs() {
        const ln = $("#nhapLocN1").val(); const chT = $("#nhapTimKiemNs").val().toLowerCase(); const tv = $("#khuBangNs tbody"); tv.empty();
+       
+       // BẮT ĐẦU THÊM MỚI: Thuật toán sắp xếp theo Năm học và Tên
+       dlToanc.sort((a, b) => {
+           let nA = String(a[0] || "").trim(), nB = String(b[0] || "").trim();
+           if (nA !== nB) return nB.localeCompare(nA); // Năm học giảm dần
+           
+           // Tách Tên từ cột Họ và Tên (cột 1)
+           let htA = String(a[1] || "").trim().split(' '), tA = htA[htA.length - 1].toLowerCase();
+           let htB = String(b[1] || "").trim().split(' '), tB = htB[htB.length - 1].toLowerCase();
+           
+           if (tA !== tB) return tA.localeCompare(tB, 'vi'); // So sánh theo chuẩn chữ cái Tiếng Việt
+           return String(a[1] || "").trim().localeCompare(String(b[1] || "").trim(), 'vi'); // Nếu trùng Tên thì so sánh cả Họ Đệm
+       });
+       // KẾT THÚC THÊM MỚI
+
        dlToanc.forEach((dg, v) => {
           let nc = String(dg[0]).trim();
           if(ln && nc !== String(ln).trim()) return;
