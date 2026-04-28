@@ -584,13 +584,11 @@
         }).catch(lx => { $("#vungTai").hide(); hienTbao("Lỗi: " + lx, 'loi'); });
     }
 
-    /* BẮT ĐẦU SỬA: Tích hợp Hộp thoại xác nhận thông minh khi đổi năm học */
     function guiBmNs() {
        const bd = document.getElementById("bmNsu"); let nB = [];
        for(let i=0; i<=16; i++) { let vc = ""; if(i===10) vc = bd.elements['c10'].checked ? "x" : ""; else vc = bd.elements['c'+i].value; nB.push(vc); }
        if(!nB[1]) return hienTbao("Vui lòng nhập họ và tên!", 'loi');
        
-       // Bước 1: Kiểm tra hành động đổi Năm học
        if(csSua !== -1) {
            let oldNam = dlToanc[csSua][30] !== undefined ? dlToanc[csSua][30] : dlToanc[csSua][0];
            let newNam = nB[0];
@@ -598,14 +596,12 @@
            if (oldNam !== newNam) {
                let xacNhan = confirm("HỆ THỐNG PHÁT HIỆN BẠN VỪA THAY ĐỔI NĂM HỌC!\nTừ [" + oldNam + "] sang [" + newNam + "]\n\n- Bấm [OK]: Nếu bạn muốn CHUYỂN nhân sự này sang năm mới (Tạo bản sao mới và làm sạch Đánh giá).\n- Bấm [Cancel/Hủy]: Nếu bạn chỉ đang SỬA LỖI nhập sai năm học của dòng cũ.");
                if (xacNhan) {
-                   csSua = -1; // Ngắt kết nối dòng cũ, ép hệ thống tạo dòng mới
+                   csSua = -1; 
                }
            }
        }
 
-       // Bước 2: Lưu dữ liệu dựa trên quyết định ở trên
        if(csSua !== -1) { 
-           // Ghi đè dòng cũ
            let dgCu = dlToanc[csSua].slice(17); 
            
            let oldNam = dlToanc[csSua][30] !== undefined ? dlToanc[csSua][30] : dlToanc[csSua][0];
@@ -620,15 +616,12 @@
 
            dlToanc[csSua].ckt=true; 
        } else { 
-           // Tạo bản sao mới (Chuyển năm học) hoặc Thêm mới hoàn toàn
-           // Kỹ thuật chèn độ dài mảng để khớp tuyệt đối với Google Sheet, chống lỗi tràn dải ô
            while(nB.length < 34) { nB.push(""); }
            nB.ckt = true;
            dlToanc.push(nB); 
        }
        $("#hopThoaiHs").modal('hide'); veBangNs();
     }
-    /* KẾT THÚC KHỐI SỬA */
     
     function cnNhieuNs() {
        const dtN = dlToanc.filter(r => r.ckt);
@@ -647,7 +640,10 @@
           if(tk && !dg.join(" ").toLowerCase().includes(tk)) return;
           if(dg[4] === "Đã chuyển") return; 
           
-          let ns = (ndHtai.vTro === 'qtriv') ? `<button class="btn btn-sm btn-success py-0" onclick="moSuaDg(${idx})"><i class="fas fa-edit"></i></button>` : '';
+          // Cập nhật: Mở quyền nút sửa ở bảng Đánh giá cho người dùng khớp tên
+          let cqS = (ndHtai.vTro === 'qtriv') || (ndHtai.vTro === 'ngdung' && String(dg[1]).trim() === String(ndHtai.tenn).trim());
+          let ns = cqS ? `<button class="btn btn-sm btn-success py-0" onclick="moSuaDg(${idx})"><i class="fas fa-edit"></i></button>` : '';
+          
           let dlC = dg.cktdg ? "dongCkt" : ""; let tcP = dg.cktdg ? " <i class='fas fa-pen text-danger' title='Chưa lưu'></i>" : "";
 
           let lk = dg[28] || "";
@@ -687,7 +683,6 @@
     function goMinhChungDg(btn) {
         try {
             let lHtai = $("#mcLinkDg").val();
-            // Gọi hàm an toàn qua window object
             if (typeof window.SCV_OpenUploadModal === 'function') {
                 window.SCV_OpenUploadModal(btn, lHtai, "ROOT_FOLDER_ID", true); 
             } else {
