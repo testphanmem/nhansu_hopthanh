@@ -611,21 +611,27 @@
         }).catch(lx => { $("#vungTai").hide(); hienTbao("Lỗi: " + lx, 'loi'); });
     }
 
-    // Đã thay đổi chỉ số lưu vết sang 34, 35, 36 để tránh trùng đột Cột AE
     function guiBmNs() {
        const bd = document.getElementById("bmNsu"); let nB = [];
        for(let i=0; i<=16; i++) { let vc = ""; if(i===10) vc = bd.elements['c10'].checked ? "x" : ""; else vc = bd.elements['c'+i].value; nB.push(vc); }
        if(!nB[1]) return hienTbao("Vui lòng nhập họ và tên!", 'loi');
        
        if(csSua !== -1) {
-           let oldNam = (dlToanc[csSua][34] !== undefined && dlToanc[csSua][34] !== "") ? dlToanc[csSua][34] : dlToanc[csSua][0];
-           let newNam = nB[0];
+           // Sửa thuật toán: So chiếu trực tiếp giá trị của Cột A (index 0) đang hiện trên bảng với giá trị ở Form
+           let hienTaiNam = String(dlToanc[csSua][0]).trim();
+           let formNam = String(nB[0]).trim();
            
-           if (oldNam !== newNam) {
-               document.getElementById('namCuHthi').innerText = oldNam;
-               document.getElementById('namMoiHthi').innerText = newNam;
+           if (hienTaiNam !== formNam) {
+               document.getElementById('namCuHthi').innerText = hienTaiNam;
+               document.getElementById('namMoiHthi').innerText = formNam;
                mangDuLieuTam = nB; 
-               let modalUI = new bootstrap.Modal(document.getElementById('hopThoaiChuyenNam'));
+               
+               // Khắc phục lỗi kẹt Modal bằng cách dùng getInstance trước khi tạo mới
+               let mEl = document.getElementById('hopThoaiChuyenNam');
+               let modalUI = bootstrap.Modal.getInstance(mEl);
+               if (!modalUI) {
+                   modalUI = new bootstrap.Modal(mEl);
+               }
                modalUI.show();
                return; 
            }
@@ -639,31 +645,33 @@
     }
 
     function xulyXacNhanChuyenNam(laChuyenNamMoi) {
-        let modalUI = bootstrap.Modal.getInstance(document.getElementById('hopThoaiChuyenNam'));
+        let mEl = document.getElementById('hopThoaiChuyenNam');
+        let modalUI = bootstrap.Modal.getInstance(mEl);
         if(modalUI) modalUI.hide();
+        
         thucThiLuuBmNs(mangDuLieuTam, laChuyenNamMoi);
         mangDuLieuTam = null;
     }
 
-    // Đã thay đổi chỉ số lưu vết sang 34, 35, 36 để tránh trùng đột Cột AE
     function thucThiLuuBmNs(nB, isChuyenNamMoi) {
        if (isChuyenNamMoi) {
            csSua = -1; 
        }
 
        if(csSua !== -1) { 
-           let dgCu = dlToanc[csSua].slice(17); 
+           let dgCu = dlToanc[csSua].slice(17, 34); 
            
-           let oldNam = (dlToanc[csSua][34] !== undefined && dlToanc[csSua][34] !== "") ? dlToanc[csSua][34] : dlToanc[csSua][0];
-           let oldTen = (dlToanc[csSua][35] !== undefined && dlToanc[csSua][35] !== "") ? dlToanc[csSua][35] : dlToanc[csSua][1];
-           let oldNgay = (dlToanc[csSua][36] !== undefined && dlToanc[csSua][36] !== "") ? dlToanc[csSua][36] : dlToanc[csSua][2];
+           // Các khóa lưu vết an toàn (34, 35, 36) âm thầm phục vụ máy chủ tìm kiếm dòng gốc
+           let backupNam = (dlToanc[csSua][34] !== undefined && dlToanc[csSua][34] !== "") ? dlToanc[csSua][34] : dlToanc[csSua][0];
+           let backupMso = (dlToanc[csSua][35] !== undefined && dlToanc[csSua][35] !== "") ? dlToanc[csSua][35] : dlToanc[csSua][1];
+           let backupNgay = (dlToanc[csSua][36] !== undefined && dlToanc[csSua][36] !== "") ? dlToanc[csSua][36] : dlToanc[csSua][2];
 
            while(nB.length < 17) { nB.push(""); }
            dlToanc[csSua] = nB.concat(dgCu); 
            
-           dlToanc[csSua][34] = oldNam;
-           dlToanc[csSua][35] = oldTen;
-           dlToanc[csSua][36] = oldNgay;
+           dlToanc[csSua][34] = backupNam;
+           dlToanc[csSua][35] = backupMso;
+           dlToanc[csSua][36] = backupNgay;
 
            dlToanc[csSua].ckt=true; 
        } else { 
