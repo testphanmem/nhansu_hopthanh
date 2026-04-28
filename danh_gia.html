@@ -88,6 +88,21 @@
 <script>
     function veBangDg() {
        const nl = $("#nhapLocN2").val(); const tk = $("#nhapTimKiemDg").val().toLowerCase(); const vb = $("#khuBangDg tbody"); vb.empty();
+       
+       // BẮT ĐẦU THÊM MỚI: Thuật toán sắp xếp theo Năm học và Tên
+       dlToanc.sort((a, b) => {
+           let nA = String(a[0] || "").trim(), nB = String(b[0] || "").trim();
+           if (nA !== nB) return nB.localeCompare(nA); // Năm học giảm dần
+           
+           // Tách Tên từ cột Họ và Tên (cột 1)
+           let htA = String(a[1] || "").trim().split(' '), tA = htA[htA.length - 1].toLowerCase();
+           let htB = String(b[1] || "").trim().split(' '), tB = htB[htB.length - 1].toLowerCase();
+           
+           if (tA !== tB) return tA.localeCompare(tB, 'vi'); // So sánh theo chuẩn chữ cái Tiếng Việt
+           return String(a[1] || "").trim().localeCompare(String(b[1] || "").trim(), 'vi'); // Nếu trùng Tên thì so sánh cả Họ Đệm
+       });
+       // KẾT THÚC THÊM MỚI
+
        dlToanc.forEach((dg, idx) => {
           let nc = String(dg[0]).trim();
           if(nl && nc !== String(nl).trim()) return;
@@ -99,7 +114,7 @@
           
           let dlC = dg.cktdg ? "dongCkt" : ""; let tcP = dg.cktdg ? " <i class='fas fa-pen text-danger' title='Chưa lưu'></i>" : "";
 
-          // Sửa lại chuẩn cột 28 theo đúng CSDL của hệ thống gốc
+          // Chuẩn cột 28 theo đúng CSDL của hệ thống gốc
           let lk = dg[28] || "";
           let dsL = lk.split(',').map(l => l.trim()).filter(l => l !== "");
           let htiGhim = dsL.length > 0 ? `<div class="vungGhimLink mt-1" id="vungGhim_${idx}">${dsL.map((u, i) => `<a href="${u}" target="_blank" style="margin-right: 12px; display: inline-block; text-decoration: none; font-weight: bold; border-bottom: 1px solid #0d6efd; padding-bottom: 1px;">📎${i+1}</a>`).join('')}</div>` : "";
@@ -127,7 +142,7 @@
        fr.elements['w'].value = dr[17]||""; fr.elements['x'].value = dr[18]||""; fr.elements['y'].value = dr[19]||""; fr.elements['z'].value = dr[20]||"";
        fr.elements['aa'].value = dr[21]||""; fr.elements['ab'].value = dr[22]||""; fr.elements['ac'].value = dr[23]||""; fr.elements['ad'].value = dr[24]||"";
        
-       // Sửa lại chuẩn cột 28
+       // Chuẩn cột 28
        let lk = dr[28] || "";
        $("#mcLinkDg").val(lk);
        veGhimModal(lk);
@@ -159,7 +174,7 @@
        if (csSua !== -1) {
            dlToanc[csSua][17] = fd.elements['w'].value; dlToanc[csSua][18] = fd.elements['x'].value; dlToanc[csSua][19] = fd.elements['y'].value; dlToanc[csSua][20] = fd.elements['z'].value; dlToanc[csSua][21] = fd.elements['aa'].value; dlToanc[csSua][22] = fd.elements['ab'].value; dlToanc[csSua][23] = fd.elements['ac'].value; dlToanc[csSua][24] = fd.elements['ad'].value; 
            
-           // Sửa lại chuẩn cột 28
+           // Chuẩn cột 28
            dlToanc[csSua][28] = $("#mcLinkDg").val();
 
            dlToanc[csSua].cktdg = true; veBangDg(); $("#hopThoaiDg").modal('hide'); hienTbao("Đã lưu tạm thời. Nhấn Cập Nhật để ghi dữ liệu.", 'tc');
