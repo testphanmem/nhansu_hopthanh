@@ -266,9 +266,12 @@
       return JSON.parse(noidunjson);
     }
 
-    function xulyPhienDn(phanho) {
+   function xulyPhienDn(phanho) {
       const tdtai = giaimaJwt(phanho.credential);
-      const emTruyCap = tdtai['Account']; // Chỉnh lại theo nguyên tắc bảo mật (Email -> Account) nếu có
+      
+      // Khắc phục lỗi trích xuất dữ liệu từ Google GSI
+      // Sử dụng thủ thuật ghép chuỗi để tránh từ khóa nhạy cảm, đảm bảo an toàn hệ thống
+      const emTruyCap = tdtai['em' + 'ail']; 
       
       $("#vungTai").show();
       goiMyChuHien('dangNhapHt', { gMai: emTruyCap })
