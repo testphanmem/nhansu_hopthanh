@@ -542,7 +542,6 @@
           if(ln && nc !== String(ln).trim()) return;
           if(chT && !dg.join(" ").toLowerCase().includes(chT)) return;
           
-          // Đã cập nhật: Đối chiếu chính xác Họ và Tên (dg[1]) với Tên của tài khoản (ndHtai.tenn)
           let cqS = (ndHtai.vTro === 'qtriv') || (ndHtai.vTro === 'ngdung' && String(dg[1]).trim() === String(ndHtai.tenn).trim());
           
           let ntS = cqS ? `<button class="btn btn-sm btn-warning py-0" onclick="suaDong(${v})"><i class="fas fa-edit"></i></button>` : '';
@@ -602,12 +601,14 @@
        }
 
        if(csSua !== -1) { 
+           // Sửa theo nguyên tắc Cột R: Giữ mảng đánh giá từ index 17 đến 33
            let dgCu = dlToanc[csSua].slice(17); 
            
            let oldNam = dlToanc[csSua][30] !== undefined ? dlToanc[csSua][30] : dlToanc[csSua][0];
            let oldTen = dlToanc[csSua][31] !== undefined ? dlToanc[csSua][31] : dlToanc[csSua][1];
            let oldNgay = dlToanc[csSua][32] !== undefined ? dlToanc[csSua][32] : dlToanc[csSua][2];
 
+           while(nB.length < 17) { nB.push(""); }
            dlToanc[csSua] = nB.concat(dgCu); 
            
            dlToanc[csSua][30] = oldNam;
@@ -640,16 +641,17 @@
           if(tk && !dg.join(" ").toLowerCase().includes(tk)) return;
           if(dg[4] === "Đã chuyển") return; 
           
-          // Cập nhật: Mở quyền nút sửa ở bảng Đánh giá cho người dùng khớp tên
           let cqS = (ndHtai.vTro === 'qtriv') || (ndHtai.vTro === 'ngdung' && String(dg[1]).trim() === String(ndHtai.tenn).trim());
           let ns = cqS ? `<button class="btn btn-sm btn-success py-0" onclick="moSuaDg(${idx})"><i class="fas fa-edit"></i></button>` : '';
           
           let dlC = dg.cktdg ? "dongCkt" : ""; let tcP = dg.cktdg ? " <i class='fas fa-pen text-danger' title='Chưa lưu'></i>" : "";
 
-          let lk = dg[28] || "";
+          // Cột Link AH ứng với index 33
+          let lk = dg[33] || "";
           let dsL = lk.split(',').map(l => l.trim()).filter(l => l !== "");
           let htiGhim = dsL.length > 0 ? `<div class="vungGhimLink mt-1" id="vungGhim_${idx}">${dsL.map((u, i) => `<a href="${u}" target="_blank" style="margin-right: 12px; display: inline-block; text-decoration: none; font-weight: bold; border-bottom: 1px solid #0d6efd; padding-bottom: 1px;">📎${i+1}</a>`).join('')}</div>` : "";
           
+          // Sửa theo nguyên tắc Cột R: Từ index 17 đến 24
           vb.append(`<tr class="${dlC}">
               <td class="text-center">${ns}</td>
               <td class="fw-bold">${dg[0]}</td>
@@ -670,10 +672,11 @@
     function moSuaDg(idx) {
        csSua = idx; const dr = dlToanc[idx]; $("#vungNamDg").text(dr[0]); $("#vungTenDg").text(dr[1]); $("#vungMsoDg").val(dr[1]);
        const fr = document.getElementById("bmDgia"); fr.reset();
+       // Sửa theo nguyên tắc Cột R
        fr.elements['w'].value = dr[17]||""; fr.elements['x'].value = dr[18]||""; fr.elements['y'].value = dr[19]||""; fr.elements['z'].value = dr[20]||"";
        fr.elements['aa'].value = dr[21]||""; fr.elements['ab'].value = dr[22]||""; fr.elements['ac'].value = dr[23]||""; fr.elements['ad'].value = dr[24]||"";
        
-       let lk = dr[28] || "";
+       let lk = dr[33] || "";
        $("#mcLinkDg").val(lk);
        veGhimModal(lk);
 
@@ -702,9 +705,10 @@
     function guiBmDg() {
        const fd = document.getElementById("bmDgia");
        if (csSua !== -1) {
+           // Sửa theo nguyên tắc Cột R
            dlToanc[csSua][17] = fd.elements['w'].value; dlToanc[csSua][18] = fd.elements['x'].value; dlToanc[csSua][19] = fd.elements['y'].value; dlToanc[csSua][20] = fd.elements['z'].value; dlToanc[csSua][21] = fd.elements['aa'].value; dlToanc[csSua][22] = fd.elements['ab'].value; dlToanc[csSua][23] = fd.elements['ac'].value; dlToanc[csSua][24] = fd.elements['ad'].value; 
            
-           dlToanc[csSua][28] = $("#mcLinkDg").val();
+           dlToanc[csSua][33] = $("#mcLinkDg").val();
 
            dlToanc[csSua].cktdg = true; veBangDg(); $("#hopThoaiDg").modal('hide'); hienTbao("Đã lưu tạm thời. Nhấn Cập Nhật để ghi dữ liệu.", 'tc');
        }
@@ -740,6 +744,7 @@
             let ll1 = dy.filter(r => r[16] === "Cao cấp").length; let ll2 = dy.filter(r => r[16] === "Trung cấp").length; let ll3 = dy.filter(r => r[16] === "Sơ cấp").length;
             bd1.append(`<tr><td class="fw-bold text-primary">${y}</td><td>${ts}</td><td>${ng1}</td><td>${dnc}</td><td>${ndt}</td><td>${dvi}</td><td>${ndv}</td><td>${ddt}</td><td>${cql}</td><td>${cgv}</td><td>${cnv}</td><td>${ctd1}</td><td>${ctd2}</td><td>${ctd3}</td><td>${ctd4}</td><td>${ctd5}</td><td>${h1}</td><td>${h2}</td><td>${h3}</td><td>${h4}</td><td>${hk}</td><td>${ll1}</td><td>${ll2}</td><td>${ll3}</td></tr>`);
             
+            // Sửa theo nguyên tắc Cột R: Từ index 17 đến 24
             let g1 = dy.filter(r => r[17] === "Giỏi").length; let k1 = dy.filter(r => r[17] === "Khá").length; let tb1 = dy.filter(r => r[17] === "TB").length; let y1 = dy.filter(r => r[17] === "Yếu").length;
             let g2 = dy.filter(r => r[18] === "Giỏi").length; let k2 = dy.filter(r => r[18] === "Khá").length; let tb2 = dy.filter(r => r[18] === "TB").length; let y2 = dy.filter(r => r[18] === "Yếu").length;
             let cn1 = dy.filter(r => r[19] === "Tốt").length; let cn2 = dy.filter(r => r[19] === "Khá").length; let cn3 = dy.filter(r => r[19] === "TB").length;
