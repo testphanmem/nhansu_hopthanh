@@ -272,7 +272,7 @@
                       <thead>
                         <tr>
                           <th rowspan="2" style="vertical-align: middle;">Năm học</th>
-                          <th colspan="4">Xếp loại CM (K Kỳ 1)</th>
+                          <th colspan="4">Xếp loại CM (Kỳ 1)</th>
                           <th colspan="4">Xếp loại CM (Kỳ 2)</th>
                           <th colspan="3">Xếp loại CNN</th>
                           <th colspan="4">Xếp loại Viên chức</th>
@@ -417,7 +417,7 @@
         </div>
         <div class="modal-body text-center py-4">
           <p style="font-size: 15px; color: #495057; margin-bottom: 10px;">Hệ thống ghi nhận sự thay đổi năm học đối với hồ sơ này:</p>
-          <p class="fw-bold text-danger mb-4" style="font-size: 18px;">Từ năm <span id="namCuHthi"></span> chuyển sang <span id="namMoiHthi"></span></p>
+          <p class="fw-bold text-danger mb-4" style="font-size: 18px;">Từ năm [<span id="namCuHthi"></span>] chuyển sang [<span id="namMoiHthi"></span>]</p>
           <p style="font-size: 14px; color: #6c757d; margin-bottom: 20px;">Vui lòng xác định rõ mục đích cập nhật của hệ thống:</p>
           
           <div class="d-grid gap-3 px-3">
@@ -440,7 +440,7 @@
 
   <script>
     let ndHtai = null, dlToanc = [], chinhToanc = [], csSua = -1;
-    let mangDuLieuTam = null; // Biến tạm lưu dữ liệu chờ xác nhận từ Modal
+    let mangDuLieuTam = null; 
     
     function kiemtKhoa() {
         if (typeof hanDung === 'undefined' || !hanDung || hanDung.trim() === "") return true; 
@@ -611,37 +611,33 @@
         }).catch(lx => { $("#vungTai").hide(); hienTbao("Lỗi: " + lx, 'loi'); });
     }
 
-    // Tách quy trình thành 2 hàm để phù hợp xử lý UI Modal phi đồng bộ
+    // Đã thay đổi chỉ số lưu vết sang 34, 35, 36 để tránh trùng đột Cột AE
     function guiBmNs() {
        const bd = document.getElementById("bmNsu"); let nB = [];
        for(let i=0; i<=16; i++) { let vc = ""; if(i===10) vc = bd.elements['c10'].checked ? "x" : ""; else vc = bd.elements['c'+i].value; nB.push(vc); }
        if(!nB[1]) return hienTbao("Vui lòng nhập họ và tên!", 'loi');
        
        if(csSua !== -1) {
-           let oldNam = dlToanc[csSua][30] !== undefined ? dlToanc[csSua][30] : dlToanc[csSua][0];
+           let oldNam = (dlToanc[csSua][34] !== undefined && dlToanc[csSua][34] !== "") ? dlToanc[csSua][34] : dlToanc[csSua][0];
            let newNam = nB[0];
            
            if (oldNam !== newNam) {
-               // Thay vì dùng lệnh confirm cổ điển, chuyển sang dùng UI Modal
                document.getElementById('namCuHthi').innerText = oldNam;
                document.getElementById('namMoiHthi').innerText = newNam;
                mangDuLieuTam = nB; 
                let modalUI = new bootstrap.Modal(document.getElementById('hopThoaiChuyenNam'));
                modalUI.show();
-               return; // Dừng tiến trình ở đây, đợi người dùng thao tác ở UI Modal
+               return; 
            }
        }
 
-       // Nếu không có sự thay đổi năm học, gọi thẳng tiến trình lưu
        thucThiLuuBmNs(nB, false);
     }
     
-    // Xử lý sự kiện hủy trên UI Modal
     function huyChuyenNam() {
         mangDuLieuTam = null;
     }
 
-    // Xử lý sự kiện nhấn nút trên UI Modal
     function xulyXacNhanChuyenNam(laChuyenNamMoi) {
         let modalUI = bootstrap.Modal.getInstance(document.getElementById('hopThoaiChuyenNam'));
         if(modalUI) modalUI.hide();
@@ -649,26 +645,25 @@
         mangDuLieuTam = null;
     }
 
-    // Tiến trình lưu thực sự (chứa thuật toán ghi mảng)
+    // Đã thay đổi chỉ số lưu vết sang 34, 35, 36 để tránh trùng đột Cột AE
     function thucThiLuuBmNs(nB, isChuyenNamMoi) {
        if (isChuyenNamMoi) {
-           csSua = -1; // Cố tình chuyển trạng thái thành Thêm mới
+           csSua = -1; 
        }
 
        if(csSua !== -1) { 
-           // Tuân thủ nguyên tắc Cột R: Giữ mảng đánh giá từ index 17 đến 33
            let dgCu = dlToanc[csSua].slice(17); 
            
-           let oldNam = dlToanc[csSua][30] !== undefined ? dlToanc[csSua][30] : dlToanc[csSua][0];
-           let oldTen = dlToanc[csSua][31] !== undefined ? dlToanc[csSua][31] : dlToanc[csSua][1];
-           let oldNgay = dlToanc[csSua][32] !== undefined ? dlToanc[csSua][32] : dlToanc[csSua][2];
+           let oldNam = (dlToanc[csSua][34] !== undefined && dlToanc[csSua][34] !== "") ? dlToanc[csSua][34] : dlToanc[csSua][0];
+           let oldTen = (dlToanc[csSua][35] !== undefined && dlToanc[csSua][35] !== "") ? dlToanc[csSua][35] : dlToanc[csSua][1];
+           let oldNgay = (dlToanc[csSua][36] !== undefined && dlToanc[csSua][36] !== "") ? dlToanc[csSua][36] : dlToanc[csSua][2];
 
            while(nB.length < 17) { nB.push(""); }
            dlToanc[csSua] = nB.concat(dgCu); 
            
-           dlToanc[csSua][30] = oldNam;
-           dlToanc[csSua][31] = oldTen;
-           dlToanc[csSua][32] = oldNgay;
+           dlToanc[csSua][34] = oldNam;
+           dlToanc[csSua][35] = oldTen;
+           dlToanc[csSua][36] = oldNgay;
 
            dlToanc[csSua].ckt=true; 
        } else { 
@@ -701,12 +696,10 @@
           
           let dlC = dg.cktdg ? "dongCkt" : ""; let tcP = dg.cktdg ? " <i class='fas fa-pen text-danger' title='Chưa lưu'></i>" : "";
 
-          // Cột Link AH ứng với index 33
           let lk = dg[33] || "";
           let dsL = lk.split(',').map(l => l.trim()).filter(l => l !== "");
           let htiGhim = dsL.length > 0 ? `<div class="vungGhimLink mt-1" id="vungGhim_${idx}">${dsL.map((u, i) => `<a href="${u}" target="_blank" style="margin-right: 12px; display: inline-block; text-decoration: none; font-weight: bold; border-bottom: 1px solid #0d6efd; padding-bottom: 1px;">📎${i+1}</a>`).join('')}</div>` : "";
           
-          // Tuân thủ nguyên tắc Cột R: Từ index 17 đến 24
           vb.append(`<tr class="${dlC}">
               <td class="text-center">${ns}</td>
               <td class="fw-bold">${dg[0]}</td>
@@ -727,7 +720,6 @@
     function moSuaDg(idx) {
        csSua = idx; const dr = dlToanc[idx]; $("#vungNamDg").text(dr[0]); $("#vungTenDg").text(dr[1]); $("#vungMsoDg").val(dr[1]);
        const fr = document.getElementById("bmDgia"); fr.reset();
-       // Tuân thủ nguyên tắc Cột R
        fr.elements['w'].value = dr[17]||""; fr.elements['x'].value = dr[18]||""; fr.elements['y'].value = dr[19]||""; fr.elements['z'].value = dr[20]||"";
        fr.elements['aa'].value = dr[21]||""; fr.elements['ab'].value = dr[22]||""; fr.elements['ac'].value = dr[23]||""; fr.elements['ad'].value = dr[24]||"";
        
@@ -760,7 +752,6 @@
     function guiBmDg() {
        const fd = document.getElementById("bmDgia");
        if (csSua !== -1) {
-           // Tuân thủ nguyên tắc Cột R
            dlToanc[csSua][17] = fd.elements['w'].value; dlToanc[csSua][18] = fd.elements['x'].value; dlToanc[csSua][19] = fd.elements['y'].value; dlToanc[csSua][20] = fd.elements['z'].value; dlToanc[csSua][21] = fd.elements['aa'].value; dlToanc[csSua][22] = fd.elements['ab'].value; dlToanc[csSua][23] = fd.elements['ac'].value; dlToanc[csSua][24] = fd.elements['ad'].value; 
            
            dlToanc[csSua][33] = $("#mcLinkDg").val();
@@ -799,7 +790,6 @@
             let ll1 = dy.filter(r => r[16] === "Cao cấp").length; let ll2 = dy.filter(r => r[16] === "Trung cấp").length; let ll3 = dy.filter(r => r[16] === "Sơ cấp").length;
             bd1.append(`<tr><td class="fw-bold text-primary">${y}</td><td>${ts}</td><td>${ng1}</td><td>${dnc}</td><td>${ndt}</td><td>${dvi}</td><td>${ndv}</td><td>${ddt}</td><td>${cql}</td><td>${cgv}</td><td>${cnv}</td><td>${ctd1}</td><td>${ctd2}</td><td>${ctd3}</td><td>${ctd4}</td><td>${ctd5}</td><td>${h1}</td><td>${h2}</td><td>${h3}</td><td>${h4}</td><td>${hk}</td><td>${ll1}</td><td>${ll2}</td><td>${ll3}</td></tr>`);
             
-            // Tuân thủ nguyên tắc Cột R: Từ index 17 đến 24
             let g1 = dy.filter(r => r[17] === "Giỏi").length; let k1 = dy.filter(r => r[17] === "Khá").length; let tb1 = dy.filter(r => r[17] === "TB").length; let y1 = dy.filter(r => r[17] === "Yếu").length;
             let g2 = dy.filter(r => r[18] === "Giỏi").length; let k2 = dy.filter(r => r[18] === "Khá").length; let tb2 = dy.filter(r => r[18] === "TB").length; let y2 = dy.filter(r => r[18] === "Yếu").length;
             let cn1 = dy.filter(r => r[19] === "Tốt").length; let cn2 = dy.filter(r => r[19] === "Khá").length; let cn3 = dy.filter(r => r[19] === "TB").length;
