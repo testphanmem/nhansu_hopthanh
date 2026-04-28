@@ -542,7 +542,9 @@
           if(ln && nc !== String(ln).trim()) return;
           if(chT && !dg.join(" ").toLowerCase().includes(chT)) return;
           
-          let cqS = (ndHtai.vTro === 'qtriv') || (ndHtai.vTro === 'ngdung' && dg[1] == ndHtai.tKhoan);
+          // Đã cập nhật: Đối chiếu chính xác Họ và Tên (dg[1]) với Tên của tài khoản (ndHtai.tenn)
+          let cqS = (ndHtai.vTro === 'qtriv') || (ndHtai.vTro === 'ngdung' && String(dg[1]).trim() === String(ndHtai.tenn).trim());
+          
           let ntS = cqS ? `<button class="btn btn-sm btn-warning py-0" onclick="suaDong(${v})"><i class="fas fa-edit"></i></button>` : '';
           let cdG = dg.ckt ? "dongCkt" : ""; let cpT = dg.ckt ? " <i class='fas fa-pen text-danger' title='Chưa lưu'></i>" : "";
           
