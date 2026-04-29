@@ -104,16 +104,17 @@
 
       <h5 class="fw-bold mb-3" style="color: #b91c1c; font-size: 16px;">Phiên bản: V2.5.2026</h5>
 
-      <!-- BẮT ĐẦU: Bổ sung data-width="320" để làm dài nút Đăng nhập -->
+      <!-- BẮT ĐẦU: Căn giữa tuyệt đối nút Đăng nhập Google -->
       <div id="g_id_onload"
            data-client_id="407480994586-m6fpq6sfcc90qqj9k08rsmi1lge6br94.apps.googleusercontent.com"
            data-callback="xulyPhienDn"
            data-auto_prompt="false">
       </div>
       <div class="d-flex justify-content-center w-100 mb-4 mt-2">
-         <div class="g_id_signin" data-type="standard" data-size="large" data-width="320" data-theme="outline" data-text="continue_with" data-shape="rectangular" data-logo_alignment="center"></div>
+         <!-- Bổ sung lớp mx-auto, style margin 0 auto và width fit-content để khóa chặt khung hiển thị của Google -->
+         <div class="g_id_signin mx-auto" style="width: fit-content; margin: 0 auto; display: flex; justify-content: center;" data-type="standard" data-size="large" data-width="320" data-theme="outline" data-text="continue_with" data-shape="rectangular" data-logo_alignment="center"></div>
       </div>
-      <!-- KẾT THÚC: Điều chỉnh kích thước nút Đăng nhập -->
+      <!-- KẾT THÚC: Căn giữa tuyệt đối nút Đăng nhập Google -->
       
       <div class="w-100 text-center" style="margin-top: 25px; font-size: 13px; font-weight: bold; color: #6c757d;">
          Phát triển bởi<br>HOÀNG NGỌC LÂM
@@ -149,7 +150,7 @@
     <!-- KẾT THÚC: Tinh chỉnh Tiêu đề và Nút Đăng xuất -->
 
     <ul class="nav nav-tabs px-3 mt-1" id="bangChonGoc" role="tablist">
-      <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#muc1" onclick="datTde('THÔNG TIN NHÂN SỰ')">Thông tin nhân sự</button></li>
+      <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#muc1" onclick="datTde('THÔNG TIN NHÂN SỰ')">Thông đón nhân sự</button></li>
       <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#muc2" onclick="datTde('KẾT QUẢ ĐÁNH GIÁ')">Kết quả đánh giá</button></li>
       <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#muc3" onclick="datTde('THỐNG KÊ - TỔNG HỢP')">Tổng hợp</button></li>
     </ul>
