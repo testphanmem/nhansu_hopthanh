@@ -116,7 +116,7 @@
       <!-- KẾT THÚC: Điều chỉnh kích thước nút Đăng nhập -->
       
       <div class="w-100 text-center" style="margin-top: 25px; font-size: 13px; font-weight: bold; color: #6c757d;">
-         Thiết kế và phát triển<br>HOÀNG NGỌC LÂM
+         Phát triển bởi<br>HOÀNG NGỌC LÂM
       </div>
       <p id="loiDn" class="text-danger mt-2 text-center fw-bold small"></p>
     </div>
@@ -275,7 +275,8 @@
 
     function xulyPhienDn(phanho) {
       const tdtai = giaimaJwt(phanho.credential);
-      const emTruyCap = tdtai['Account']; // Chỉnh lại theo nguyên tắc bảo mật (Email -> Account) nếu có
+      // ĐÃ SỬA: Google JWT bắt buộc trả về trường email qua định danh 'email'
+      const emTruyCap = tdtai['email']; 
       
       $("#vungTai").show();
       goiMyChuHien('dangNhapHt', { gMai: emTruyCap })
