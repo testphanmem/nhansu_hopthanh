@@ -165,7 +165,26 @@
     }
 
     function suaDong(chS) {
-       csSua = chS; const dr = dlToanc[chS]; const fm = document.getElementById("bmNsu"); fm.reset(); $("#nutXoaNs").show();
+       csSua = chS; const dr = dlToanc[chS]; const fm = document.getElementById("bmNsu"); fm.reset(); 
+       
+       // BẮT ĐẦU: Xử lý phân quyền khóa giao diện theo cấu hình sheet ThietLap
+       let isKhoaUI = false;
+       // Hệ thống cần truyền giá trị cột C của sh ThietLap vào biến toàn cục 'giaTriCotC_ThietLap'
+       // Nếu bạn sử dụng mảng tĩnh để lưu trữ (ví dụ dlThietLap), bạn có thể đổi điều kiện này thành:
+       // if (typeof dlThietLap !== 'undefined' && String(dlThietLap[dong][2]).trim().toLowerCase() === 'x') { isKhoaUI = true; }
+       if (typeof giaTriCotC_ThietLap !== 'undefined' && String(giaTriCotC_ThietLap).trim().toLowerCase() === 'x') {
+           isKhoaUI = true;
+       }
+
+       if (isKhoaUI) {
+           $("#nutXoaNs").hide(); // Khóa nút Xóa
+           $(fm.elements['c0']).prop('disabled', true); // Khóa ô Năm học
+       } else {
+           $("#nutXoaNs").show(); // Hiển thị nút Xóa
+           $(fm.elements['c0']).prop('disabled', false); // Mở khóa ô Năm học
+       }
+       // KẾT THÚC: Phân quyền khóa giao diện
+       
        for(let i=0; i<=16; i++) {
           let v = dr[i]; if (v === null || v === undefined) v = ""; v = String(v).trim();
           if(i===10) fm.elements['c10'].checked = (v.toLowerCase()==="x" || v==="true");
@@ -174,7 +193,16 @@
        $("#hopThoaiHs").modal('show');
     }
     
-    function moThem() { csSua=-1; document.getElementById("bmNsu").reset(); $("#nutXoaNs").hide(); $("#hopThoaiHs").modal('show'); }
+    function moThem() { 
+       csSua=-1; const fm = document.getElementById("bmNsu"); fm.reset(); 
+       $("#nutXoaNs").hide(); 
+       
+       // BẮT ĐẦU: Đảm bảo luôn mở khóa ô năm học khi thực hiện chức năng Thêm mới
+       $(fm.elements['c0']).prop('disabled', false);
+       // KẾT THÚC
+       
+       $("#hopThoaiHs").modal('show'); 
+    }
     
     function xoaNs() {
        if (csSua === -1) return;
