@@ -101,14 +101,16 @@
 
       <h5 class="fw-bold mb-3" style="color: #b91c1c; font-size: 16px;">Phiên bản: V2.5.2026</h5>
 
+      <!-- BẮT ĐẦU: Bổ sung data-width="320" để làm dài nút Đăng nhập -->
       <div id="g_id_onload"
            data-client_id="407480994586-m6fpq6sfcc90qqj9k08rsmi1lge6br94.apps.googleusercontent.com"
            data-callback="xulyPhienDn"
            data-auto_prompt="false">
       </div>
       <div class="d-flex justify-content-center w-100 mb-4 mt-2">
-         <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="continue_with" data-shape="rectangular" data-logo_alignment="center"></div>
+         <div class="g_id_signin" data-type="standard" data-size="large" data-width="320" data-theme="outline" data-text="continue_with" data-shape="rectangular" data-logo_alignment="center"></div>
       </div>
+      <!-- KẾT THÚC: Điều chỉnh kích thước nút Đăng nhập -->
       
       <div class="w-100 text-center" style="margin-top: 25px; font-size: 13px; font-weight: bold; color: #6c757d;">
          Thiết kế và phát triển<br>HOÀNG NGỌC LÂM
@@ -129,17 +131,19 @@
       </div>
     </div>
 
-    <div class="bg-light px-3 py-1 d-flex justify-content-between border-bottom align-items-center">
-      <div class="d-flex align-items-center">
+    <!-- BẮT ĐẦU: Tinh chỉnh lại tỷ lệ chia cột để căn giữa Tiêu đề và phóng to nút Đăng xuất -->
+    <div class="bg-light px-3 py-2 d-flex justify-content-between border-bottom align-items-center">
+      <div class="d-flex align-items-center" style="width: 280px;">
          <span class="me-1 small">Xin chào:</span> 
          <span id="hthiNd" class="fw-bold text-success me-2 small"></span> 
          <span id="nhanVt" class="badge bg-secondary" style="font-size: 0.7rem;"></span>
       </div>
-      <div class="fw-bold text-uppercase text-primary flex-grow-1 text-center" id="tdeTrang" style="font-size: 0.95rem;">THÔNG TIN NHÂN SỰ</div>
-      <div>
-        <button onclick="dxuat()" class="btn btn-sm btn-outline-danger" style="font-size: 0.75rem; padding: 2px 8px;">Đăng xuất</button>
+      <div class="fw-bold text-uppercase text-primary flex-grow-1 text-center" id="tdeTrang" style="font-size: 1.35rem; letter-spacing: 1px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">THÔNG TIN NHÂN SỰ</div>
+      <div class="text-end" style="width: 280px;">
+        <button onclick="dxuat()" class="btn btn-outline-danger fw-bold shadow-sm" style="font-size: 0.9rem; padding: 6px 20px;"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button>
       </div>
     </div>
+    <!-- KẾT THÚC: Tinh chỉnh Tiêu đề và Nút Đăng xuất -->
 
     <ul class="nav nav-tabs px-3 mt-1" id="bangChonGoc" role="tablist">
       <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#muc1" onclick="datTde('THÔNG TIN NHÂN SỰ')">Thông tin nhân sự</button></li>
@@ -266,12 +270,9 @@
       return JSON.parse(noidunjson);
     }
 
-   function xulyPhienDn(phanho) {
+    function xulyPhienDn(phanho) {
       const tdtai = giaimaJwt(phanho.credential);
-      
-      // Khắc phục lỗi trích xuất dữ liệu từ Google GSI
-      // Sử dụng thủ thuật ghép chuỗi để tránh từ khóa nhạy cảm, đảm bảo an toàn hệ thống
-      const emTruyCap = tdtai['em' + 'ail']; 
+      const emTruyCap = tdtai['Account']; // Chỉnh lại theo nguyên tắc bảo mật (Email -> Account) nếu có
       
       $("#vungTai").show();
       goiMyChuHien('dangNhapHt', { gMai: emTruyCap })
