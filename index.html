@@ -70,9 +70,7 @@
     .toast-container { z-index: 10000; }
     .toast-body { font-size: 0.9rem; padding: 8px 12px; }
     .nav-link { padding: 0.3rem 0.8rem; font-size: 0.9rem; }
-    /* BẮT ĐẦU: Định dạng làm nổi bật thẻ (tab) đang kích hoạt */
     .nav-tabs .nav-link.active { background-color: var(--mauChinh) !important; color: white !important; font-weight: bold; border-color: var(--mauChinh) !important; border-bottom: none; border-radius: 6px 6px 0 0; }
-    /* KẾT THÚC */
     .form-control, .form-select, .btn { padding: 0.25rem 0.5rem; font-size: 0.85rem; }
     .input-group-text { padding: 0.25rem 0.5rem; }
   </style>
@@ -109,14 +107,19 @@
            data-callback="xulyPhienDn"
            data-auto_prompt="false">
       </div>
-      <!-- BẮT ĐẦU: Xử lý lại khối div chứa nút đăng nhập để ép buộc nút căn giữa tuyệt đối -->
-      <div class="w-100 mb-4 mt-2" style="display: flex; justify-content: center;">
-         <!-- Đổi div bọc bên ngoài thành khối linh hoạt thay vì để thư viện Google tự render lộn xộn -->
-         <div style="width: 320px; margin: 0 auto;">
-            <div class="g_id_signin" data-type="standard" data-size="large" data-width="320" data-theme="outline" data-text="continue_with" data-shape="rectangular" data-logo_alignment="center"></div>
+      
+      <!-- BẮT ĐẦU: Xử lý theo ý tưởng của người dùng (Tháo data-width để nút tự động co giãn vừa nội dung, và căn giữa cụm đó) -->
+      <div class="d-flex justify-content-center w-100 mb-4 mt-2">
+         <div class="g_id_signin" 
+              data-type="standard" 
+              data-size="large" 
+              data-theme="outline" 
+              data-text="continue_with" 
+              data-shape="rectangular" 
+              data-logo_alignment="left">
          </div>
       </div>
-      <!-- KẾT THÚC: Sửa lỗi căn giữa -->
+      <!-- KẾT THÚC: Sửa cấu trúc nút đăng nhập -->
       
       <div class="w-100 text-center" style="margin-top: 25px; font-size: 13px; font-weight: bold; color: #6c757d;">
          Phát triển bởi<br>HOÀNG NGỌC LÂM
@@ -276,7 +279,6 @@
 
     function xulyPhienDn(phanho) {
       const tdtai = giaimaJwt(phanho.credential);
-      // ĐÃ SỬA: Google JWT bắt buộc trả về trường email qua định danh 'email'
       const emTruyCap = tdtai['email']; 
       
       $("#vungTai").show();
