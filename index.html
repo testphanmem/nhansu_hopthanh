@@ -104,16 +104,19 @@
 
       <h5 class="fw-bold mb-3" style="color: #b91c1c; font-size: 16px;">Phiên bản: V2.5.2026</h5>
 
-      <!-- BẮT ĐẦU: Bổ sung data-width="320" để làm dài nút Đăng nhập -->
       <div id="g_id_onload"
            data-client_id="407480994586-m6fpq6sfcc90qqj9k08rsmi1lge6br94.apps.googleusercontent.com"
            data-callback="xulyPhienDn"
            data-auto_prompt="false">
       </div>
-      <div class="d-flex justify-content-center w-100 mb-4 mt-2">
-         <div class="g_id_signin" data-type="standard" data-size="large" data-width="320" data-theme="outline" data-text="continue_with" data-shape="rectangular" data-logo_alignment="center"></div>
+      <!-- BẮT ĐẦU: Xử lý lại khối div chứa nút đăng nhập để ép buộc nút căn giữa tuyệt đối -->
+      <div class="w-100 mb-4 mt-2" style="display: flex; justify-content: center;">
+         <!-- Đổi div bọc bên ngoài thành khối linh hoạt thay vì để thư viện Google tự render lộn xộn -->
+         <div style="width: 320px; margin: 0 auto;">
+            <div class="g_id_signin" data-type="standard" data-size="large" data-width="320" data-theme="outline" data-text="continue_with" data-shape="rectangular" data-logo_alignment="center"></div>
+         </div>
       </div>
-      <!-- KẾT THÚC: Điều chỉnh kích thước nút Đăng nhập -->
+      <!-- KẾT THÚC: Sửa lỗi căn giữa -->
       
       <div class="w-100 text-center" style="margin-top: 25px; font-size: 13px; font-weight: bold; color: #6c757d;">
          Phát triển bởi<br>HOÀNG NGỌC LÂM
@@ -134,7 +137,6 @@
       </div>
     </div>
 
-    <!-- BẮT ĐẦU: Tinh chỉnh lại tỷ lệ chia cột để căn giữa Tiêu đề và phóng to nút Đăng xuất -->
     <div class="bg-light px-3 py-2 d-flex justify-content-between border-bottom align-items-center">
       <div class="d-flex align-items-center" style="width: 280px;">
          <span class="me-1 small">Xin chào:</span> 
@@ -146,7 +148,6 @@
         <button onclick="dxuat()" class="btn btn-outline-danger fw-bold shadow-sm" style="font-size: 0.9rem; padding: 6px 20px;"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button>
       </div>
     </div>
-    <!-- KẾT THÚC: Tinh chỉnh Tiêu đề và Nút Đăng xuất -->
 
     <ul class="nav nav-tabs px-3 mt-1" id="bangChonGoc" role="tablist">
       <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#muc1" onclick="datTde('THÔNG TIN NHÂN SỰ')">Thông tin nhân sự</button></li>
