@@ -167,18 +167,18 @@
     function suaDong(chS) {
        csSua = chS; const dr = dlToanc[chS]; const fm = document.getElementById("bmNsu"); fm.reset(); 
        
-       // BẮT ĐẦU: Xử lý phân quyền khóa giao diện sử dụng mảng dữ liệu cấu hình chinhToanc (ThietLap)
+       // BẮT ĐẦU: Xử lý phân quyền khóa giao diện 
+       // Dựa vào vai trò 'ngdung' được cấu hình sẵn trong quá trình đăng nhập qua file Code.gs (ThietLap cột C bằng "x")
        let isKhoaUI = false;
-       if (typeof chinhToanc !== 'undefined' && chinhToanc.length > 0) {
-           // Quét mảng chinhToanc để tìm ký tự "x" ở cột C (index = 2)
-           isKhoaUI = chinhToanc.some(row => String(row[2] || "").trim().toLowerCase() === 'x');
+       if (ndHtai && ndHtai.vTro === 'ngdung') {
+           isKhoaUI = true;
        }
 
        if (isKhoaUI) {
            $("#nutXoaNs").hide(); // Khóa ẩn hoàn toàn nút Xóa
            $(fm.elements['c0']).prop('disabled', true); // Khóa thuộc tính tùy chọn ô Năm học
        } else {
-           $("#nutXoaNs").show(); // Hiển thị nút Xóa bình thường
+           $("#nutXoaNs").show(); // Hiển thị nút Xóa bình thường đối với Quản trị viên
            $(fm.elements['c0']).prop('disabled', false); // Mở khóa ô Năm học
        }
        // KẾT THÚC: Phân quyền khóa giao diện
