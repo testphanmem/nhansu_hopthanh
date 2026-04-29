@@ -70,9 +70,8 @@
     .toast-container { z-index: 10000; }
     .toast-body { font-size: 0.9rem; padding: 8px 12px; }
     .nav-link { padding: 0.3rem 0.8rem; font-size: 0.9rem; }
-    /* BẮT ĐẦU: Định dạng làm nổi bật thẻ (tab) đang kích hoạt */
+    /* Định dạng làm nổi bật thẻ (tab) đang kích hoạt */
     .nav-tabs .nav-link.active { background-color: var(--mauChinh) !important; color: white !important; font-weight: bold; border-color: var(--mauChinh) !important; border-bottom: none; border-radius: 6px 6px 0 0; }
-    /* KẾT THÚC */
     .form-control, .form-select, .btn { padding: 0.25rem 0.5rem; font-size: 0.85rem; }
     .input-group-text { padding: 0.25rem 0.5rem; }
   </style>
@@ -104,15 +103,16 @@
 
       <h5 class="fw-bold mb-3" style="color: #b91c1c; font-size: 16px;">Phiên bản: V2.5.2026</h5>
 
-      <!-- BẮT ĐẦU: Căn giữa tuyệt đối nút Đăng nhập Google -->
+      <!-- BẮT ĐẦU: Căn giữa tuyệt đối nút Đăng nhập Google bằng khung bọc ngoài -->
       <div id="g_id_onload"
            data-client_id="407480994586-m6fpq6sfcc90qqj9k08rsmi1lge6br94.apps.googleusercontent.com"
            data-callback="xulyPhienDn"
            data-auto_prompt="false">
       </div>
-      <div class="d-flex justify-content-center w-100 mb-4 mt-2">
-         <!-- Bổ sung lớp mx-auto, style margin 0 auto và width fit-content để khóa chặt khung hiển thị của Google -->
-         <div class="g_id_signin mx-auto" style="width: fit-content; margin: 0 auto; display: flex; justify-content: center;" data-type="standard" data-size="large" data-width="320" data-theme="outline" data-text="continue_with" data-shape="rectangular" data-logo_alignment="center"></div>
+      <div class="w-100 mb-4 mt-2" style="display: flex; justify-content: center;">
+         <div style="width: 320px;">
+             <div class="g_id_signin" data-type="standard" data-size="large" data-width="320" data-theme="outline" data-text="continue_with" data-shape="rectangular" data-logo_alignment="center"></div>
+         </div>
       </div>
       <!-- KẾT THÚC: Căn giữa tuyệt đối nút Đăng nhập Google -->
       
@@ -135,7 +135,6 @@
       </div>
     </div>
 
-    <!-- BẮT ĐẦU: Tinh chỉnh lại tỷ lệ chia cột để căn giữa Tiêu đề và phóng to nút Đăng xuất -->
     <div class="bg-light px-3 py-2 d-flex justify-content-between border-bottom align-items-center">
       <div class="d-flex align-items-center" style="width: 280px;">
          <span class="me-1 small">Xin chào:</span> 
@@ -147,10 +146,9 @@
         <button onclick="dxuat()" class="btn btn-outline-danger fw-bold shadow-sm" style="font-size: 0.9rem; padding: 6px 20px;"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button>
       </div>
     </div>
-    <!-- KẾT THÚC: Tinh chỉnh Tiêu đề và Nút Đăng xuất -->
 
     <ul class="nav nav-tabs px-3 mt-1" id="bangChonGoc" role="tablist">
-      <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#muc1" onclick="datTde('THÔNG TIN NHÂN SỰ')">Thông đón nhân sự</button></li>
+      <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#muc1" onclick="datTde('THÔNG TIN NHÂN SỰ')">Thông tin nhân sự</button></li>
       <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#muc2" onclick="datTde('KẾT QUẢ ĐÁNH GIÁ')">Kết quả đánh giá</button></li>
       <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#muc3" onclick="datTde('THỐNG KÊ - TỔNG HỢP')">Tổng hợp</button></li>
     </ul>
@@ -276,7 +274,6 @@
 
     function xulyPhienDn(phanho) {
       const tdtai = giaimaJwt(phanho.credential);
-      // ĐÃ SỬA: Google JWT bắt buộc trả về trường email qua định danh 'email'
       const emTruyCap = tdtai['email']; 
       
       $("#vungTai").show();
