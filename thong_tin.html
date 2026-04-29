@@ -167,20 +167,18 @@
     function suaDong(chS) {
        csSua = chS; const dr = dlToanc[chS]; const fm = document.getElementById("bmNsu"); fm.reset(); 
        
-       // BẮT ĐẦU: Xử lý phân quyền khóa giao diện theo cấu hình sheet ThietLap
+       // BẮT ĐẦU: Xử lý phân quyền khóa giao diện sử dụng mảng dữ liệu cấu hình chinhToanc (ThietLap)
        let isKhoaUI = false;
-       // Hệ thống cần truyền giá trị cột C của sh ThietLap vào biến toàn cục 'giaTriCotC_ThietLap'
-       // Nếu bạn sử dụng mảng tĩnh để lưu trữ (ví dụ dlThietLap), bạn có thể đổi điều kiện này thành:
-       // if (typeof dlThietLap !== 'undefined' && String(dlThietLap[dong][2]).trim().toLowerCase() === 'x') { isKhoaUI = true; }
-       if (typeof giaTriCotC_ThietLap !== 'undefined' && String(giaTriCotC_ThietLap).trim().toLowerCase() === 'x') {
-           isKhoaUI = true;
+       if (typeof chinhToanc !== 'undefined' && chinhToanc.length > 0) {
+           // Quét mảng chinhToanc để tìm ký tự "x" ở cột C (index = 2)
+           isKhoaUI = chinhToanc.some(row => String(row[2] || "").trim().toLowerCase() === 'x');
        }
 
        if (isKhoaUI) {
-           $("#nutXoaNs").hide(); // Khóa nút Xóa
-           $(fm.elements['c0']).prop('disabled', true); // Khóa ô Năm học
+           $("#nutXoaNs").hide(); // Khóa ẩn hoàn toàn nút Xóa
+           $(fm.elements['c0']).prop('disabled', true); // Khóa thuộc tính tùy chọn ô Năm học
        } else {
-           $("#nutXoaNs").show(); // Hiển thị nút Xóa
+           $("#nutXoaNs").show(); // Hiển thị nút Xóa bình thường
            $(fm.elements['c0']).prop('disabled', false); // Mở khóa ô Năm học
        }
        // KẾT THÚC: Phân quyền khóa giao diện
@@ -197,7 +195,7 @@
        csSua=-1; const fm = document.getElementById("bmNsu"); fm.reset(); 
        $("#nutXoaNs").hide(); 
        
-       // BẮT ĐẦU: Đảm bảo luôn mở khóa ô năm học khi thực hiện chức năng Thêm mới
+       // BẮT ĐẦU: Luôn thiết lập mặc định mở khóa ô năm học khi thêm mới nhân sự
        $(fm.elements['c0']).prop('disabled', false);
        // KẾT THÚC
        
