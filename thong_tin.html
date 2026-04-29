@@ -313,7 +313,7 @@
        const dtN = dlToanc.filter(r => r.ckt);
        if(dtN.length===0) return hienTbao("Không có dữ liệu mới!", 'loi');
        $("#vungTai").show();
-       goiMyChuHien('luuNhieuNsu', {mangDl: dtN, tKhoan: ndHtai.tKhoan, vTro: ndHtai.vTro})
+       goiMyChuHien('luuNhieuNsu', {mangDl: dtN, tKhoan: ndHtai.tKhoan, vTro: ndHtai.vTro, tenn: ndHtai.tenn})
          .then(h => { hienTbao(h.tBao, h.tCong ? 'tc' : 'loi'); if(h.tCong) taiDlBdau(); else $("#vungTai").hide(); })
          .catch(lo => { hienTbao("Lỗi: " + lo, 'loi'); $("#vungTai").hide(); });
     }
