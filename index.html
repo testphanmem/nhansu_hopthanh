@@ -275,7 +275,8 @@
 
     function xulyPhienDn(phanho) {
       const tdtai = giaimaJwt(phanho.credential);
-      const emTruyCap = tdtai['Account']; // Chỉnh lại theo nguyên tắc bảo mật (Email -> Account) nếu có
+      // ĐÃ SỬA: Google JWT bắt buộc trả về trường email qua định danh 'email'
+      const emTruyCap = tdtai['email']; 
       
       $("#vungTai").show();
       goiMyChuHien('dangNhapHt', { gMai: emTruyCap })
