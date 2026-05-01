@@ -9,16 +9,16 @@
       right: 0;
       width: 12px;
       height: 12px;
-      background: linear-gradient(to bottom left, #ff8080 50%, transparent 50%);
+      background: linear-gradient(to bottom left, #00FF00 50%, transparent 50%);
       cursor: pointer;
       z-index: 10;
   }
-  /* Đã cập nhật: Lược bỏ các thuộc tính vị trí tuyệt đối (absolute), nhường quyền điều khiển cho Javascript */
   .danh-sach-ten-hover {
       display: none;
-      background-color: #ffffff;
-      border: 1px solid #ced4da;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+      /* Đã cập nhật: Ép buộc nền trắng tuyệt đối chống xiên thủng và tăng độ rõ nét viền/bóng */
+      background-color: #ffffff !important; 
+      border: 1px solid #868e96 !important;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.25) !important;
       padding: 8px 12px;
       border-radius: 4px;
       white-space: nowrap;
@@ -102,7 +102,7 @@
 
 <script>
     /**
-     * KHỐI HÀM MỚI: Xử lý hiển thị danh sách nổi toàn cục chống che lấp và chống độ trễ
+     * KHỐI HÀM MỚI: Xử lý hiển thị danh sách nổi linh hoạt, đảo chiều tự động
      */
     function hienTooltipTen(e) {
         let tt = document.getElementById('tooltip-toan-cuc');
@@ -110,26 +110,34 @@
             tt = document.createElement('div');
             tt.id = 'tooltip-toan-cuc';
             tt.className = 'danh-sach-ten-hover';
-            tt.style.position = 'fixed'; // Cố định theo màn hình để thoát khỏi khung table-responsive
-            tt.style.zIndex = '999999';  // Đẩy lên lớp cao nhất
+            tt.style.position = 'fixed';
+            tt.style.zIndex = '999999';
             document.body.appendChild(tt);
         }
         
-        // Trích xuất dữ liệu từ góc đỏ
         tt.innerHTML = e.target.getAttribute('data-danhsach');
         tt.style.display = 'block';
         
-        // Căn chỉnh tọa độ hiển thị tức thời theo con trỏ chuột
-        let x = e.clientX + 15;
-        let y = e.clientY + 15;
         let rect = tt.getBoundingClientRect();
+        let kcach = 15; // Khoảng cách từ con trỏ chuột
         
-        // Cơ chế thông minh: Tự động đảo chiều nếu danh sách chạm lề phải hoặc lề dưới màn hình
-        if (x + rect.width > window.innerWidth) x = e.clientX - rect.width - 10;
-        if (y + rect.height > window.innerHeight) y = e.clientY - rect.height - 10;
+        // Đã cập nhật: Thuật toán đảo chiều thông minh
+        // Xử lý trục Y (Dọc): Nếu mép dưới danh sách vượt quá đáy màn hình -> Hất ngược lên trên
+        let toaDoY = e.clientY + kcach;
+        if (toaDoY + rect.height > window.innerHeight) {
+            toaDoY = e.clientY - rect.height - kcach;
+        }
+        // Khóa mép trên an toàn để không bị lẹm mất tiêu đề
+        if (toaDoY < 0) toaDoY = kcach; 
+
+        // Xử lý trục X (Ngang): Nếu mép phải danh sách vượt lề phải màn hình -> Hất ngược sang trái
+        let toaDoX = e.clientX + kcach;
+        if (toaDoX + rect.width > window.innerWidth) {
+            toaDoX = e.clientX - rect.width - kcach;
+        }
         
-        tt.style.left = x + 'px';
-        tt.style.top = y + 'px';
+        tt.style.top = toaDoY + 'px';
+        tt.style.left = toaDoX + 'px';
     }
 
     function anTooltipTen() {
@@ -146,11 +154,8 @@
         
         const cotTen = 1; 
         let danhSachHTML = mangLoc.map(r => r[cotTen] ? String(r[cotTen]).trim() : "Chưa cập nhật tên").join('<br>');
-        
-        // Mã hóa ký tự đặc biệt để truyền an toàn vào giao diện HTML
         let chuoiAnToan = danhSachHTML.replace(/"/g, '&quot;');
         
-        // Đã cập nhật: Gọi sự kiện JS onmouseenter/onmouseleave để xử lý hiển thị siêu tốc
         return `<td class="o-chua-ghi-chu">
                     ${soLuong}
                     <div class="goc-do-ghi-chu" data-danhsach="${chuoiAnToan}" onmouseenter="hienTooltipTen(event)" onmouseleave="anTooltipTen()"></div>
@@ -158,7 +163,7 @@
     }
 
     /**
-     * KHỐI HÀM: Xử lý số liệu và vẽ thống kê chính (Giữ nguyên toàn bộ logic)
+     * KHỐI HÀM: Xử lý số liệu và vẽ thống kê chính (Giữ nguyên)
      */
     function veTke() {
         const nf = $("#nhapLocN3").val(); const bd1 = $("#bangTkeNs tbody"); bd1.empty(); const bd2 = $("#bangTkeDg tbody"); bd2.empty();
