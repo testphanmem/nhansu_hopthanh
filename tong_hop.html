@@ -1,5 +1,5 @@
 <style>
-  /* KHỐI CSS: Tạo góc đỏ và khung hiển thị danh sách tên khi rê chuột (Chuẩn HtmlService) */
+  /* KHỐI CSS: Tạo góc đỏ và khung hiển thị danh sách (Chuẩn HtmlService) */
   .o-chua-ghi-chu {
       position: relative;
   }
@@ -9,16 +9,13 @@
       right: 0;
       width: 12px;
       height: 12px;
-      /* Đã cập nhật: Đổi màu #dc3545 (đỏ đậm) thành #ff8080 (đỏ nhạt) */
       background: linear-gradient(to bottom left, #ff8080 50%, transparent 50%);
       cursor: pointer;
       z-index: 10;
   }
+  /* Đã cập nhật: Lược bỏ các thuộc tính vị trí tuyệt đối (absolute), nhường quyền điều khiển cho Javascript */
   .danh-sach-ten-hover {
       display: none;
-      position: absolute;
-      top: 15px;
-      right: 0;
       background-color: #ffffff;
       border: 1px solid #ced4da;
       box-shadow: 0 4px 6px rgba(0,0,0,0.15);
@@ -26,14 +23,10 @@
       border-radius: 4px;
       white-space: nowrap;
       text-align: left;
-      z-index: 1000;
       color: #212529;
       font-size: 13px;
       line-height: 1.5;
       font-weight: normal;
-  }
-  .goc-do-ghi-chu:hover .danh-sach-ten-hover {
-      display: block;
   }
 </style>
 
@@ -109,28 +102,63 @@
 
 <script>
     /**
+     * KHỐI HÀM MỚI: Xử lý hiển thị danh sách nổi toàn cục chống che lấp và chống độ trễ
+     */
+    function hienTooltipTen(e) {
+        let tt = document.getElementById('tooltip-toan-cuc');
+        if (!tt) {
+            tt = document.createElement('div');
+            tt.id = 'tooltip-toan-cuc';
+            tt.className = 'danh-sach-ten-hover';
+            tt.style.position = 'fixed'; // Cố định theo màn hình để thoát khỏi khung table-responsive
+            tt.style.zIndex = '999999';  // Đẩy lên lớp cao nhất
+            document.body.appendChild(tt);
+        }
+        
+        // Trích xuất dữ liệu từ góc đỏ
+        tt.innerHTML = e.target.getAttribute('data-danhsach');
+        tt.style.display = 'block';
+        
+        // Căn chỉnh tọa độ hiển thị tức thời theo con trỏ chuột
+        let x = e.clientX + 15;
+        let y = e.clientY + 15;
+        let rect = tt.getBoundingClientRect();
+        
+        // Cơ chế thông minh: Tự động đảo chiều nếu danh sách chạm lề phải hoặc lề dưới màn hình
+        if (x + rect.width > window.innerWidth) x = e.clientX - rect.width - 10;
+        if (y + rect.height > window.innerHeight) y = e.clientY - rect.height - 10;
+        
+        tt.style.left = x + 'px';
+        tt.style.top = y + 'px';
+    }
+
+    function anTooltipTen() {
+        let tt = document.getElementById('tooltip-toan-cuc');
+        if (tt) tt.style.display = 'none';
+    }
+
+    /**
      * KHỐI HÀM: Hỗ trợ tạo ô dữ liệu bảng (td) kèm danh sách tên hiển thị ở góc đỏ
-     * Tính năng: Nhận mảng dữ liệu đã lọc, trích xuất tên, trả về chuỗi HTML ô td hoàn chỉnh.
      */
     function taoODuLieuCoGhiChu(mangLoc) {
         let soLuong = mangLoc.length;
         if (soLuong === 0) return `<td>0</td>`;
         
         const cotTen = 1; 
-        
         let danhSachHTML = mangLoc.map(r => r[cotTen] ? String(r[cotTen]).trim() : "Chưa cập nhật tên").join('<br>');
         
-        // Đã cập nhật: Xóa thuộc tính title="..." để tránh bị hiện 2 bảng danh sách
+        // Mã hóa ký tự đặc biệt để truyền an toàn vào giao diện HTML
+        let chuoiAnToan = danhSachHTML.replace(/"/g, '&quot;');
+        
+        // Đã cập nhật: Gọi sự kiện JS onmouseenter/onmouseleave để xử lý hiển thị siêu tốc
         return `<td class="o-chua-ghi-chu">
                     ${soLuong}
-                    <div class="goc-do-ghi-chu">
-                        <div class="danh-sach-ten-hover">${danhSachHTML}</div>
-                    </div>
+                    <div class="goc-do-ghi-chu" data-danhsach="${chuoiAnToan}" onmouseenter="hienTooltipTen(event)" onmouseleave="anTooltipTen()"></div>
                 </td>`;
     }
 
     /**
-     * KHỐI HÀM: Xử lý số liệu và vẽ thống kê chính
+     * KHỐI HÀM: Xử lý số liệu và vẽ thống kê chính (Giữ nguyên toàn bộ logic)
      */
     function veTke() {
         const nf = $("#nhapLocN3").val(); const bd1 = $("#bangTkeNs tbody"); bd1.empty(); const bd2 = $("#bangTkeDg tbody"); bd2.empty();
@@ -139,7 +167,7 @@
             let dy = dlToanc.filter(r => String(r[0]).trim() === y && r[4] !== "Đã chuyển");
             if (dy.length === 0) return;
             
-            // XỬ LÝ BẢNG 3.1: Tổng hợp nhân sự (Tổng số giữ nguyên, các cột khác thêm ghi chú)
+            // XỬ LÝ BẢNG 3.1: Tổng hợp nhân sự
             let ts = dy.length; 
             let ng1 = taoODuLieuCoGhiChu(dy.filter(r => r[3] === "Nữ")); 
             let dnc = taoODuLieuCoGhiChu(dy.filter(r => r[5] && r[5] !== "Kinh")); 
@@ -170,7 +198,7 @@
             
             bd1.append(`<tr><td class="fw-bold text-primary">${y}</td><td>${ts}</td>${ng1}${dnc}${ndt}${dvi}${ndv}${ddt}${cql}${cgv}${cnv}${ctd1}${ctd2}${ctd3}${ctd4}${ctd5}${h1}${h2}${h3}${h4}${hk}${ll1}${ll2}${ll3}</tr>`);
             
-            // XỬ LÝ BẢNG 3.2: Kết quả thực hiện nhiệm vụ (Tất cả trừ Năm học đều thêm ghi chú)
+            // XỬ LÝ BẢNG 3.2: Kết quả thực hiện nhiệm vụ
             let g1 = taoODuLieuCoGhiChu(dy.filter(r => r[17] === "Giỏi")); 
             let k1 = taoODuLieuCoGhiChu(dy.filter(r => r[17] === "Khá")); 
             let tb1 = taoODuLieuCoGhiChu(dy.filter(r => r[17] === "TB")); 
