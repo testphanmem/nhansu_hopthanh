@@ -9,8 +9,8 @@
       right: 0;
       width: 0;
       height: 0;
-      border-top: 10px solid #009900;
-      border-left: 10px solid transparent;
+      border-top: 12px solid #009900;
+      border-left: 12px solid transparent;
       cursor: pointer;
       z-index: 10;
   }
@@ -101,10 +101,13 @@
 </div>
 
 <script>
-    let treAnTt;
+    let treAnTt; // Biến lưu trữ độ trễ để người dùng kịp di chuột
 
+    /**
+     * KHỐI HÀM: Xử lý hiển thị danh sách nổi linh hoạt, đảo chiều tự động và cho phép đưa trỏ vào
+     */
     function hienTooltipTen(e) {
-        clearTimeout(treAnTt);
+        clearTimeout(treAnTt); // Hủy lệnh ẩn nếu người dùng vẫn đang trỏ chuột
         let tt = document.getElementById('tooltip-toan-cuc');
         if (!tt) {
             tt = document.createElement('div');
@@ -113,12 +116,14 @@
             tt.style.position = 'fixed';
             tt.style.zIndex = '999999';
             
+            // Bắt sự kiện trực tiếp trên khung danh sách để giữ khung không bị ẩn
             tt.onmouseenter = function() { clearTimeout(treAnTt); };
             tt.onmouseleave = function() { anTtNgay(); };
             
             document.body.appendChild(tt);
         }
         
+        // Chỉ gán lại dữ liệu và tính toán vị trí nếu sự kiện xuất phát từ góc đỏ
         if (e && e.target && e.target.className === 'goc-do-ghi-chu') {
             tt.innerHTML = e.target.getAttribute('data-danhsach');
             tt.style.display = 'block';
@@ -143,6 +148,7 @@
     }
 
     function anTooltipTen() {
+        // Tạo độ trễ 200ms trước khi ẩn
         treAnTt = setTimeout(anTtNgay, 200);
     }
 
@@ -151,6 +157,9 @@
         if (tt) tt.style.display = 'none';
     }
 
+    /**
+     * KHỐI HÀM: Hỗ trợ tạo ô dữ liệu bảng (td) kèm danh sách tên hiển thị ở góc đỏ
+     */
     function taoODuLieuCoGhiChu(mangLoc) {
         let soLuong = mangLoc.length;
         if (soLuong === 0) return `<td>0</td>`;
@@ -165,6 +174,9 @@
                 </td>`;
     }
 
+    /**
+     * KHỐI HÀM: Xử lý số liệu và vẽ thống kê chính
+     */
     function veTke() {
         const nf = $("#nhapLocN3").val(); const bd1 = $("#bangTkeNs tbody"); bd1.empty(); const bd2 = $("#bangTkeDg tbody"); bd2.empty();
         let ns = layTuyc(0); if (nf) ns = [String(nf).trim()];
@@ -172,6 +184,7 @@
             let dy = dlToanc.filter(r => String(r[0]).trim() === y && r[4] !== "Đã chuyển");
             if (dy.length === 0) return;
             
+            // Đã cập nhật: Áp dụng hàm ghi chú cho cột Tổng số và giữ nguyên mọi biến khác
             let ts = taoODuLieuCoGhiChu(dy); 
             let ng1 = taoODuLieuCoGhiChu(dy.filter(r => r[3] === "Nữ")); 
             let dnc = taoODuLieuCoGhiChu(dy.filter(r => r[5] && r[5] !== "Kinh")); 
@@ -200,6 +213,7 @@
             let ll2 = taoODuLieuCoGhiChu(dy.filter(r => r[16] === "Trung cấp")); 
             let ll3 = taoODuLieuCoGhiChu(dy.filter(r => r[16] === "Sơ cấp"));
             
+            // Đã cập nhật: Loại bỏ <td></td> bọc quanh ${ts}
             bd1.append(`<tr><td class="fw-bold text-primary">${y}</td>${ts}${ng1}${dnc}${ndt}${dvi}${ndv}${ddt}${cql}${cgv}${cnv}${ctd1}${ctd2}${ctd3}${ctd4}${ctd5}${h1}${h2}${h3}${h4}${hk}${ll1}${ll2}${ll3}</tr>`);
             
             let g1 = taoODuLieuCoGhiChu(dy.filter(r => r[17] === "Giỏi")); 
@@ -243,7 +257,7 @@
             let kh4 = taoODuLieuCoGhiChu(dy.filter(r => (r[23]||"").toLowerCase().includes("bộ"))); 
             let kh5 = taoODuLieuCoGhiChu(dy.filter(r => (r[23]||"").toLowerCase().includes("chính phủ") || (r[23]||"").toLowerCase().includes("cp")));
 
-            bd2.append(`<tr><td class="fw-bold text-primary">${y}</td>${ts}${ng1}${dnc}${ndt}${dvi}${ndv}${ddt}${cql}${cgv}${cnv}${ctd1}${ctd2}${ctd3}${ctd4}${ctd5}${h1}${h2}${h3}${h4}${hk}${ll1}${ll2}${ll3}</tr>`);
+            bd2.append(`<tr><td class="fw-bold text-primary">${y}</td>${g1}${k1}${tb1}${y1}${g2}${k2}${tb2}${y2}${cn1}${cn2}${cn3}${xs1}${xs2}${xs4}${xs3}${dv1}${dv2}${dv4}${dv3}${dh1}${dh2}${dh3}${dh4}${td1}${td2}${td3}${td4}${td5}${kh1}${kh2}${kh3}${kh4}${kh5}</tr>`);
         });
     }
 </script>
