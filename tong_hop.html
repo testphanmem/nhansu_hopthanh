@@ -9,13 +9,13 @@
       right: 0;
       width: 12px;
       height: 12px;
-      background: linear-gradient(to bottom left, #00008B 100%, transparent 0%);
+      /* Đã cập nhật: Trả về màu gốc mặc định ban đầu (#dc3545) */
+      background: linear-gradient(to bottom left, #dc3545 50%, transparent 50%);
       cursor: pointer;
       z-index: 10;
   }
   .danh-sach-ten-hover {
       display: none;
-      /* Đã cập nhật: Ép buộc nền trắng tuyệt đối chống xiên thủng và tăng độ rõ nét viền/bóng */
       background-color: #ffffff !important; 
       border: 1px solid #868e96 !important;
       box-shadow: 0 6px 16px rgba(0,0,0,0.25) !important;
@@ -101,10 +101,13 @@
 </div>
 
 <script>
+    let treAnTt; // Biến lưu trữ độ trễ để người dùng kịp di chuột
+
     /**
-     * KHỐI HÀM MỚI: Xử lý hiển thị danh sách nổi linh hoạt, đảo chiều tự động
+     * KHỐI HÀM: Xử lý hiển thị danh sách nổi linh hoạt, đảo chiều tự động và cho phép đưa trỏ vào
      */
     function hienTooltipTen(e) {
+        clearTimeout(treAnTt); // Hủy lệnh ẩn nếu người dùng vẫn đang trỏ chuột
         let tt = document.getElementById('tooltip-toan-cuc');
         if (!tt) {
             tt = document.createElement('div');
@@ -112,35 +115,44 @@
             tt.className = 'danh-sach-ten-hover';
             tt.style.position = 'fixed';
             tt.style.zIndex = '999999';
+            
+            // Đã cập nhật: Bắt sự kiện trực tiếp trên khung danh sách để giữ khung không bị ẩn
+            tt.onmouseenter = function() { clearTimeout(treAnTt); };
+            tt.onmouseleave = function() { anTtNgay(); };
+            
             document.body.appendChild(tt);
         }
         
-        tt.innerHTML = e.target.getAttribute('data-danhsach');
-        tt.style.display = 'block';
-        
-        let rect = tt.getBoundingClientRect();
-        let kcach = 15; // Khoảng cách từ con trỏ chuột
-        
-        // Đã cập nhật: Thuật toán đảo chiều thông minh
-        // Xử lý trục Y (Dọc): Nếu mép dưới danh sách vượt quá đáy màn hình -> Hất ngược lên trên
-        let toaDoY = e.clientY + kcach;
-        if (toaDoY + rect.height > window.innerHeight) {
-            toaDoY = e.clientY - rect.height - kcach;
-        }
-        // Khóa mép trên an toàn để không bị lẹm mất tiêu đề
-        if (toaDoY < 0) toaDoY = kcach; 
+        // Chỉ gán lại dữ liệu và tính toán vị trí nếu sự kiện xuất phát từ góc đỏ
+        if (e && e.target && e.target.className === 'goc-do-ghi-chu') {
+            tt.innerHTML = e.target.getAttribute('data-danhsach');
+            tt.style.display = 'block';
+            
+            let rect = tt.getBoundingClientRect();
+            let kcach = 15; 
+            
+            let toaDoY = e.clientY + kcach;
+            if (toaDoY + rect.height > window.innerHeight) {
+                toaDoY = e.clientY - rect.height - kcach;
+            }
+            if (toaDoY < 0) toaDoY = kcach; 
 
-        // Xử lý trục X (Ngang): Nếu mép phải danh sách vượt lề phải màn hình -> Hất ngược sang trái
-        let toaDoX = e.clientX + kcach;
-        if (toaDoX + rect.width > window.innerWidth) {
-            toaDoX = e.clientX - rect.width - kcach;
+            let toaDoX = e.clientX + kcach;
+            if (toaDoX + rect.width > window.innerWidth) {
+                toaDoX = e.clientX - rect.width - kcach;
+            }
+            
+            tt.style.top = toaDoY + 'px';
+            tt.style.left = toaDoX + 'px';
         }
-        
-        tt.style.top = toaDoY + 'px';
-        tt.style.left = toaDoX + 'px';
     }
 
     function anTooltipTen() {
+        // Đã cập nhật: Tạo độ trễ 200ms trước khi ẩn
+        treAnTt = setTimeout(anTtNgay, 200);
+    }
+
+    function anTtNgay() {
         let tt = document.getElementById('tooltip-toan-cuc');
         if (tt) tt.style.display = 'none';
     }
@@ -163,7 +175,7 @@
     }
 
     /**
-     * KHỐI HÀM: Xử lý số liệu và vẽ thống kê chính (Giữ nguyên)
+     * KHỐI HÀM: Xử lý số liệu và vẽ thống kê chính
      */
     function veTke() {
         const nf = $("#nhapLocN3").val(); const bd1 = $("#bangTkeNs tbody"); bd1.empty(); const bd2 = $("#bangTkeDg tbody"); bd2.empty();
