@@ -116,7 +116,7 @@
         if (soLuong === 0) return `<td>0</td>`;
         
         // VỊ TRÍ CỘT TÊN: Hiện giả định cột index 2 là Họ và Tên. (Có thể thay đổi nếu cần)
-        const cotTen = 2; 
+        const cotTen = 1; 
         
         let danhSachHTML = mangLoc.map(r => r[cotTen] ? String(r[cotTen]).trim() : "Chưa cập nhật tên").join('<br>');
         let danhSachTitle = mangLoc.map(r => r[cotTen] ? String(r[cotTen]).trim() : "Chưa cập nhật tên").join('\n');
