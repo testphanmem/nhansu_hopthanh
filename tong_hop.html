@@ -1,35 +1,16 @@
 <style>
-  /* KHỐI CSS: Tạo góc đỏ và khung hiển thị danh sách (Chuẩn HtmlService) */
-  .o-chua-ghi-chu {
-      position: relative;
-  }
+  .o-chua-ghi-chu { position: relative; }
   .goc-do-ghi-chu {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 0;
-      height: 0;
-      border-top: 12px solid #009900;
-      border-left: 12px solid transparent;
-      cursor: pointer;
-      z-index: 10;
+      position: absolute; top: 0; right: 0; width: 0; height: 0;
+      border-top: 12px solid #009900; border-left: 12px solid transparent;
+      cursor: pointer; z-index: 10;
   }
   .danh-sach-ten-hover {
-      display: none;
-      background-color: #ffffff !important; 
-      border: 1px solid #868e96 !important;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.25) !important;
-      padding: 8px 12px;
-      border-radius: 4px;
-      white-space: nowrap;
-      text-align: left;
-      color: #212529;
-      font-size: 13px;
-      line-height: 1.5;
-      font-weight: normal;
-      /* Đã cập nhật: Giới hạn chiều cao tối đa và tự động thêm thanh trượt dọc nếu vượt quá */
-      max-height: 50vh;
-      overflow-y: auto;
+      display: none; background-color: #ffffff !important; 
+      border: 1px solid #868e96 !important; box-shadow: 0 6px 16px rgba(0,0,0,0.25) !important;
+      padding: 8px 12px; border-radius: 4px; white-space: nowrap; text-align: left;
+      color: #212529; font-size: 13px; line-height: 1.5; font-weight: normal;
+      max-height: 50vh; overflow-y: auto;
   }
 </style>
 
@@ -80,9 +61,11 @@
                    <th colspan="4">Xếp loại CM (Kỳ 2)</th>
                    <th colspan="3">Xếp loại CNN</th>
                    <th colspan="4">Xếp loại Viên chức</th>
-                   <th colspan="4">Xếp loại Đả&#8203;ng viê&#8203;n</th> <th colspan="4">Danh hiệu Chuyên môn giỏi</th>
-                   <th colspan="5">Danh hiệu Thi đua</th>
+                   <th colspan="4">Xếp loại Đả&#8203;ng viê&#8203;n</th> 
+                   <th colspan="4">Danh hiệu Chuyên môn giỏi</th>
+                   <th colspan="2">Danh hiệu Thi đua</th>
                    <th colspan="5">Hình thức khen</th>
+                   <th colspan="4">Cấp khen</th>
                  </tr>
                  <tr class="tdePhu">
                    <th class="cotDlTke">Giỏi</th><th class="cotDlTke">Khá</th><th class="cotDlTke">TB</th><th class="cotDlTke">Yếu</th>
@@ -91,8 +74,9 @@
                    <th class="cotDlTke">HTXS</th><th class="cotDlTke">HTT</th><th class="cotDlTke">HT</th><th class="cotDlTke">CHT</th>
                    <th class="cotDlTke">HTXS</th><th class="cotDlTke">HTT</th><th class="cotDlTke">HT</th><th class="cotDlTke">CHT</th>
                    <th class="cotDlTke">Trường</th><th class="cotDlTke">Huyện</th><th class="cotDlTke">Tỉnh</th><th class="cotDlTke">QG</th>
-                   <th class="cotDlTke">LĐTT</th><th class="cotDlTke">CSTĐ</th><th class="cotDlTke">BK</th><th class="cotDlTke">Huân C</th><th class="cotDlTke">Huy C</th>
-                   <th class="cotDlTke">Xã</th><th class="cotDlTke">Huyện</th><th class="cotDlTke">Tỉnh</th><th class="cotDlTke">Bộ</th><th class="cotDlTke">CP</th>
+                   <th class="cotDlTke">LĐTT</th><th class="cotDlTke">CSTĐ</th>
+                   <th class="cotDlTke">Giấy K.</th><th class="cotDlTke">Bằng K.</th><th class="cotDlTke">KNC</th><th class="cotDlTke">Huy C.</th><th class="cotDlTke">Huân C.</th>
+                   <th class="cotDlTke">Xã</th><th class="cotDlTke">Huyện/TP</th><th class="cotDlTke">Tỉnh</th><th class="cotDlTke">CP</th>
                  </tr>
                </thead>
                <tbody></tbody>
@@ -224,29 +208,35 @@
             let xs3 = taoODuLieuCoGhiChu(dy.filter(r => { let v = (r[20]||"").toLowerCase(); return v.includes("cht") || v.includes("chưa") || v.includes("không") || v.includes("kht"); })); 
             let xs4 = taoODuLieuCoGhiChu(dy.filter(r => { let v = (r[20]||"").toLowerCase(); return (v.includes("ht") || v.includes("hoàn thành")) && !(v.includes("htxs") || v.includes("xs") || v.includes("xuất sắc") || v.includes("htt") || v.includes("tốt") || v.includes("cht") || v.includes("chưa") || v.includes("không") || v.includes("kht")); }));
             
-            let dv1 = taoODuLieuCoGhiChu(dy.filter(r => { let v = (r[24]||"").toLowerCase(); return v.includes("htxs") || v.includes("xs") || v.includes("xuất sắc"); })); 
-            let dv2 = taoODuLieuCoGhiChu(dy.filter(r => { let v = (r[24]||"").toLowerCase(); return v.includes("htt") || (v.includes("tốt") && !v.includes("không")); })); 
-            let dv3 = taoODuLieuCoGhiChu(dy.filter(r => { let v = (r[24]||"").toLowerCase(); return v.includes("cht") || v.includes("chưa") || v.includes("không") || v.includes("kht"); })); 
-            let dv4 = taoODuLieuCoGhiChu(dy.filter(r => { let v = (r[24]||"").toLowerCase(); return (v.includes("ht") || v.includes("hoàn thành")) && !(v.includes("htxs") || v.includes("xs") || v.includes("xuất sắc") || v.includes("htt") || v.includes("tốt") || v.includes("cht") || v.includes("chưa") || v.includes("không") || v.includes("kht")); }));
+            // Cập nhật mảng Cột 26 (Index 25): Đảng viên
+            let dv1 = taoODuLieuCoGhiChu(dy.filter(r => { let v = (r[25]||"").toLowerCase(); return v.includes("htxs") || v.includes("xs") || v.includes("xuất sắc"); })); 
+            let dv2 = taoODuLieuCoGhiChu(dy.filter(r => { let v = (r[25]||"").toLowerCase(); return v.includes("htt") || (v.includes("tốt") && !v.includes("không")); })); 
+            let dv3 = taoODuLieuCoGhiChu(dy.filter(r => { let v = (r[25]||"").toLowerCase(); return v.includes("cht") || v.includes("chưa") || v.includes("không") || v.includes("kht"); })); 
+            let dv4 = taoODuLieuCoGhiChu(dy.filter(r => { let v = (r[25]||"").toLowerCase(); return (v.includes("ht") || v.includes("hoàn thành")) && !(v.includes("htxs") || v.includes("xs") || v.includes("xuất sắc") || v.includes("htt") || v.includes("tốt") || v.includes("cht") || v.includes("chưa") || v.includes("không") || v.includes("kht")); }));
             
             let dh1 = taoODuLieuCoGhiChu(dy.filter(r => (r[21]||"").toLowerCase().includes("trường"))); 
             let dh2 = taoODuLieuCoGhiChu(dy.filter(r => { let v = (r[21]||"").toLowerCase(); return v.includes("huyện") || v.includes("tp") || v.includes("thành phố"); })); 
             let dh3 = taoODuLieuCoGhiChu(dy.filter(r => (r[21]||"").toLowerCase().includes("tỉnh"))); 
             let dh4 = taoODuLieuCoGhiChu(dy.filter(r => (r[21]||"").toLowerCase().includes("quốc gia") || (r[21]||"").toLowerCase().includes("qg")));
             
+            // Mảng Cột 23 (Index 22): Danh hiệu thi đua
             let td1 = taoODuLieuCoGhiChu(dy.filter(r => r[22] === "LĐTT")); 
             let td2 = taoODuLieuCoGhiChu(dy.filter(r => r[22] === "CSTĐ")); 
-            let td3 = taoODuLieuCoGhiChu(dy.filter(r => r[22] === "Bằng khen")); 
-            let td4 = taoODuLieuCoGhiChu(dy.filter(r => (r[22]||"").toLowerCase().includes("huân chương"))); 
-            let td5 = taoODuLieuCoGhiChu(dy.filter(r => (r[22]||"").toLowerCase().includes("huy chương")));
             
-            let kh1 = taoODuLieuCoGhiChu(dy.filter(r => (r[23]||"").toLowerCase().includes("xã"))); 
-            let kh2 = taoODuLieuCoGhiChu(dy.filter(r => (r[23]||"").toLowerCase().includes("huyện"))); 
-            let kh3 = taoODuLieuCoGhiChu(dy.filter(r => (r[23]||"").toLowerCase().includes("tỉnh"))); 
-            let kh4 = taoODuLieuCoGhiChu(dy.filter(r => (r[23]||"").toLowerCase().includes("bộ"))); 
-            let kh5 = taoODuLieuCoGhiChu(dy.filter(r => (r[23]||"").toLowerCase().includes("chính phủ") || (r[23]||"").toLowerCase().includes("cp")));
+            // Mảng Cột 24 (Index 23): Hình thức khen
+            let ht1 = taoODuLieuCoGhiChu(dy.filter(r => r[23] === "Giấy khen")); 
+            let ht2 = taoODuLieuCoGhiChu(dy.filter(r => r[23] === "Bằng khen")); 
+            let ht3 = taoODuLieuCoGhiChu(dy.filter(r => r[23] === "Kỷ niệm chương")); 
+            let ht4 = taoODuLieuCoGhiChu(dy.filter(r => r[23] === "Huy chương")); 
+            let ht5 = taoODuLieuCoGhiChu(dy.filter(r => r[23] === "Huân chương"));
 
-            bd2.append(`<tr><td class="fw-bold text-primary">${y}</td>${g1}${k1}${tb1}${y1}${g2}${k2}${tb2}${y2}${cn1}${cn2}${cn3}${xs1}${xs2}${xs4}${xs3}${dv1}${dv2}${dv4}${dv3}${dh1}${dh2}${dh3}${dh4}${td1}${td2}${td3}${td4}${td5}${kh1}${kh2}${kh3}${kh4}${kh5}</tr>`);
+            // Cập nhật mảng Cột 25 (Index 24): Cấp khen
+            let ck1 = taoODuLieuCoGhiChu(dy.filter(r => r[24] === "Xã")); 
+            let ck2 = taoODuLieuCoGhiChu(dy.filter(r => r[24] === "Huyện/TP")); 
+            let ck3 = taoODuLieuCoGhiChu(dy.filter(r => r[24] === "Tỉnh")); 
+            let ck4 = taoODuLieuCoGhiChu(dy.filter(r => r[24] === "Chính phủ")); 
+
+            bd2.append(`<tr><td class="fw-bold text-primary">${y}</td>${g1}${k1}${tb1}${y1}${g2}${k2}${tb2}${y2}${cn1}${cn2}${cn3}${xs1}${xs2}${xs4}${xs3}${dv1}${dv2}${dv4}${dv3}${dh1}${dh2}${dh3}${dh4}${td1}${td2}${ht1}${ht2}${ht3}${ht4}${ht5}${ck1}${ck2}${ck3}${ck4}</tr>`);
         });
     }
 </script>
