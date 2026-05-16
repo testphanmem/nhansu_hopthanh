@@ -139,11 +139,11 @@
           
           let dlC = dg.cktdg ? "dongCkt" : ""; let tcP = dg.cktdg ? " <i class='fas fa-pen text-danger' title='Chưa lưu'></i>" : "";
 
+          // SỬA LỖI GỐC: Trỏ chính xác về Index 33 (Cột AH) thay vì Index 28 (Cột AC)
           let lk = dg[33] || "";
           let dsL = lk.split(',').map(l => l.trim()).filter(l => l !== "");
           let htiGhim = dsL.length > 0 ? `<div class="vungGhimLink mt-1" id="vungGhim_${idx}">${dsL.map((u, i) => `<a href="${u}" target="_blank" style="margin-right: 12px; display: inline-block; text-decoration: none; font-weight: bold; border-bottom: 1px solid #0d6efd; padding-bottom: 1px;">📎${i+1}</a>`).join('')}</div>` : "";
           
-          // Index cập nhật: 25 (Cột 26 - XL Đảng viên), 21 (DH CM), 22 (DH TĐ), 23 (HT Khen), 24 (Cấp khen)
           vb.append(`<tr class="${dlC}">
               <td class="text-center">${ns}</td>
               <td class="text-center fw-bold text-muted">${sttDg++}</td>
@@ -166,18 +166,18 @@
        csSua = idx; const dr = dlToanc[idx]; $("#vungNamDg").text(dr[0]); $("#vungTenDg").text(dr[1]); $("#vungMsoDg").val(dr[1]);
        const fr = document.getElementById("bmDgia"); fr.reset();
        
-       fr.elements['w'].value = dr[17]||""; // XL CM K1
-       fr.elements['x'].value = dr[18]||""; // XL CM K2
-       fr.elements['y'].value = dr[19]||""; // XL CNN
-       fr.elements['z'].value = dr[20]||""; // XL VC
+       fr.elements['w'].value = dr[17]||""; 
+       fr.elements['x'].value = dr[18]||""; 
+       fr.elements['y'].value = dr[19]||""; 
+       fr.elements['z'].value = dr[20]||""; 
        
-       // Index cập nhật: XL Đảng viên (25), DH CM (21), DH TĐ (22), HT Khen (23), Cấp khen (24)
        fr.elements['ad'].value = dr[25]||""; 
        fr.elements['aa'].value = dr[21]||""; 
        fr.elements['ab'].value = dr[22]||""; 
        fr.elements['ac'].value = dr[23]||""; 
        fr.elements['ae'].value = dr[24]||""; 
        
+       // SỬA LỖI GỐC: Trỏ chính xác về Index 33 (Cột AH) thay vì Index 28 (Cột AC)
        let lk = dr[33] || "";
        $("#mcLinkDg").val(lk);
        veGhimModal(lk);
@@ -212,14 +212,14 @@
            dlToanc[csSua][19] = fd.elements['y'].value; 
            dlToanc[csSua][20] = fd.elements['z'].value; 
            
-           // Ghi đúng vị trí Index dựa trên Cột
-           dlToanc[csSua][21] = fd.elements['aa'].value; // Cột 22
-           dlToanc[csSua][22] = fd.elements['ab'].value; // Cột 23
-           dlToanc[csSua][23] = fd.elements['ac'].value; // Cột 24
-           dlToanc[csSua][24] = fd.elements['ae'].value; // Cột 25
-           dlToanc[csSua][25] = fd.elements['ad'].value; // Cột 26
+           dlToanc[csSua][21] = fd.elements['aa'].value; 
+           dlToanc[csSua][22] = fd.elements['ab'].value; 
+           dlToanc[csSua][23] = fd.elements['ac'].value; 
+           dlToanc[csSua][24] = fd.elements['ae'].value; 
+           dlToanc[csSua][25] = fd.elements['ad'].value; 
            
-           dlToanc[csSua][33 = $("#mcLinkDg").val();
+           // SỬA LỖI GỐC: Ghi dữ liệu chờ lưu vào chuẩn Index 33 (Cột AH)
+           dlToanc[csSua][33] = $("#mcLinkDg").val();
 
            dlToanc[csSua].cktdg = true; veBangDg(); $("#hopThoaiDg").modal('hide'); hienTbao("Đã lưu tạm thời. Nhấn Cập Nhật để ghi dữ liệu.", 'tc');
        }
