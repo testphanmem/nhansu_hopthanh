@@ -29,9 +29,11 @@
            <th style="width: 80px; text-align: center;">XL CM (K2)</th>
            <th style="width: 80px; text-align: center;">XL CNN</th>
            <th style="width: 100px; text-align: center;">XL Viên chức</th>
-           <th style="width: 100px; text-align: center;">XL Đả&#8203;ng viê&#8203;n</th> <th style="width: 120px; text-align: center;">DH Chuyên môn</th>
+           <th style="width: 100px; text-align: center;">XL Đả&#8203;ng viê&#8203;n</th> 
+           <th style="width: 120px; text-align: center;">DH Chuyên môn</th>
            <th style="width: 120px; text-align: center;">DH Thi đua</th>
            <th style="width: 120px; text-align: center;">Hình thức khen</th>
+           <th style="width: 120px; text-align: center;">Cấp khen</th>
          </tr>
        </thead>
        <tbody></tbody>
@@ -75,9 +77,33 @@
                </div>
             </div>
             <div class="row mb-2">
-               <div class="col-md-4"><label>Danh hiệu CM</label><select name="aa" class="form-select g-dhcm"></select></div>
-               <div class="col-md-4"><label>Danh hiệu Thi đua</label><select name="ab" class="form-select g-dhtd"></select></div>
-               <div class="col-md-4"><label>Hình thức khen</label><select name="ac" class="form-select g-ckhen"></select></div>
+               <div class="col-md-3"><label>Danh hiệu CM</label><select name="aa" class="form-select g-dhcm"></select></div>
+               <div class="col-md-3"><label>Danh hiệu Thi đua</label>
+                   <select name="ab" class="form-select">
+                       <option value="">--Chọn--</option>
+                       <option value="LĐTT">LĐTT</option>
+                       <option value="CSTĐ">CSTĐ</option>
+                   </select>
+               </div>
+               <div class="col-md-3"><label>Hình thức khen</label>
+                   <select name="ac" class="form-select">
+                       <option value="">--Chọn--</option>
+                       <option value="Giấy khen">Giấy khen</option>
+                       <option value="Bằng khen">Bằng khen</option>
+                       <option value="Kỷ niệm chương">Kỷ niệm chương</option>
+                       <option value="Huy chương">Huy chương</option>
+                       <option value="Huân chương">Huân chương</option>
+                   </select>
+               </div>
+               <div class="col-md-3"><label>Cấp khen</label>
+                   <select name="ae" class="form-select">
+                       <option value="">--Chọn--</option>
+                       <option value="Xã">Xã</option>
+                       <option value="Huyện/TP">Huyện/TP</option>
+                       <option value="Tỉnh">Tỉnh</option>
+                       <option value="Chính phủ">Chính phủ</option>
+                   </select>
+               </div>
             </div>
         </form>
       </div>
@@ -90,21 +116,18 @@
     function veBangDg() {
        const nl = $("#nhapLocN2").val(); const tk = $("#nhapTimKiemDg").val().toLowerCase(); const vb = $("#khuBangDg tbody"); vb.empty();
        
-       // BẮT ĐẦU THÊM MỚI: Thuật toán sắp xếp theo Năm học và Tên
        dlToanc.sort((a, b) => {
            let nA = String(a[0] || "").trim(), nB = String(b[0] || "").trim();
-           if (nA !== nB) return nB.localeCompare(nA); // Năm học giảm dần
+           if (nA !== nB) return nB.localeCompare(nA); 
            
-           // Tách Tên từ cột Họ và Tên (cột 1)
            let htA = String(a[1] || "").trim().split(' '), tA = htA[htA.length - 1].toLowerCase();
            let htB = String(b[1] || "").trim().split(' '), tB = htB[htB.length - 1].toLowerCase();
            
-           if (tA !== tB) return tA.localeCompare(tB, 'vi'); // So sánh theo chuẩn chữ cái Tiếng Việt
-           return String(a[1] || "").trim().localeCompare(String(b[1] || "").trim(), 'vi'); // Nếu trùng Tên thì so sánh cả Họ Đệm
+           if (tA !== tB) return tA.localeCompare(tB, 'vi'); 
+           return String(a[1] || "").trim().localeCompare(String(b[1] || "").trim(), 'vi'); 
        });
-       // KẾT THÚC THÊM MỚI
 
-       let sttDg = 1; // Khởi tạo biến đếm STT cho bảng Đánh giá
+       let sttDg = 1; 
        dlToanc.forEach((dg, idx) => {
           let nc = String(dg[0]).trim();
           if(nl && nc !== String(nl).trim()) return;
@@ -116,11 +139,11 @@
           
           let dlC = dg.cktdg ? "dongCkt" : ""; let tcP = dg.cktdg ? " <i class='fas fa-pen text-danger' title='Chưa lưu'></i>" : "";
 
-          // Chuẩn cột 28 theo đúng CSDL của hệ thống gốc
           let lk = dg[28] || "";
           let dsL = lk.split(',').map(l => l.trim()).filter(l => l !== "");
           let htiGhim = dsL.length > 0 ? `<div class="vungGhimLink mt-1" id="vungGhim_${idx}">${dsL.map((u, i) => `<a href="${u}" target="_blank" style="margin-right: 12px; display: inline-block; text-decoration: none; font-weight: bold; border-bottom: 1px solid #0d6efd; padding-bottom: 1px;">📎${i+1}</a>`).join('')}</div>` : "";
           
+          // Index cập nhật: 25 (Cột 26 - XL Đảng viên), 21 (DH CM), 22 (DH TĐ), 23 (HT Khen), 24 (Cấp khen)
           vb.append(`<tr class="${dlC}">
               <td class="text-center">${ns}</td>
               <td class="text-center fw-bold text-muted">${sttDg++}</td>
@@ -130,7 +153,7 @@
                 ${htiGhim}
               </td>
               <td>${dg[2]||''}</td>
-              <td>${dg[17]||''}</td> <td>${dg[18]||''}</td> <td>${dg[19]||''}</td> <td>${dg[20]||''}</td><td>${dg[24]||''}</td><td>${dg[21]||''}</td> <td>${dg[22]||''}</td> <td>${dg[23]||''}</td>
+              <td>${dg[17]||''}</td> <td>${dg[18]||''}</td> <td>${dg[19]||''}</td> <td>${dg[20]||''}</td><td>${dg[25]||''}</td><td>${dg[21]||''}</td> <td>${dg[22]||''}</td> <td>${dg[23]||''}</td> <td>${dg[24]||''}</td>
           </tr>`);
        });
     }
@@ -142,10 +165,19 @@
     function moSuaDg(idx) {
        csSua = idx; const dr = dlToanc[idx]; $("#vungNamDg").text(dr[0]); $("#vungTenDg").text(dr[1]); $("#vungMsoDg").val(dr[1]);
        const fr = document.getElementById("bmDgia"); fr.reset();
-       fr.elements['w'].value = dr[17]||""; fr.elements['x'].value = dr[18]||""; fr.elements['y'].value = dr[19]||""; fr.elements['z'].value = dr[20]||"";
-       fr.elements['aa'].value = dr[21]||""; fr.elements['ab'].value = dr[22]||""; fr.elements['ac'].value = dr[23]||""; fr.elements['ad'].value = dr[24]||"";
        
-       // Chuẩn cột 28
+       fr.elements['w'].value = dr[17]||""; // XL CM K1
+       fr.elements['x'].value = dr[18]||""; // XL CM K2
+       fr.elements['y'].value = dr[19]||""; // XL CNN
+       fr.elements['z'].value = dr[20]||""; // XL VC
+       
+       // Index cập nhật: XL Đảng viên (25), DH CM (21), DH TĐ (22), HT Khen (23), Cấp khen (24)
+       fr.elements['ad'].value = dr[25]||""; 
+       fr.elements['aa'].value = dr[21]||""; 
+       fr.elements['ab'].value = dr[22]||""; 
+       fr.elements['ac'].value = dr[23]||""; 
+       fr.elements['ae'].value = dr[24]||""; 
+       
        let lk = dr[28] || "";
        $("#mcLinkDg").val(lk);
        veGhimModal(lk);
@@ -175,9 +207,18 @@
     function guiBmDg() {
        const fd = document.getElementById("bmDgia");
        if (csSua !== -1) {
-           dlToanc[csSua][17] = fd.elements['w'].value; dlToanc[csSua][18] = fd.elements['x'].value; dlToanc[csSua][19] = fd.elements['y'].value; dlToanc[csSua][20] = fd.elements['z'].value; dlToanc[csSua][21] = fd.elements['aa'].value; dlToanc[csSua][22] = fd.elements['ab'].value; dlToanc[csSua][23] = fd.elements['ac'].value; dlToanc[csSua][24] = fd.elements['ad'].value; 
+           dlToanc[csSua][17] = fd.elements['w'].value; 
+           dlToanc[csSua][18] = fd.elements['x'].value; 
+           dlToanc[csSua][19] = fd.elements['y'].value; 
+           dlToanc[csSua][20] = fd.elements['z'].value; 
            
-           // Chuẩn cột 28
+           // Ghi đúng vị trí Index dựa trên Cột
+           dlToanc[csSua][21] = fd.elements['aa'].value; // Cột 22
+           dlToanc[csSua][22] = fd.elements['ab'].value; // Cột 23
+           dlToanc[csSua][23] = fd.elements['ac'].value; // Cột 24
+           dlToanc[csSua][24] = fd.elements['ae'].value; // Cột 25
+           dlToanc[csSua][25] = fd.elements['ad'].value; // Cột 26
+           
            dlToanc[csSua][28] = $("#mcLinkDg").val();
 
            dlToanc[csSua].cktdg = true; veBangDg(); $("#hopThoaiDg").modal('hide'); hienTbao("Đã lưu tạm thời. Nhấn Cập Nhật để ghi dữ liệu.", 'tc');
