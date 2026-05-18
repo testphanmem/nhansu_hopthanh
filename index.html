@@ -272,24 +272,21 @@
         return true;
     }
 
-    // Khởi tạo JQuery Document Ready - TẢI GIAO DIỆN TỪ GITHUB
+    // Khởi tạo JQuery Document Ready
     $(document).ready(() => { 
         if (!kiemtKhoa()) return; 
         
         $("#vungTai").show();
         
-        // Gọi đồng thời 4 file HTML tĩnh cùng cấp thư mục trên GitHub
         let taiTt = $.get("thong_tin.html");
         let taiDg = $.get("danh_gia.html");
         let taiTh = $.get("tong_hop.html");
         let taiPq = $.get("PhanQuyen.html");
 
         $.when(taiTt, taiDg, taiTh, taiPq).done(function(r1, r2, r3, r4) {
-            // Nạp mã HTML và tự động thực thi script bên trong các tệp con
             let htmlGhep = (r1 && r1[0] ? r1[0] : "") + (r2 && r2[0] ? r2[0] : "") + (r3 && r3[0] ? r3[0] : "") + (r4 && r4[0] ? r4[0] : "");
             $("#vungChuaNoiDung").html(htmlGhep);
             
-            // Xử lý logic đăng nhập sau khi giao diện đã nạp xong
             kiemTraTrangThaiDangNhap();
         }).fail(function() {
             $("#vungTai").hide();
@@ -297,24 +294,31 @@
         });
     });
 
-    // Tách riêng hàm kiểm tra trạng thái
+    // SỬA LỖI GIAO DIỆN: Sử dụng if/else chuẩn mực để tránh lỗi rendering kẹt trang
     function kiemTraTrangThaiDangNhap() {
         $("#vungTai").hide(); 
         let luuPt = sessionStorage.getItem("ngdungNs");
         if(luuPt) {
             ndHtai = JSON.parse(luuPt);
-            $("#manhDn").hide(); $("#udChinh").show();
+            $("#manhDn").hide(); 
+            $("#udChinh").show();
             $("#hthiNd").text(ndHtai.tenn); 
             $("#nhanVt").text(ndHtai.vTro === 'qtriv' ? 'Quản trị viên' : 'Giáo viên');
-            ndHtai.vTro === 'qtriv' ? $("#nutMoThemNs").show() : $("#nutMoThemNs").hide();
-            ndHtai.vTro === 'qtriv' ? $("#tabPhanQuyen").show() : $("#tabPhanQuyen").hide();
+            
+            if (ndHtai.vTro === 'qtriv') {
+                $("#nutMoThemNs").show();
+                $("#tabPhanQuyen").show();
+            } else {
+                $("#nutMoThemNs").hide();
+                $("#tabPhanQuyen").hide();
+            }
+
             taiDlBdau();
         } else {
             $("#manhDn").css("display", "flex"); 
         }
     }
 
-    // Các hàm tiện ích dùng chung
     function hienTbao(chu, kieu = 'tc') {
        const ht = document.getElementById('tbNhanh');
        const nDung = ht.querySelector('.toast-body');
@@ -331,7 +335,6 @@
        pt.value = m;
     }
 
-    // Xử lý xác thực Google
     function giaimaJwt(chuoit) {
       let ddb64 = chuoit.split('.')[1];
       let b64 = ddb64.replace(/-/g, '+').replace(/_/g, '/');
@@ -351,15 +354,26 @@
         .catch(khiDnLoi);
     }
     
+    // SỬA LỖI GIAO DIỆN TƯƠNG TỰ
     function khiDnTc(pq) {
       if(!pq.tCong) { $("#vungTai").hide(); $("#loiDn").text(pq.tBao); return; }
       
       ndHtai = pq.dLieu;
       sessionStorage.setItem("ngdungNs", JSON.stringify(ndHtai));
-      $("#hthiNd").text(ndHtai.tenn); $("#nhanVt").text(ndHtai.vTro === 'qtriv' ? 'Quản trị viên' : 'Giáo viên');
-      ndHtai.vTro === 'qtriv' ? $("#nutMoThemNs").show() : $("#nutMoThemNs").hide();
-      ndHtai.vTro === 'qtriv' ? $("#tabPhanQuyen").show() : $("#tabPhanQuyen").hide();
-      $("#manhDn").hide(); $("#udChinh").show(); taiDlBdau();
+      $("#hthiNd").text(ndHtai.tenn); 
+      $("#nhanVt").text(ndHtai.vTro === 'qtriv' ? 'Quản trị viên' : 'Giáo viên');
+      
+      if (ndHtai.vTro === 'qtriv') {
+          $("#nutMoThemNs").show();
+          $("#tabPhanQuyen").show();
+      } else {
+          $("#nutMoThemNs").hide();
+          $("#tabPhanQuyen").hide();
+      }
+      
+      $("#manhDn").hide(); 
+      $("#udChinh").show(); 
+      taiDlBdau();
     }
     
     function khiDnLoi(loi) { hienTbao("Lỗi: " + loi, 'loi'); $("#vungTai").hide(); }
@@ -373,7 +387,6 @@
     
     function datTde(t) { $("#tdeTrang").text(t); }
 
-    // Quản lý Dữ liệu
     function taiDlBdau() {
       $("#vungTai").show();
       goiMyChuHien('layTatCaDl')
