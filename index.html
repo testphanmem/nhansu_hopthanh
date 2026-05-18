@@ -300,7 +300,7 @@
         });
     });
 
-    // Tách riêng hàm kiểm tra trạng thái
+    // Tách riêng hàm kiểm tra trạng thái khi tải trang
     function kiemTraTrangThaiDangNhap() {
         $("#vungTai").hide(); 
         let luuPt = sessionStorage.getItem("ngdungNs");
@@ -310,7 +310,7 @@
             $("#hthiNd").text(ndHtai.tenn); 
             $("#nhanVt").text(ndHtai.vTro === 'qtriv' ? 'Quản trị viên' : 'Giáo viên');
             
-            // Kiểm soát giao diện theo quyền
+            // Ràng buộc điều kiện hiển thị Tab theo quyền hạn tài khoản
             if (ndHtai.vTro === 'qtriv') {
                 $("#nutMoThemNs").show();
                 $("#tabPhanQuyen").show();
@@ -370,7 +370,7 @@
       $("#hthiNd").text(ndHtai.tenn); 
       $("#nhanVt").text(ndHtai.vTro === 'qtriv' ? 'Quản trị viên' : 'Giáo viên');
       
-      // Kiểm soát giao diện theo quyền
+      // Ràng buộc điều kiện hiển thị Tab theo quyền hạn tài khoản khi đăng nhập thành công
       if (ndHtai.vTro === 'qtriv') {
           $("#nutMoThemNs").show();
           $("#tabPhanQuyen").show();
@@ -387,6 +387,10 @@
     function dxuat() { 
        ndHtai = null; dlToanc = []; csSua = -1; sessionStorage.removeItem("ngdungNs"); 
        $("#khuBangNs tbody").empty(); $("#khuBangDg tbody").empty();
+       
+       // Đảm bảo an toàn thông tin: Khởi tạo lại trạng thái ẩn đối với cấu trúc quản trị nâng cao
+       $("#tabPhanQuyen").hide(); 
+       
        $("#udChinh").hide(); $("#manhDn").css("display", "flex").fadeIn();
     }
     
