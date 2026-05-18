@@ -242,11 +242,9 @@
     }
     applyQLNSConfig();
 
-    // Khai báo biến toàn cục
     let ndHtai = null, dlToanc = [], chinhToanc = [], csSua = -1;
     let mangDuLieuTam = null; 
     
-    // Hàm kiểm tra thời hạn sử dụng
     function kiemtKhoa() {
         let hd = typeof QLNS_HAN_DUNG !== 'undefined' ? QLNS_HAN_DUNG : "31/12/2026";
         if (!hd || hd.trim() === "") return true; 
@@ -272,7 +270,7 @@
         return true;
     }
 
-    // Khởi tạo JQuery Document Ready - TẢI GIAO DIỆN TỪ GITHUB
+    // Nâng cấp: Thuật toán $.Deferred() bảo vệ chống kẹt giao diện nếu file tải lỗi
     $(document).ready(() => { 
         if (!kiemtKhoa()) return; 
         
@@ -281,18 +279,24 @@
         let taiTt = $.get("thong_tin.html");
         let taiDg = $.get("danh_gia.html");
         let taiTh = $.get("tong_hop.html");
-        let taiPq = $.get("PhanQuyen.html");
+        
+        let taiPq = $.Deferred();
+        $.get("PhanQuyen.html").done(function(res) {
+            taiPq.resolve([res]);
+        }).fail(function() {
+            taiPq.resolve([""]); 
+        });
 
         $.when(taiTt, taiDg, taiTh, taiPq).done(function(r1, r2, r3, r4) {
-            $("#vungChuaNoiDung").html(r1[0] + r2[0] + r3[0] + r4[0]);
+            let pQuyenHtml = r4[0] || "";
+            $("#vungChuaNoiDung").html(r1[0] + r2[0] + r3[0] + pQuyenHtml);
             kiemTraTrangThaiDangNhap();
         }).fail(function() {
             $("#vungTai").hide();
-            hienTbao("Lỗi: Không tìm thấy file PhanQuyen.html trên GitHub. Vui lòng upload file để tiếp tục!", "loi");
+            hienTbao("Lỗi tải phân hệ giao diện. Vui lòng kiểm tra lại đường dẫn tệp trên GitHub!", "loi");
         });
     });
 
-    // Tách riêng hàm kiểm tra trạng thái
     function kiemTraTrangThaiDangNhap() {
         $("#vungTai").hide(); 
         let luuPt = sessionStorage.getItem("ngdungNs");
@@ -309,7 +313,6 @@
         }
     }
 
-    // Các hàm tiện ích dùng chung
     function hienTbao(chu, kieu = 'tc') {
        const ht = document.getElementById('tbNhanh');
        const nDung = ht.querySelector('.toast-body');
@@ -326,7 +329,6 @@
        pt.value = m;
     }
 
-    // Xử lý xác thực Google
     function giaimaJwt(chuoit) {
       let ddb64 = chuoit.split('.')[1];
       let b64 = ddb64.replace(/-/g, '+').replace(/_/g, '/');
@@ -368,7 +370,6 @@
     
     function datTde(t) { $("#tdeTrang").text(t); }
 
-    // Quản lý Dữ liệu
     function taiDlBdau() {
       $("#vungTai").show();
       goiMyChuHien('layTatCaDl')
