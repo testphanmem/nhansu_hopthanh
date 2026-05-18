@@ -1,12 +1,12 @@
 <div class="tab-pane fade" id="muc4">
-  <div class="d-flex justify-content-between align-items-center mb-3 mt-2">
+  <div class="d-flex justify-content-between align-items-center mb-2 mt-2">
     <button class="btn btn-primary fw-bold" onclick="moThemTaiKhoan()"><i class="fas fa-plus"></i> Thêm tài khoản</button>
     <button class="btn btn-success fw-bold" onclick="capNhatPhanQuyen()"><i class="fas fa-save"></i> Cập nhật hệ thống</button>
   </div>
   
-  <div class="table-responsive bg-white rounded shadow-sm border p-2">
-    <table class="table table-bordered table-hover bangTchinh" id="bangPhanQuyen">
-      <thead>
+  <div class="table-responsive bg-white rounded shadow-sm border p-0" style="max-height: calc(100vh - 190px); overflow-y: auto;">
+    <table class="table table-bordered table-hover bangTchinh mb-0" id="bangPhanQuyen" style="border-collapse: collapse;">
+      <thead class="sticky-top" style="z-index: 10;">
         <tr>
           <th style="width: 50px;">Sửa</th>
           <th style="width: 50px;">STT</th>
