@@ -57,9 +57,8 @@
 <script>
   let mangPhanQuyen = [];
 
-  // Tải danh sách từ Server
   function taiDsPhanQuyen() {
-    if (!ndHtai || ndHtai.vTro !== 'qtriv') return; // Chặn kỹ thuật ở UI
+    if (!ndHtai || ndHtai.vTro !== 'qtriv') return;
     $("#vungTai").show();
     
     goiMyChuHien('layDsTaiKhoan', { vTro: ndHtai.vTro })
@@ -75,11 +74,10 @@
       .catch(lc => { hienTbao(lc, 'loi'); $("#vungTai").hide(); });
   }
 
-  // Vẽ bảng cấu trúc
   function veBangPhanQuyen() {
     let html = '';
     if (mangPhanQuyen.length === 0) {
-      html = '<tr><td colspan="5" class="text-center text-muted py-3">Chưa có dữ liệu tài khoản trong hệ thống.</td></tr>';
+      html = '<tr><td colspan="5" class="text-center text-muted py-3">Chưa có dữ liệu.</td></tr>';
     } else {
       mangPhanQuyen.forEach((tk, i) => {
         let tenQuyen = (tk[2] === 'xx') ? '<span class="badge bg-danger">Quản trị viên</span>' : '<span class="badge bg-secondary">Giáo viên</span>';
@@ -95,7 +93,6 @@
     $("#bangPhanQuyen tbody").html(html);
   }
 
-  // Khởi tạo UI Thêm mới
   function moThemTaiKhoan() {
     $("#tdeModalPq").text("Thêm tài khoản");
     $("#pq_chiSoSua").val(-1);
@@ -105,7 +102,6 @@
     new bootstrap.Modal(document.getElementById('modalPhanQuyen')).show();
   }
 
-  // Khởi tạo UI Sửa
   function moSuaTaiKhoan(i) {
     $("#tdeModalPq").text("Sửa tài khoản");
     $("#pq_chiSoSua").val(i);
@@ -115,7 +111,6 @@
     new bootstrap.Modal(document.getElementById('modalPhanQuyen')).show();
   }
 
-  // Lưu tạm vào mảng, kiểm tra tính hợp lệ
   function luuTamTaiKhoan() {
     let dChi = $("#pq_diaChi").val().trim();
     let hTen = $("#pq_hoTen").val().trim();
@@ -127,7 +122,7 @@
       return;
     }
 
-    // Bắt buộc: Kiểm tra không trùng Họ và tên
+    // Bắt buộc: Không cho phép trùng Họ và tên
     let trungTen = mangPhanQuyen.some((tk, i) => i !== cs && tk[1].toLowerCase() === hTen.toLowerCase());
     if (trungTen) {
       hienTbao('Họ và tên đã tồn tại trong danh sách. Không cho phép trùng lặp!', 'loi');
@@ -145,7 +140,6 @@
     hienTbao('Lưu tạm thành công. Vui lòng bấm Cập nhật hệ thống để lưu chính thức.');
   }
 
-  // Ghi toàn bộ dữ liệu vào Google Sheet
   function capNhatPhanQuyen() {
     if (!confirm('Hệ thống sẽ ghi đè toàn bộ danh sách phân quyền này. Đồng chí có chắc chắn tiếp tục?')) return;
     
