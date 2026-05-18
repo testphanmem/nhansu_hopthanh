@@ -41,6 +41,7 @@
         <div class="mb-3">
           <label class="form-label fw-bold">Quyền hạn <span class="text-danger">*</span></label>
           <select class="form-select" id="pq_quyen">
+            <option value="">Chỉ xem (Để trống)</option>
             <option value="x">Giáo viên (x)</option>
             <option value="xx">Quản trị viên (xx)</option>
           </select>
@@ -58,7 +59,7 @@
 <script>
   let mangPhanQuyen = [];
   let theModalPq = null;
-  let daTaiPhanQuyen = false; // Thuật toán kiểm soát bộ nhớ đệm chống độ trễ
+  let daTaiPhanQuyen = false; 
 
   function layModalPq() {
       if (!theModalPq) {
@@ -70,7 +71,6 @@
   function taiDsPhanQuyen() {
     if (!ndHtai || ndHtai.vTro !== 'qtriv') return;
     
-    // Thuật toán bỏ qua tải lại: Nếu đã có dữ liệu, hiển thị lập tức
     if (daTaiPhanQuyen) {
         veBangPhanQuyen();
         return;
@@ -81,7 +81,7 @@
       .then(q => {
         if (q.tCong) {
           mangPhanQuyen = q.dLieu || [];
-          daTaiPhanQuyen = true; // Kích hoạt cờ đã tải
+          daTaiPhanQuyen = true; 
           veBangPhanQuyen();
         } else {
           hienTbao(q.tBao, 'loi');
@@ -97,7 +97,16 @@
       html = '<tr><td colspan="5" class="text-center text-muted py-3">Chưa có dữ liệu.</td></tr>';
     } else {
       mangPhanQuyen.forEach((tk, i) => {
-        let tenQuyen = (String(tk[2]).trim() === 'xx') ? '<span class="badge bg-danger">Quản trị viên</span>' : '<span class="badge bg-secondary">Giáo viên</span>';
+        let q = String(tk[2] || "").trim().toLowerCase();
+        
+        // Phân loại nhãn hiển thị theo mã quyền
+        let tenQuyen = '<span class="badge bg-warning text-dark">Chỉ xem</span>';
+        if (q === 'xx') {
+            tenQuyen = '<span class="badge bg-danger">Quản trị viên</span>';
+        } else if (q === 'x') {
+            tenQuyen = '<span class="badge bg-secondary">Giáo viên</span>';
+        }
+
         html += `<tr>
           <td><button class="btn btn-sm btn-outline-primary" onclick="moSuaTaiKhoan(${i})"><i class="fas fa-edit"></i></button></td>
           <td class="text-center">${i + 1}</td>
@@ -115,8 +124,8 @@
     $("#pq_chiSoSua").val(-1);
     $("#pq_diaChi").val('');
     $("#pq_hoTen").val('');
-    $("#pq_quyen").val('x');
-    $("#nutXoaPq").hide(); // Ẩn nút xóa với UI thêm mới
+    $("#pq_quyen").val(''); // Mặc định là quyền Chỉ xem
+    $("#nutXoaPq").hide(); 
     layModalPq().show();
   }
 
@@ -125,8 +134,12 @@
     $("#pq_chiSoSua").val(i);
     $("#pq_diaChi").val(mangPhanQuyen[i][0]);
     $("#pq_hoTen").val(mangPhanQuyen[i][1]);
-    $("#pq_quyen").val(mangPhanQuyen[i][2]);
-    $("#nutXoaPq").show(); // Kích hoạt nút xóa với UI sửa
+    
+    // Nạp chính xác mã quyền từ mảng vào dropdown
+    let q = String(mangPhanQuyen[i][2] || "").trim().toLowerCase();
+    $("#pq_quyen").val(q);
+    
+    $("#nutXoaPq").show(); 
     layModalPq().show();
   }
 
