@@ -306,6 +306,10 @@
             $("#nhanVt").text(ndHtai.vTro === 'qtriv' ? 'Quản trị viên' : 'Giáo viên');
             ndHtai.vTro === 'qtriv' ? $("#nutMoThemNs").show() : $("#nutMoThemNs").hide();
             ndHtai.vTro === 'qtriv' ? $("#tabPhanQuyen").show() : $("#tabPhanQuyen").hide();
+            
+            // Ép Tab mặc định về Thông tin nhân sự khi F5 hoặc mở lại
+            $("#bangChonGoc button[data-bs-target='#muc1']").click();
+
             taiDlBdau();
         } else {
             $("#manhDn").css("display", "flex"); 
@@ -355,6 +359,10 @@
       $("#hthiNd").text(ndHtai.tenn); $("#nhanVt").text(ndHtai.vTro === 'qtriv' ? 'Quản trị viên' : 'Giáo viên');
       ndHtai.vTro === 'qtriv' ? $("#nutMoThemNs").show() : $("#nutMoThemNs").hide();
       ndHtai.vTro === 'qtriv' ? $("#tabPhanQuyen").show() : $("#tabPhanQuyen").hide();
+      
+      // Ép Tab mặc định về Thông tin nhân sự khi Đăng nhập thành công
+      $("#bangChonGoc button[data-bs-target='#muc1']").click();
+
       $("#manhDn").hide(); $("#udChinh").show(); taiDlBdau();
     }
     
@@ -364,6 +372,10 @@
        ndHtai = null; dlToanc = []; csSua = -1; sessionStorage.removeItem("ngdungNs"); 
        $("#khuBangNs tbody").empty(); $("#khuBangDg tbody").empty();
        $("#tabPhanQuyen").hide();
+       
+       // Ép Tab mặc định về Thông tin nhân sự khi Đăng xuất (khóa an toàn UI)
+       $("#bangChonGoc button[data-bs-target='#muc1']").click();
+
        $("#udChinh").hide(); $("#manhDn").css("display", "flex").fadeIn();
     }
     
