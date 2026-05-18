@@ -286,10 +286,7 @@
 
         $.when(taiTt, taiDg, taiTh, taiPq).done(function(r1, r2, r3, r4) {
             // Nạp mã HTML và tự động thực thi script bên trong các tệp con
-            let htmlGhep = (r1 && r1[0] ? r1[0] : "") + 
-                           (r2 && r2[0] ? r2[0] : "") + 
-                           (r3 && r3[0] ? r3[0] : "") + 
-                           (r4 && r4[0] ? r4[0] : "");
+            let htmlGhep = (r1 && r1[0] ? r1[0] : "") + (r2 && r2[0] ? r2[0] : "") + (r3 && r3[0] ? r3[0] : "") + (r4 && r4[0] ? r4[0] : "");
             $("#vungChuaNoiDung").html(htmlGhep);
             
             // Xử lý logic đăng nhập sau khi giao diện đã nạp xong
@@ -300,7 +297,7 @@
         });
     });
 
-    // Tách riêng hàm kiểm tra trạng thái khi tải trang
+    // Tách riêng hàm kiểm tra trạng thái
     function kiemTraTrangThaiDangNhap() {
         $("#vungTai").hide(); 
         let luuPt = sessionStorage.getItem("ngdungNs");
@@ -309,16 +306,8 @@
             $("#manhDn").hide(); $("#udChinh").show();
             $("#hthiNd").text(ndHtai.tenn); 
             $("#nhanVt").text(ndHtai.vTro === 'qtriv' ? 'Quản trị viên' : 'Giáo viên');
-            
-            // Ràng buộc điều kiện hiển thị Tab theo quyền hạn tài khoản
-            if (ndHtai.vTro === 'qtriv') {
-                $("#nutMoThemNs").show();
-                $("#tabPhanQuyen").show();
-            } else {
-                $("#nutMoThemNs").hide();
-                $("#tabPhanQuyen").hide();
-            }
-
+            ndHtai.vTro === 'qtriv' ? $("#nutMoThemNs").show() : $("#nutMoThemNs").hide();
+            ndHtai.vTro === 'qtriv' ? $("#tabPhanQuyen").show() : $("#tabPhanQuyen").hide();
             taiDlBdau();
         } else {
             $("#manhDn").css("display", "flex"); 
@@ -367,18 +356,9 @@
       
       ndHtai = pq.dLieu;
       sessionStorage.setItem("ngdungNs", JSON.stringify(ndHtai));
-      $("#hthiNd").text(ndHtai.tenn); 
-      $("#nhanVt").text(ndHtai.vTro === 'qtriv' ? 'Quản trị viên' : 'Giáo viên');
-      
-      // Ràng buộc điều kiện hiển thị Tab theo quyền hạn tài khoản khi đăng nhập thành công
-      if (ndHtai.vTro === 'qtriv') {
-          $("#nutMoThemNs").show();
-          $("#tabPhanQuyen").show();
-      } else {
-          $("#nutMoThemNs").hide();
-          $("#tabPhanQuyen").hide();
-      }
-      
+      $("#hthiNd").text(ndHtai.tenn); $("#nhanVt").text(ndHtai.vTro === 'qtriv' ? 'Quản trị viên' : 'Giáo viên');
+      ndHtai.vTro === 'qtriv' ? $("#nutMoThemNs").show() : $("#nutMoThemNs").hide();
+      ndHtai.vTro === 'qtriv' ? $("#tabPhanQuyen").show() : $("#tabPhanQuyen").hide();
       $("#manhDn").hide(); $("#udChinh").show(); taiDlBdau();
     }
     
@@ -387,10 +367,7 @@
     function dxuat() { 
        ndHtai = null; dlToanc = []; csSua = -1; sessionStorage.removeItem("ngdungNs"); 
        $("#khuBangNs tbody").empty(); $("#khuBangDg tbody").empty();
-       
-       // Đảm bảo an toàn thông tin: Khởi tạo lại trạng thái ẩn đối với cấu trúc quản trị nâng cao
-       $("#tabPhanQuyen").hide(); 
-       
+       $("#tabPhanQuyen").hide();
        $("#udChinh").hide(); $("#manhDn").css("display", "flex").fadeIn();
     }
     
