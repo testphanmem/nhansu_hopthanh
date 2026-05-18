@@ -178,6 +178,7 @@
       <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#muc1" onclick="datTde('THÔNG TIN NHÂN SỰ')">Thông tin nhân sự</button></li>
       <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#muc2" onclick="datTde('KẾT QUẢ ĐÁNH GIÁ')">Kết quả đánh giá</button></li>
       <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#muc3" onclick="datTde('THỐNG KÊ - TỔNG HỢP')">Tổng hợp</button></li>
+      <li class="nav-item" id="tabPhanQuyen" style="display:none;"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#muc4" onclick="datTde('PHÂN QUYỀN'); taiDsPhanQuyen();">Phân quyền</button></li>
     </ul>
 
     <div class="tab-content p-2" id="vungChuaNoiDung">
@@ -277,16 +278,15 @@
         
         $("#vungTai").show();
         
-        // Gọi đồng thời 3 file HTML tĩnh cùng cấp thư mục trên GitHub
         let taiTt = $.get("thong_tin.html");
         let taiDg = $.get("danh_gia.html");
         let taiTh = $.get("tong_hop.html");
+        let taiPq = $.get("PhanQuyen.html").catch(function() { return [""]; });
 
-        $.when(taiTt, taiDg, taiTh).done(function(r1, r2, r3) {
-            // Nạp mã HTML và tự động thực thi script bên trong các tệp con
-            $("#vungChuaNoiDung").html(r1[0] + r2[0] + r3[0]);
+        $.when(taiTt, taiDg, taiTh, taiPq).done(function(r1, r2, r3, r4) {
+            let pQuyenHtml = (r4 && r4[0]) ? r4[0] : "";
+            $("#vungChuaNoiDung").html(r1[0] + r2[0] + r3[0] + pQuyenHtml);
             
-            // Xử lý logic đăng nhập sau khi giao diện đã nạp xong
             kiemTraTrangThaiDangNhap();
         }).fail(function() {
             $("#vungTai").hide();
@@ -304,6 +304,7 @@
             $("#hthiNd").text(ndHtai.tenn); 
             $("#nhanVt").text(ndHtai.vTro === 'qtriv' ? 'Quản trị viên' : 'Giáo viên');
             ndHtai.vTro === 'qtriv' ? $("#nutMoThemNs").show() : $("#nutMoThemNs").hide();
+            ndHtai.vTro === 'qtriv' ? $("#tabPhanQuyen").show() : $("#tabPhanQuyen").hide();
             taiDlBdau();
         } else {
             $("#manhDn").css("display", "flex"); 
@@ -354,6 +355,7 @@
       sessionStorage.setItem("ngdungNs", JSON.stringify(ndHtai));
       $("#hthiNd").text(ndHtai.tenn); $("#nhanVt").text(ndHtai.vTro === 'qtriv' ? 'Quản trị viên' : 'Giáo viên');
       ndHtai.vTro === 'qtriv' ? $("#nutMoThemNs").show() : $("#nutMoThemNs").hide();
+      ndHtai.vTro === 'qtriv' ? $("#tabPhanQuyen").show() : $("#tabPhanQuyen").hide();
       $("#manhDn").hide(); $("#udChinh").show(); taiDlBdau();
     }
     
@@ -362,6 +364,7 @@
     function dxuat() { 
        ndHtai = null; dlToanc = []; csSua = -1; sessionStorage.removeItem("ngdungNs"); 
        $("#khuBangNs tbody").empty(); $("#khuBangDg tbody").empty();
+       $("#tabPhanQuyen").hide();
        $("#udChinh").hide(); $("#manhDn").css("display", "flex").fadeIn();
     }
     
